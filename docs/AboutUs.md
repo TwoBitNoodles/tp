@@ -40,11 +40,11 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 * Role: Developer
 * Responsibilities: Data
 
-### Jean Doe
+### Gowri Sumesh Menon
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/gowrismenon.png" width="200px">
 
-[[github](http://github.com/johndoe)]
+[[github]([http://github.com/johndoe](https://github.com/Gowrismenon))]
 [[portfolio](team/johndoe.md)]
 
 * Role: Developer
