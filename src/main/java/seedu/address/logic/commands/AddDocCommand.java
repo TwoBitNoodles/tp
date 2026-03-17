@@ -12,6 +12,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Doctor;
+import seedu.address.storage.ScheduleManager;
 
 /**
  * Adds a person to the app.
@@ -57,6 +58,7 @@ public class AddDocCommand extends Command {
         }
 
         model.addPerson(toAdd);
+        ScheduleManager.addDoctorSchedule(toAdd.getName().fullName);
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
     }
 
