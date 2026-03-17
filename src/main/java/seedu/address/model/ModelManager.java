@@ -84,13 +84,13 @@ public class ModelManager implements Model {
     @Override
     public void setDoctorsFilePath(Path doctorsFilePath) {
         requireNonNull(doctorsFilePath);
-        userPrefs.setPatientsFilePath(doctorsFilePath);
+        userPrefs.setDoctorsFilePath(doctorsFilePath);
     }
 
     @Override
     public void setScheduleFilePath(Path scheduleFilePath) {
         requireNonNull(scheduleFilePath);
-        userPrefs.setPatientsFilePath(scheduleFilePath);
+        userPrefs.setScheduleFilePath(scheduleFilePath);
     }
 
     //=========== AddressBook ================================================================================

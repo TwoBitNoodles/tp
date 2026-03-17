@@ -87,7 +87,10 @@ public class UserPrefs implements ReadOnlyUserPrefs {
 
         UserPrefs otherUserPrefs = (UserPrefs) other;
         return guiSettings.equals(otherUserPrefs.guiSettings)
-                && addressBookFilePath.equals(otherUserPrefs.addressBookFilePath);
+                && addressBookFilePath.equals(otherUserPrefs.addressBookFilePath)
+                && patientsFilePath.equals(otherUserPrefs.patientsFilePath)
+                && doctorsFilePath.equals(otherUserPrefs.doctorsFilePath)
+                && scheduleFilePath.equals(otherUserPrefs.scheduleFilePath);
     }
 
     @Override
@@ -100,6 +103,9 @@ public class UserPrefs implements ReadOnlyUserPrefs {
         StringBuilder sb = new StringBuilder();
         sb.append("Gui Settings : " + guiSettings);
         sb.append("\nLocal data file location : " + addressBookFilePath);
+        sb.append("\nLocal data file location (doctors) : " + doctorsFilePath);
+        sb.append("\nLocal data file location (patients): " + patientsFilePath);
+        sb.append("\nLocal data file location (schedule): " + scheduleFilePath);
         return sb.toString();
     }
 
