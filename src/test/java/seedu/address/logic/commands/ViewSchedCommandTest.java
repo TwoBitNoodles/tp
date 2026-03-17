@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for ViewSchedCommand.
+ */
 public class ViewSchedCommandTest {
 
     private static final String FILE_PATH = "data/schedule.json";
@@ -21,14 +24,14 @@ public class ViewSchedCommandTest {
 
         FileWriter writer = new FileWriter(file);
 
-        writer.write("{\n" +
-                "  \"John Tan\": {\n" +
-                "    \"2026-03-20\": {\n" +
-                "      \"09:00\": null,\n" +
-                "      \"10:00\": \"Alice Lim\"\n" +
-                "    }\n" +
-                "  }\n" +
-                "}");
+        writer.write("{\n"
+                + "  \"John Tan\": {\n"
+                + "    \"2026-03-20\": {\n"
+                + "      \"09:00\": null,\n"
+                + "      \"10:00\": \"Alice Lim\"\n"
+                + "    }\n"
+                + "  }\n"
+                + "}");
 
         writer.close();
     }
@@ -41,9 +44,9 @@ public class ViewSchedCommandTest {
         CommandResult result = command.execute(null);
 
         String expected =
-                "Schedule for John Tan on 2026-03-20\n\n" +
-                "09:00 – Available\n" +
-                "10:00 – Booked\n";
+                "Schedule for John Tan on 2026-03-20\n\n"
+                        + "09:00 – Available\n"
+                        + "10:00 – Booked\n";
 
         assertEquals(expected, result.getFeedbackToUser());
     }
@@ -56,9 +59,9 @@ public class ViewSchedCommandTest {
         CommandResult result = command.execute(null);
 
         String expected =
-                "Schedule for john tan on 2026-03-20\n\n" +
-                "09:00 – Available\n" +
-                "10:00 – Booked\n";
+                "Schedule for john tan on 2026-03-20\n\n"
+                        + "09:00 – Available\n"
+                        + "10:00 – Booked\n";
 
         assertEquals(expected, result.getFeedbackToUser());
     }
@@ -80,6 +83,7 @@ public class ViewSchedCommandTest {
 
         CommandResult result = command.execute(null);
 
-        assertEquals("No schedule available for this date.", result.getFeedbackToUser());
+        assertEquals("No schedule available for this date.",
+                result.getFeedbackToUser());
     }
 }

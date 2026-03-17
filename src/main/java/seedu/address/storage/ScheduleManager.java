@@ -17,6 +17,14 @@ public class ScheduleManager {
 
     private static final String FILE_PATH = "data/schedule.json";
 
+    /**
+     * Retrieves the schedule for a given doctor and date, ignoring case sensitivity of the doctor's name.
+     *
+     * @param doctor The name of the doctor whose schedule is to be retrieved.
+     * @param date The date for which the schedule is to be retrieved, in the format "YYYY-MM-DD".
+     * @return A map of time slots to patient names (or null if available), or null if the doctor is not found.
+     * @throws IllegalArgumentException if the date is not found for the doctor.
+     */
     public static Map<String, String> getScheduleIgnoreCase(String doctor, String date) {
 
         try {
@@ -52,6 +60,9 @@ public class ScheduleManager {
         }
     }
 
+    /**
+     * Adds a new doctor to the schedule with default time slots for the next 7 days.
+     */
     public static void addDoctorSchedule(String doctorName) {
 
         try {

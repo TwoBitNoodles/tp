@@ -1,5 +1,6 @@
 package seedu.address.logic;
 
+// 1. java.*
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -8,14 +9,24 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import seedu.address.model.Model;
-import seedu.address.model.person.Doctor;
+
+// 2. javax / org / external libs
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+// 3. your project (seedu)
+import seedu.address.model.Model;
+import seedu.address.model.person.Doctor;
+
+/**
+ * Initializes the schedule JSON file with default schedules for all doctors in the address book.
+ */
 public class ScheduleInitialiser {
 
     private static final String FILE_PATH = "data/schedule.json";
 
+    /**
+     * Generates schedule file for all doctors if file does not exist.
+     */
     public static void initialize(Model model) {
 
         File file = new File(FILE_PATH);
@@ -28,7 +39,6 @@ public class ScheduleInitialiser {
 
         LocalDate today = LocalDate.now();
 
-        // 🔥 GET DOCTORS FROM MODEL
         List<Doctor> doctors = model.getFilteredPersonList().stream()
                 .filter(p -> p instanceof Doctor)
                 .map(p -> (Doctor) p)
@@ -62,6 +72,9 @@ public class ScheduleInitialiser {
         writeToFile(scheduleData);
     }
 
+    /*
+     * Writes the schedule data to a JSON file.
+     */
     private static void writeToFile(Map<String, Object> data) {
         try {
             ObjectMapper mapper = new ObjectMapper();
