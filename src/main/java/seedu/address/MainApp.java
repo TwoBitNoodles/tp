@@ -87,6 +87,8 @@ public class MainApp extends Application {
         ReadOnlyAddressBook initialData = new AddressBook();
 
         logger.info(String.format("Starting with empty patient data, doctor data and schedule data."));
+        ReadOnlyAddressBook patientData = new AddressBook();
+        ReadOnlyAddressBook doctorData = new AddressBook();
 
         /*
         try {
@@ -103,7 +105,7 @@ public class MainApp extends Application {
         }
          */
 
-        return new ModelManager(initialData, userPrefs);
+        return new ModelManager(initialData, patientData, doctorData, userPrefs);
     }
 
     private void initLogging(Config config) {

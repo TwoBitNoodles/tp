@@ -22,24 +22,29 @@ public class ModelManager implements Model {
     private static final Logger logger = LogsCenter.getLogger(ModelManager.class);
 
     private final AddressBook addressBook;
+    private final AddressBook patients;
+    private final AddressBook doctors;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
-    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyUserPrefs userPrefs) {
-        requireAllNonNull(addressBook, userPrefs);
+    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyAddressBook patients,
+                        ReadOnlyAddressBook doctors, ReadOnlyUserPrefs userPrefs) {
+        requireAllNonNull(addressBook, patients, doctors, userPrefs);
 
         logger.fine("Initializing with address book: " + addressBook + " and user prefs " + userPrefs);
 
         this.addressBook = new AddressBook(addressBook);
+        this.patients = new AddressBook(patients);
+        this.doctors = new AddressBook(doctors);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
     }
 
     public ModelManager() {
-        this(new AddressBook(), new UserPrefs());
+        this(new AddressBook(), new AddressBook(), new AddressBook(), new UserPrefs());
     }
 
     //=========== UserPrefs ==================================================================================
@@ -123,6 +128,16 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public ReadOnlyAddressBook getPatientData() {
+        return patients;
+    }
+
+    @Override
+    public ReadOnlyAddressBook getDoctorData() {
+        return doctors;
+    }
+
+    @Override
     public boolean hasPerson(Person person) {
         requireNonNull(person);
         return addressBook.hasPerson(person);
@@ -130,12 +145,12 @@ public class ModelManager implements Model {
 
     @Override
     public void deleteDoctor(Doctor doctor) {
-        addressBook.removeDoctor(doctor);
+        doctors.removeDoctor(doctor);
     }
 
     @Override
     public void deletePatient(Patient patient) {
-        addressBook.removePatient(patient);
+        patients.removePatient(patient);
     }
 
     @Override
@@ -146,13 +161,13 @@ public class ModelManager implements Model {
 
     @Override
     public void addPatient(Patient patient) {
-        addressBook.addPatient(patient);
+        patients.addPatient(patient);
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 
     @Override
     public void addDoctor(Doctor doctor) {
-        addressBook.addDoctor(doctor);
+        doctors.addDoctor(doctor);
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 
@@ -193,6 +208,8 @@ public class ModelManager implements Model {
 
         ModelManager otherModelManager = (ModelManager) other;
         return addressBook.equals(otherModelManager.addressBook)
+                && patients.equals(otherModelManager.patients)
+                && doctors.equals(otherModelManager.doctors)
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredPersons.equals(otherModelManager.filteredPersons);
     }
