@@ -11,8 +11,6 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 
-import javax.xml.crypto.Data;
-
 /**
  * Manages storage of AddressBook data in local storage.
  */
@@ -85,6 +83,12 @@ public class StorageManager implements Storage {
     }
 
     @Override
+    public Optional<ReadOnlyAddressBook> readAddressBook(Path filePath) throws DataLoadingException {
+        logger.fine("Attempting to read data from file: " + filePath);
+        return addressBookStorage.readAddressBook(filePath);
+    }
+
+    @Override
     public Optional<ReadOnlyAddressBook> readPatientData() throws DataLoadingException {
         return readAddressBook(patientDataStorage.getAddressBookFilePath());
     }
@@ -100,14 +104,14 @@ public class StorageManager implements Storage {
     }
 
     @Override
-    public Optional<ReadOnlyAddressBook> readAddressBook(Path filePath) throws DataLoadingException {
-        logger.fine("Attempting to read data from file: " + filePath);
-        return addressBookStorage.readAddressBook(filePath);
+    public void saveAddressBook(ReadOnlyAddressBook addressBook) throws IOException {
+        saveAddressBook(addressBook, addressBookStorage.getAddressBookFilePath());
     }
 
     @Override
-    public void saveAddressBook(ReadOnlyAddressBook addressBook) throws IOException {
-        saveAddressBook(addressBook, addressBookStorage.getAddressBookFilePath());
+    public void saveAddressBook(ReadOnlyAddressBook addressBook, Path filePath) throws IOException {
+        logger.fine("Attempting to write to data file: " + filePath);
+        addressBookStorage.saveAddressBook(addressBook, filePath);
     }
 
     @Override
@@ -123,12 +127,6 @@ public class StorageManager implements Storage {
     @Override
     public void saveScheduleData(ReadOnlyAddressBook scheduleData) throws IOException {
         saveAddressBook(scheduleData, scheduleDataStorage.getAddressBookFilePath());
-    }
-
-    @Override
-    public void saveAddressBook(ReadOnlyAddressBook addressBook, Path filePath) throws IOException {
-        logger.fine("Attempting to write to data file: " + filePath);
-        addressBookStorage.saveAddressBook(addressBook, filePath);
     }
 
 }
