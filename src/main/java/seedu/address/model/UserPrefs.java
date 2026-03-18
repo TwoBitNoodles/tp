@@ -39,6 +39,9 @@ public class UserPrefs implements ReadOnlyUserPrefs {
         requireNonNull(newUserPrefs);
         setGuiSettings(newUserPrefs.getGuiSettings());
         setAddressBookFilePath(newUserPrefs.getAddressBookFilePath());
+        setPatientsFilePath(newUserPrefs.getPatientsFilePath());
+        setDoctorsFilePath(newUserPrefs.getDoctorsFilePath());
+        setScheduleFilePath(newUserPrefs.getScheduleFilePath());
     }
 
     public GuiSettings getGuiSettings() {
@@ -54,9 +57,36 @@ public class UserPrefs implements ReadOnlyUserPrefs {
         return addressBookFilePath;
     }
 
+    public Path getPatientsFilePath() {
+        return patientsFilePath;
+    }
+
+    public Path getDoctorsFilePath() {
+        return doctorsFilePath;
+    }
+
+    public Path getScheduleFilePath() {
+        return scheduleFilePath;
+    }
+
     public void setAddressBookFilePath(Path addressBookFilePath) {
         requireNonNull(addressBookFilePath);
         this.addressBookFilePath = addressBookFilePath;
+    }
+
+    public void setPatientsFilePath(Path patientsFilePath) {
+        requireNonNull(patientsFilePath);
+        this.patientsFilePath = patientsFilePath;
+    }
+
+    public void setDoctorsFilePath(Path doctorsFilePath) {
+        requireNonNull(doctorsFilePath);
+        this.doctorsFilePath = doctorsFilePath;
+    }
+
+    public void setScheduleFilePath(Path scheduleFilePath) {
+        requireNonNull(scheduleFilePath);
+        this.scheduleFilePath = scheduleFilePath;
     }
 
     @Override
@@ -72,7 +102,10 @@ public class UserPrefs implements ReadOnlyUserPrefs {
 
         UserPrefs otherUserPrefs = (UserPrefs) other;
         return guiSettings.equals(otherUserPrefs.guiSettings)
-                && addressBookFilePath.equals(otherUserPrefs.addressBookFilePath);
+                && addressBookFilePath.equals(otherUserPrefs.addressBookFilePath)
+                && patientsFilePath.equals(otherUserPrefs.patientsFilePath)
+                && doctorsFilePath.equals(otherUserPrefs.doctorsFilePath)
+                && scheduleFilePath.equals(otherUserPrefs.scheduleFilePath);
     }
 
     @Override
@@ -85,6 +118,9 @@ public class UserPrefs implements ReadOnlyUserPrefs {
         StringBuilder sb = new StringBuilder();
         sb.append("Gui Settings : " + guiSettings);
         sb.append("\nLocal data file location : " + addressBookFilePath);
+        sb.append("\nLocal data file location (doctors) : " + doctorsFilePath);
+        sb.append("\nLocal data file location (patients): " + patientsFilePath);
+        sb.append("\nLocal data file location (schedule): " + scheduleFilePath);
         return sb.toString();
     }
 

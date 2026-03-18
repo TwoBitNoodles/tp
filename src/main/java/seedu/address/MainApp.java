@@ -22,7 +22,6 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.util.SampleDataUtil;
 import seedu.address.storage.AddressBookStorage;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
@@ -59,11 +58,15 @@ public class MainApp extends Application {
         UserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(config.getUserPrefsFilePath());
         UserPrefs userPrefs = initPrefs(userPrefsStorage);
         AddressBookStorage addressBookStorage = new JsonAddressBookStorage(userPrefs.getAddressBookFilePath());
-
-        storage = new StorageManager(addressBookStorage, userPrefsStorage);
+        AddressBookStorage patientDataStorage = new JsonAddressBookStorage(userPrefs.getPatientsFilePath());
+        AddressBookStorage doctorDataStorage = new JsonAddressBookStorage(userPrefs.getDoctorsFilePath());
+        AddressBookStorage scheduleDataStorage = new JsonAddressBookStorage(userPrefs.getScheduleFilePath());
+        storage = new StorageManager(patientDataStorage, doctorDataStorage,
+                scheduleDataStorage, userPrefsStorage);
 
         model = initModelManager(storage, userPrefs);
         ScheduleInitialiser.initialize(model);
+
         logic = new LogicManager(model, storage);
 
         ui = new UiManager(logic);
@@ -75,10 +78,17 @@ public class MainApp extends Application {
      * or an empty address book will be used instead if errors occur when reading {@code storage}'s address book.
      */
     private Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
-        logger.info("Using data file : " + storage.getAddressBookFilePath());
+        logger.info(String.format("Using data files : %s, %s, %s",
+                storage.getPatientsFilePath(),
+                storage.getDoctorsFilePath(),
+                storage.getScheduleFilePath()));
 
         Optional<ReadOnlyAddressBook> addressBookOptional;
-        ReadOnlyAddressBook initialData;
+        ReadOnlyAddressBook initialData = new AddressBook();
+
+        logger.info(String.format("Starting with empty patient data, doctor data and schedule data."));
+
+        /*
         try {
             addressBookOptional = storage.readAddressBook();
             if (!addressBookOptional.isPresent()) {
@@ -91,6 +101,7 @@ public class MainApp extends Application {
                     + " Will be starting with an empty AddressBook.");
             initialData = new AddressBook();
         }
+         */
 
         return new ModelManager(initialData, userPrefs);
     }

@@ -18,13 +18,22 @@ public class StorageManager implements Storage {
 
     private static final Logger logger = LogsCenter.getLogger(StorageManager.class);
     private AddressBookStorage addressBookStorage;
+    private AddressBookStorage patientDataStorage;
+    private AddressBookStorage doctorDataStorage;
+    private AddressBookStorage scheduleDataStorage;
     private UserPrefsStorage userPrefsStorage;
 
     /**
      * Creates a {@code StorageManager} with the given {@code AddressBookStorage} and {@code UserPrefStorage}.
      */
-    public StorageManager(AddressBookStorage addressBookStorage, UserPrefsStorage userPrefsStorage) {
-        this.addressBookStorage = addressBookStorage;
+    public StorageManager(AddressBookStorage patientDataStorage,
+                          AddressBookStorage doctorDataStorage,
+                          AddressBookStorage scheduleDataStorage,
+                          UserPrefsStorage userPrefsStorage) {
+        // this.addressBookStorage = addressBookStorage;
+        this.patientDataStorage = patientDataStorage;
+        this.doctorDataStorage = doctorDataStorage;
+        this.scheduleDataStorage = scheduleDataStorage;
         this.userPrefsStorage = userPrefsStorage;
     }
 
@@ -54,6 +63,21 @@ public class StorageManager implements Storage {
     }
 
     @Override
+    public Path getPatientsFilePath() {
+        return patientDataStorage.getAddressBookFilePath();
+    }
+
+    @Override
+    public Path getDoctorsFilePath() {
+        return doctorDataStorage.getAddressBookFilePath();
+    }
+
+    @Override
+    public Path getScheduleFilePath() {
+        return scheduleDataStorage.getAddressBookFilePath();
+    }
+
+    @Override
     public Optional<ReadOnlyAddressBook> readAddressBook() throws DataLoadingException {
         return readAddressBook(addressBookStorage.getAddressBookFilePath());
     }
@@ -65,6 +89,21 @@ public class StorageManager implements Storage {
     }
 
     @Override
+    public Optional<ReadOnlyAddressBook> readPatientData() throws DataLoadingException {
+        return readAddressBook(patientDataStorage.getAddressBookFilePath());
+    }
+
+    @Override
+    public Optional<ReadOnlyAddressBook> readDoctorData() throws DataLoadingException {
+        return readAddressBook(doctorDataStorage.getAddressBookFilePath());
+    }
+
+    @Override
+    public Optional<ReadOnlyAddressBook> readScheduleData() throws DataLoadingException {
+        return readAddressBook(scheduleDataStorage.getAddressBookFilePath());
+    }
+
+    @Override
     public void saveAddressBook(ReadOnlyAddressBook addressBook) throws IOException {
         saveAddressBook(addressBook, addressBookStorage.getAddressBookFilePath());
     }
@@ -73,6 +112,21 @@ public class StorageManager implements Storage {
     public void saveAddressBook(ReadOnlyAddressBook addressBook, Path filePath) throws IOException {
         logger.fine("Attempting to write to data file: " + filePath);
         addressBookStorage.saveAddressBook(addressBook, filePath);
+    }
+
+    @Override
+    public void savePatientData(ReadOnlyAddressBook patientData) throws IOException {
+        saveAddressBook(patientData, patientDataStorage.getAddressBookFilePath());
+    }
+
+    @Override
+    public void saveDoctorData(ReadOnlyAddressBook doctorData) throws IOException {
+        saveAddressBook(doctorData, doctorDataStorage.getAddressBookFilePath());
+    }
+
+    @Override
+    public void saveScheduleData(ReadOnlyAddressBook scheduleData) throws IOException {
+        saveAddressBook(scheduleData, scheduleDataStorage.getAddressBookFilePath());
     }
 
 }

@@ -72,9 +72,42 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public Path getPatientsFilePath() {
+        return userPrefs.getPatientsFilePath();
+    }
+
+    @Override
+    public Path getDoctorsFilePath() {
+        return userPrefs.getDoctorsFilePath();
+    }
+
+    @Override
+    public Path getScheduleFilePath() {
+        return userPrefs.getScheduleFilePath();
+    }
+
+    @Override
     public void setAddressBookFilePath(Path addressBookFilePath) {
         requireNonNull(addressBookFilePath);
         userPrefs.setAddressBookFilePath(addressBookFilePath);
+    }
+
+    @Override
+    public void setPatientsFilePath(Path patientsFilePath) {
+        requireNonNull(patientsFilePath);
+        userPrefs.setPatientsFilePath(patientsFilePath);
+    }
+
+    @Override
+    public void setDoctorsFilePath(Path doctorsFilePath) {
+        requireNonNull(doctorsFilePath);
+        userPrefs.setDoctorsFilePath(doctorsFilePath);
+    }
+
+    @Override
+    public void setScheduleFilePath(Path scheduleFilePath) {
+        requireNonNull(scheduleFilePath);
+        userPrefs.setScheduleFilePath(scheduleFilePath);
     }
 
     //=========== AddressBook ================================================================================

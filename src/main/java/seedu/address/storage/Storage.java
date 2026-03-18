@@ -23,10 +23,28 @@ public interface Storage extends AddressBookStorage, UserPrefsStorage {
     @Override
     Path getAddressBookFilePath();
 
+    Path getPatientsFilePath();
+
+    Path getDoctorsFilePath();
+
+    Path getScheduleFilePath();
+
     @Override
     Optional<ReadOnlyAddressBook> readAddressBook() throws DataLoadingException;
 
+    Optional<ReadOnlyAddressBook> readPatientData() throws DataLoadingException;
+
+    Optional<ReadOnlyAddressBook> readDoctorData() throws DataLoadingException;
+
+    Optional<ReadOnlyAddressBook> readScheduleData() throws DataLoadingException;
+
     @Override
     void saveAddressBook(ReadOnlyAddressBook addressBook) throws IOException;
+
+    void savePatientData(ReadOnlyAddressBook patientData) throws IOException;
+
+    void saveDoctorData(ReadOnlyAddressBook doctorData) throws IOException;
+
+    void saveScheduleData(ReadOnlyAddressBook scheduleData) throws IOException;
 
 }
