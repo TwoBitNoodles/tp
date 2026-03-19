@@ -274,13 +274,20 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
-* has a need to manage a significant number of contacts
+* receptionist at a small-scale medical centre with 3-5 practitioners
+* needs to manage a significant number of contacts for patients, doctors, and scheduling appointments
+* frequently multitasks while on calls with doctors and patients booking appointments and needs to be able to switch attention quickly between patients, practitioners and schedules
+* works alone most of the time, occasionally overlapping with another receptionist during peak hours
+* works under time pressure, especially during peak hours
+* uses a shared desktop computer at the front desk
 * prefer desktop apps over other types
 * can type fast
 * prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
 
-**Value proposition**: manage contacts faster than a typical mouse/GUI driven app
+**Value proposition**: quickly access patient contact details, practitioner schedules and scheduled appointments 
+for patients faster than a typical mouse/GUI driven app via high-speed, keyboard-driven workflows, reducing time spent
+searching, scrolling, or clicking during live interactions.
 
 
 ### User stories
@@ -502,11 +509,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Non-Functional Requirements
 
-1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
-
-*{More to be added}*
+1. Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
+2. Should be able to hold up to 1000 patients, doctors and appointments without a noticeable sluggishness in performance for typical usage.
+3. The response to any command should be visible within 5 seconds of entering the command.
+4. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+5. A new user should be able to learn how to use the commands easily.
+6. The user interface and user guide should be intuitive enough for a new user.
 
 ### Glossary
 
