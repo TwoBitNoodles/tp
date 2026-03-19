@@ -114,7 +114,17 @@ public interface Model {
      */
     void addPerson(Person person);
 
+    /**
+     * Adds the given appointment
+     * @param appt
+     */
     void addAppt(Appointment appt);
+
+    /**
+     * deletes the given appointment
+     * @param appt
+     */
+    void delAppt(Appointment appt);
 
     /**
      * Adds the given doctor.

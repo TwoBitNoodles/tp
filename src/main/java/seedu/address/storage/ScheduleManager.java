@@ -126,26 +126,63 @@ public class ScheduleManager {
             Map<String, Object> data = mapper.readValue(file, Map.class);
 
             for (String name : data.keySet()) {
-                System.out.println("Checking: '" + name + "' vs '" + doctorName + "'");
                 if (name.equalsIgnoreCase(doctorName)) {
-                    System.out.println("Doctor found!");
                     Map<String, Object> doctorSchedule =
                             (Map<String, Object>) data.get(name);
-                    System.out.println("Date exists: " + doctorSchedule.containsKey(date));
+
                     if (!doctorSchedule.containsKey(date)) {
                         throw new IOException("Date not found!");
                     }
 
                     Map<String, String> slots =
                             (Map<String, String>) doctorSchedule.get(date);
-                    System.out.println("Slots before: " + slots);
+
 
                     slots.put(time, patName);
-                    System.out.println("Slots after put: " + slots);
-                    System.out.println("Writing to: " + file.getAbsolutePath());
                     mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
-                    System.out.println("Write complete!");
 
+
+                    break;
+                }
+            }
+
+            mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * deletes an appointment according to the time and date from a doctor's schedule
+     * @param appt
+     */
+    public static void delAppt(Appointment appt) {
+        String doctorName = appt.getDocName();
+        String date = appt.getDate();
+        String time = appt.getTime();
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            File file = new File(FILE_PATH);
+            Map<String, Object> data = mapper.readValue(file, Map.class);
+
+            for (String name : data.keySet()) {
+                if (name.equalsIgnoreCase(doctorName)) {
+
+                    Map<String, Object> doctorSchedule =
+                            (Map<String, Object>) data.get(name);
+
+                    if (!doctorSchedule.containsKey(date)) {
+                        throw new IOException("Date not found!");
+                    }
+
+                    Map<String, String> slots =
+                            (Map<String, String>) doctorSchedule.get(date);
+
+                    slots.put(time, null);
+                    mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
                     break;
                 }
             }
