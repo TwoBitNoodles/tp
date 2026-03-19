@@ -6,6 +6,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -55,7 +56,12 @@ public class AddApptCommand extends Command {
                     "Appointment date must be within 7 days from today!");
         }
 
-        model.addAppt(toAdd);
-        return new CommandResult(MESSAGE_SUCCESS);
+        try {
+            model.addAppt(toAdd);
+            return new CommandResult(MESSAGE_SUCCESS);
+        } catch (IOException e) {
+            throw new CommandException(e.getMessage());
+        }
+
     }
 }

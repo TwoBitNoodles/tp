@@ -116,43 +116,37 @@ public class ScheduleManager {
      * books an appointment for the specific doctor
      * @param appt
      */
-    public static void addAppt(Appointment appt) {
+    public static void addAppt(Appointment appt) throws IOException {
         String doctorName = appt.getDocName();
         String patName = appt.getPatName();
         String date = appt.getDate();
         String time = appt.getTime();
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            File file = new File(FILE_PATH);
-            Map<String, Object> data = mapper.readValue(file, Map.class);
 
-            for (String name : data.keySet()) {
-                if (name.equalsIgnoreCase(doctorName)) {
-                    Map<String, Object> doctorSchedule =
-                            (Map<String, Object>) data.get(name);
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(FILE_PATH);
+        Map<String, Object> data = mapper.readValue(file, Map.class);
 
-                    if (!doctorSchedule.containsKey(date)) {
-                        throw new IOException("Date not found!");
-                    }
-
-                    Map<String, Object> slots = (Map<String, Object>) doctorSchedule.get(date);
-
-
-                    slots.put(time, patName);
-                    mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
-
-
-                    break;
+        for (String name : data.keySet()) {
+            if (name.equalsIgnoreCase(doctorName) || name.toLowerCase().contains(doctorName.toLowerCase())) {
+                Map<String, Object> doctorSchedule =
+                        (Map<String, Object>) data.get(name);
+                if (!doctorSchedule.containsKey(date)) {
+                    throw new IOException("Date not found!");
                 }
+
+                Map<String, Object> slots = (Map<String, Object>) doctorSchedule.get(date);
+
+
+                slots.put(time, patName);
+                mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
+
+
+                break;
             }
-
-            mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
-
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
+
+
     }
 
     /**
