@@ -37,9 +37,9 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
 
    * `deldoc 3` : Deletes the 3rd doctor shown in the current list.
 
-   * `clear` : Deletes all contacts.
+    * `clear` : Deletes all contacts.
 
-   * `exit` : Exits the app.
+    * `exit` : Exits the app.
 
 1. Refer to the [Features](#features) below for details of each command.
 
@@ -67,13 +67,13 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
-</box>
+  </box>
 
 ### Viewing help : `help`
 
 Shows a message explaining how to access the help page.
 
-![help message](images/helpMessage.png)
+![help message](images/helpMessageTwo.png)
 
 Format: `help`
 
@@ -87,6 +87,27 @@ Format: `adddoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​`
 Examples:
 * `adddoc n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01`
 * `adddoc n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/1234567`
+*
+### Adding a patient: `addpat`
+
+Adds a patient to the app.
+
+Format: `addpat n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​`
+
+Notes:
+* `NAME` is the name of the patient. It should not be blank. Only alphabets and spaces are allowed.
+* `PHONE_NUMBER` should only contain numbers.
+* `EMAIL` must match standard email format
+
+Examples:
+* `addpat n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01`
+* `addpat n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/1234567`
+
+  Expected output:
+```
+New patient added: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags:
+```
+
 
 ### Listing all persons : `list`
 
@@ -125,11 +146,30 @@ Format: `deldoc INDEX`
 
 Examples:
 - The list may be as follows:
-  1. Patient
-  2. Doctor
-  3. Patient
+    1. Patient
+    2. Doctor
+    3. Patient
 
 To delete the doctor, type `deldoc 2`
+
+### Deleting a patient : `delpat`
+
+Deletes the specified patient from the address book.
+
+Format: `delpat INDEX`
+
+Notes:
+* Deletes the person at the specified `INDEX`.
+* The index refers to the index number shown in the displayed person list.
+* The index **must be a positive integer** 1, 2, 3, …​
+
+Examples:
+* `delpat 2` deletes the 2nd person (if the 2nd person is a patient) in CLInicDesk.
+
+Expected output:
+```
+Deleted Patient: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags: 
+```
 
 ### Viewing a doctor's schedule : `viewsched`
 
@@ -165,7 +205,7 @@ Schedule for John Tan on 2026-02-22
 09:30 – Booked
 10:00 – Available
 10:30 – Available
-11:00 – Booked
+11:00 – Available
 11:30 – Available
 12:00 – Available
 12:30 – Available
