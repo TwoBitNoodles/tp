@@ -88,15 +88,26 @@ Examples:
 * `adddoc n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01`
 * `adddoc n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/1234567`
 * 
-### Adding a doctor: `addpat`
+### Adding a patient: `addpat`
 
 Adds a patient to the app.
 
 Format: `addpat n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​`
 
+Notes:
+* `NAME` is the name of the patient. It should not be blank. Only alphabets and spaces are allowed.
+* `PHONE_NUMBER` should only contain numbers.
+* `EMAIL` must match standard email format
+
 Examples:
 * `addpat n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01`
 * `addpat n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/1234567`
+
+  Expected output:
+```
+New patient added: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags:
+```
+
 
 ### Listing all persons : `list`
 
@@ -140,6 +151,25 @@ Examples:
   3. Patient
 
 To delete the doctor, type `deldoc 2`
+
+### Deleting a patient : `delpat`
+
+Deletes the specified patient from the address book.
+
+Format: `delpat INDEX`
+
+Notes:
+* Deletes the person at the specified `INDEX`.
+* The index refers to the index number shown in the displayed person list.
+* The index **must be a positive integer** 1, 2, 3, …​
+
+Examples:
+* `delpat 2` deletes the 2nd person (if the 2nd person is a patient) in CLInicDesk.
+
+Expected output:
+```
+Deleted Patient: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags: 
+```
 
 ### Viewing a doctor's schedule : `viewsched`
 
