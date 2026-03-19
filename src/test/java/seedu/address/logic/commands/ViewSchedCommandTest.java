@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.time.LocalDate;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.Test;
  */
 public class ViewSchedCommandTest {
 
-    private static final String FILE_PATH = "data/schedule.json";
+    private static final String FILE_PATH = "data/Schedule.json";
 
     @BeforeEach
     public void setup() throws Exception {
@@ -34,6 +35,11 @@ public class ViewSchedCommandTest {
                 + "}");
 
         writer.close();
+    }
+
+    @AfterEach
+    public void teardown() {
+        new File(FILE_PATH).delete();
     }
 
     @Test

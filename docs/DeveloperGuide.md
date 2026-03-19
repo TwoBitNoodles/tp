@@ -12,8 +12,7 @@
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Acknowledgements**
-
-_{ list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well }_
+* GitHub Copilot has been used to assist code writing, particularly in helping get unstuck
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -274,66 +273,247 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
-* has a need to manage a significant number of contacts
+* receptionist at a small-scale medical centre with 3-5 practitioners
+* needs to manage a significant number of contacts for patients, doctors, and scheduling appointments
+* frequently multitasks while on calls with doctors and patients booking appointments and needs to be able to switch attention quickly between patients, practitioners and schedules
+* works alone most of the time, occasionally overlapping with another receptionist during peak hours
+* works under time pressure, especially during peak hours
+* uses a shared desktop computer at the front desk
 * prefer desktop apps over other types
 * can type fast
 * prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
 
-**Value proposition**: manage contacts faster than a typical mouse/GUI driven app
+**Value proposition**: quickly access patient contact details, practitioner schedules and scheduled appointments 
+for patients faster than a typical mouse/GUI driven app via high-speed, keyboard-driven workflows, reducing time spent
+searching, scrolling, or clicking during live interactions.
 
 
 ### User stories
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                 | So that I can…​                                                        |
-|----------|--------------------------------------------|------------------------------|------------------------------------------------------------------------|
-| `* * *`  | new user                                   | see usage instructions       | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person             |                                                                        |
-| `* * *`  | user                                       | delete a person              | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name        | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name         | locate a person easily                                                 |
+| Priority | As a …​ | I want to …​ | So that I can…​ |
+|----------|----------|--------------|-----------------|
+| `* * *`  | new receptionist | see sample patient and practitioner data | understand what kind of information the system holds |
+| `* * *`  | receptionist starting real usage | remove any existing data | begin with a clean and accurate dataset |
+| `* * *`  | first-time user | understand what each field represents | avoid misusing or misunderstanding stored information |
+| `* * *`  | receptionist | add a new patient's contact details | quickly reference them in future interactions |
+| `* * *`  | receptionist | add a new doctor's contact details | track which doctors are available for appointments |
+| `* * *`  | receptionist | delete a patient who no longer visits the clinic | keep search results uncluttered |
+| `* * *`  | receptionist | delete a doctor from the system | remove practitioners who are no longer with the clinic |
+| `* * *`  | receptionist | view a practitioner's schedule for a specific day | answer availability questions quickly |
+| `* * *`  | receptionist | book an appointment slot for a patient with a doctor | confirm appointments during calls |
+| `* * *`  | receptionist | cancel an existing appointment | free up slots when patients reschedule or cancel |
+| `* *`    | receptionist | search for a patient using partial names | find them even if I don't remember exact details |
+| `* *`    | receptionist | search for a patient using a phone number | identify callers immediately |
+| `* *`    | receptionist | view a patient's contact details in one place | avoid asking the patient for information repeatedly |
+| `* *`    | receptionist | update a patient's contact information | keep records accurate |
+| `* *`    | receptionist | see which practitioners are currently on duty | avoid giving incorrect availability information to patients |
+| `* *`    | receptionist | quickly switch between different practitioners' schedules | compare availability during a call |
+| `* *`    | receptionist who types fast | perform common actions using the keyboard | avoid slowing down to use the mouse |
+| `* *`    | receptionist | correct mistakes quickly | ensure small typing errors don't disrupt my workflow |
+| `* *`    | long-time receptionist | clean up outdated entries | keep the system efficient over time |
+| `*`      | receptionist | check upcoming availability without leaving my current task | stay focused during calls |
+| `*`      | receptionist | return to my previous view quickly | avoid losing context during busy periods |
+| `*`      | receptionist returning after a break | quickly regain an overview of practitioners and patients | resume work smoothly |
+| `*`      | receptionist | rely on consistent data organisation | avoid relearning the system after time away |
 
-*{More to be added}*
+---
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is the `ClinicBook` and the **Actor** is the `receptionist`, unless specified otherwise)
 
-**Use case: Delete a person**
+---
+
+**Use case: Add a doctor**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
+1. Receptionist enters the add doctor command with name, phone, and email.
+2. System validates all fields.
+3. System adds the doctor and confirms with doctor details.
 
+   Use case ends.
+
+**Extensions**
+
+* 2a. The name contains invalid characters or is out of the allowed length range.
+  * 2a1. System shows: `Invalid doctor name. Must contain only alphabets and spaces.`
+  
+    Use case resumes at step 1.
+
+* 2b. The phone number is not exactly 8 digits.
+  * 2b1. System shows: `Invalid phone number. Must be exactly 8 digits.`
+  
+    Use case resumes at step 1.
+
+* 2c. The email is not in a valid format.
+  * 2c1. System shows: `Invalid email format.`
+  
+    Use case resumes at step 1.
+
+* 2d. A doctor with the same name (case-insensitive) already exists.
+  * 2d1. System shows: `This doctor already exists.`
+  
     Use case ends.
+
+---
+
+**Use case: Add a patient**
+
+**MSS**
+
+1. Receptionist enters the add patient command with name, phone, and email.
+2. System validates all fields.
+3. System adds the patient and confirms with patient details.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. The name contains invalid characters or is out of the allowed length range.
+  * 2a1. System shows: `Invalid patient name. Must contain only alphabets and spaces.`
+  
+    Use case resumes at step 1.
+
+* 2b. The phone number is not exactly 8 digits.
+  * 2b1. System shows: `Invalid phone number. Must be exactly 8 digits.`
+  
+    Use case resumes at step 1.
+
+* 2c. The email is not in a valid format.
+  * 2c1. System shows: `Invalid email format.`
+  
+    Use case resumes at step 1.
+
+* 2d. A patient with the same name (case-insensitive) and same phone number already exists.
+  * 2d1. System shows: `This patient already exists.`
+  
+    Use case ends.
+
+---
+
+**Use case: View a doctor's schedule**
+
+**MSS**
+
+1. Receptionist enters the view schedule command with a doctor name and date.
+2. System validates the doctor name and date.
+3. System displays all half-hourly slots for that doctor on that date, each marked as Available or Booked.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. The doctor name does not match any existing doctor.
+  * 2a1. System shows: `Doctor not found.`
+  
+    Use case ends.
+
+* 2b. The date is in an invalid format.
+  * 2b1. System shows: `Invalid date format. Use YYYY-MM-DD.`
+  
+    Use case resumes at step 1.
+
+* 2c. The date is in the past.
+  * 2c1. System shows: `Cannot view schedule for past dates.`
+  
+    Use case resumes at step 1.
+
+---
+
+**Use case: Add an appointment**
+
+**MSS**
+
+1. Receptionist views the doctor's schedule (see Use case: View a doctor's schedule).
+2. Receptionist enters the add appointment command with patient name, doctor name, date, and time.
+3. System validates all fields and checks slot availability.
+4. System books the appointment and confirms with appointment details.
+
+   Use case ends.
+
+**Extensions**
+
+* 3a. The patient name does not match any existing patient.
+  * 3a1. System shows: `Patient not found. Please add the patient first.`
+  
+    Use case ends.
+
+* 3b. The doctor name does not match any existing doctor.
+  * 3b1. System shows: `Doctor not found. Please check again.`
+  
+    Use case ends.
+
+* 3c. The date is invalid or in the past.
+  * 3c1. System shows: `Invalid date format. Use YYYY-MM-DD.` or `Cannot book appointments for past dates.`
+  
+    Use case resumes at step 2.
+
+* 3d. The time is not one of the valid hourly slots (09:00–16:00).
+  * 3d1. System shows: `Invalid time. Must be one of the clinic's available hourly slots (09:00–16:00).`
+  
+    Use case resumes at step 2.
+
+* 3e. The selected slot is already booked with that doctor.
+  * 3e1. System shows that the slot is unavailable.
+  
+    Use case resumes at step 1.
+
+* 3f. The patient already has an appointment at the same date and time.
+  * 3f1. System shows that the patient has a conflicting appointment.
+  
+    Use case resumes at step 2.
+
+---
+
+**Use case: Delete a doctor, patient, or appointment**
+
+**MSS**
+
+1. Receptionist views the relevant list (doctors, patients, or appointments).
+2. System displays the list with indices.
+3. Receptionist enters the delete command with the target index.
+4. System deletes the entry and confirms with the deleted record's details.
+
+   Use case ends.
 
 **Extensions**
 
 * 2a. The list is empty.
-
+  
   Use case ends.
 
-* 3a. The given index is invalid.
+* 3a. A name is entered instead of an index.
+  * 3a1. System shows: `Invalid index. Please enter a valid index number.`
+  
+    Use case resumes at step 2.
 
-    * 3a1. AddressBook shows an error message.
+* 3b. The index does not refer to any entry in the currently displayed list.
+  * 3b1. System shows: `Invalid index. Please enter a valid index number.`
+  
+    Use case resumes at step 2.
 
-      Use case resumes at step 2.
+* 4a. The deleted entry is a doctor.
+  * 4a1. System also deletes all appointments associated with that doctor.
+  
+    Use case ends.
 
-*{More to be added}*
+* 4b. The deleted entry is a patient.
+  * 4b1. System also deletes all appointments associated with that patient.
+  
+    Use case ends.
 
 ### Non-Functional Requirements
 
-1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
-
-*{More to be added}*
+1. Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
+2. Should be able to hold up to 1000 patients, doctors and appointments without a noticeable sluggishness in performance for typical usage.
+3. The response to any command should be visible within 5 seconds of entering the command.
+4. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+5. A new user should be able to learn how to use the commands easily.
+6. The user interface and user guide should be intuitive enough for a new user.
 
 ### Glossary
 

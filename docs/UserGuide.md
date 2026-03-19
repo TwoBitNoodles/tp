@@ -20,22 +20,22 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
 1. Ensure you have Java `17` or above installed in your Computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the latest `.jar` file from [here](https://github.com/se-edu/addressbook-level3/releases).
+1. Download the latest `.jar` file from [here](https://github.com/AY2526S2-CS2103T-W12-1/tp/releases).
 
-1. Copy the file to the folder you want to use as the _home folder_ for your AddressBook.
+1. Copy the file to the folder you want to use as the _home folder_ for your CLInicDesk.
 
-1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar addressbook.jar` command to run the application.<br>
+1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar clinicdesk.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
    ![Ui](images/Ui.png)
 
 1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
 
-   * `list` : Lists all contacts.
+   * `list` : Lists all patients and doctors.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
+   * `adddoc n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01` : Adds a doctor named `John Doe` to the application.
 
-   * `delete 3` : Deletes the 3rd contact shown in the current list.
+   * `deldoc 3` : Deletes the 3rd doctor shown in the current list.
 
    * `clear` : Deletes all contacts.
 
@@ -52,7 +52,7 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
 **Notes about the command format:**<br>
 
 * Words in `UPPER_CASE` are the parameters to be supplied by the user.<br>
-  e.g. in `add n/NAME`, `NAME` is a parameter which can be used as `add n/John Doe`.
+  e.g. in `adddoc n/NAME`, `NAME` is a parameter which can be used as `adddoc n/John Doe`.
 
 * Items in square brackets are optional.<br>
   e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
@@ -78,43 +78,21 @@ Shows a message explaining how to access the help page.
 Format: `help`
 
 
-### Adding a person: `add`
+### Adding a doctor: `adddoc`
 
-Adds a person to the address book.
+Adds a doctor to the app.
 
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
-
-<box type="tip" seamless>
-
-**Tip:** A person can have any number of tags (including 0)
-</box>
+Format: `adddoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​`
 
 Examples:
-* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+* `adddoc n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01`
+* `adddoc n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/1234567`
 
 ### Listing all persons : `list`
 
-Shows a list of all persons in the address book.
+Shows a list of all persons (doctors and patients) in the app.
 
 Format: `list`
-
-### Editing a person : `edit`
-
-Edits an existing person in the address book.
-
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
-
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
-* At least one of the optional fields must be provided.
-* Existing values will be updated to the input values.
-* When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.
-* You can remove all the person’s tags by typing `t/` without
-    specifying any tags after it.
-
-Examples:
-*  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
-*  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
 
 ### Locating persons by name: `find`
 
@@ -134,23 +112,77 @@ Examples:
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
-### Deleting a person : `delete`
+### Deleting a doctor : `deldoc`
 
-Deletes the specified person from the address book.
+Deletes the specified doctor from the app.
 
-Format: `delete INDEX`
+Format: `deldoc INDEX`
 
-* Deletes the person at the specified `INDEX`.
-* The index refers to the index number shown in the displayed person list.
+* Deletes the doctor at the specified `INDEX`.
+* The index refers to the index number shown in the displayed do list.
 * The index **must be a positive integer** 1, 2, 3, …​
 
+
 Examples:
-* `list` followed by `delete 2` deletes the 2nd person in the address book.
-* `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
+- The list may be as follows:
+  1. Patient
+  2. Doctor
+  3. Patient
+
+To delete the doctor, type `deldoc 2`
+
+### Viewing a doctor's schedule : `viewsched`
+
+Displays all appointment slots for a specific doctor on a given date, showing whether each slot is available or booked.
+
+Format: `viewsched d/DOCTOR_NAME date/DATE`
+
+<box type="info" seamless>
+
+**Notes:**
+* `DOCTOR_NAME` must match an existing doctor's name. The match is case-insensitive. e.g. `john tan` will match `John Tan`.
+* `DATE` must be in the strict `YYYY-MM-DD` format. Other formats such as `22-02-2026` or `Feb 22 2026` are not accepted.
+* The date cannot be in the past.
+* Appointment slots are displayed in half-hourly intervals from 09:00 to 17:00.
+
+</box>
+
+<box type="tip" seamless>
+
+**Tip:** Use `viewsched` before booking an appointment with `addappt` to confirm which slots are free, so you can advise the patient on available timings.
+
+</box>
+
+Examples:
+* `viewsched d/John Tan date/2026-02-22` displays John Tan's schedule on 22 Feb 2026.
+* `viewsched d/Alice Lim date/2026-03-01` displays Alice Lim's schedule on 1 Mar 2026.
+
+Expected output:
+```
+Schedule for John Tan on 2026-02-22
+
+09:00 – Available
+09:30 – Booked
+10:00 – Available
+10:30 – Available
+11:00 – Booked
+11:30 – Available
+12:00 – Available
+12:30 – Available
+13:00 – Booked
+13:30 – Available
+14:00 – Available
+14:30 – Available
+15:00 – Available
+15:30 – Booked
+16:00 – Available
+16:30 – Available
+17:00 – Available
+```
 
 ### Clearing all entries : `clear`
 
-Clears all entries from the address book.
+Clears all entries from the app UI temporarily. This does not delete data.
 
 Format: `clear`
 
@@ -160,31 +192,39 @@ Exits the program.
 
 Format: `exit`
 
-### Saving the data
+--------------------------------------------------------------------------------------------------------------------
 
-AddressBook data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
+## Saving the data
 
-### Editing the data file
+CLInicDesk data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
 
-AddressBook data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
+--------------------------------------------------------------------------------------------------------------------
+
+## Editing the data files
+
+* The doctors' data is saved automatically to the JSON file `[JAR file location]/data/doctors.json`. Advanced users are welcome to update data directly by editing that data file.
+
+* The patients' data is saved automatically to the JSON file `[JAR file location]/data/patients.json`. Advanced users are welcome to update data directly by editing that data file.
+
+* Appointment data is saved automatically to the JSON file `[JAR file location]/data/schedule.json`. Advanced users are welcome to update data directly by editing that data file.
 
 <box type="warning" seamless>
 
 **Caution:**
-If your changes to the data file makes its format invalid, AddressBook will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
-Furthermore, certain edits can cause the AddressBook to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
+If your changes to the data file makes its format invalid, CLInicDesk will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
+Furthermore, certain edits can cause the CLInicDesk to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </box>
 
 ### Archiving data files `[coming in v2.0]`
 
-_Details coming soon ...._
+_Details coming soon ..._
 
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
 
 **Q**: How do I transfer my data to another Computer?<br>
-**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous AddressBook home folder.
+**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous CLInicDesk home folder.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -199,10 +239,10 @@ _Details coming soon ...._
 
 Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add**    | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
+**Add Doctor**    | `addoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​` <br> e.g., `adddoc n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665`
 **Clear**  | `clear`
-**Delete** | `delete INDEX`<br> e.g., `delete 3`
-**Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
+**Delete Doctor** | `deldoc INDEX`<br> e.g., `deldoc 3`
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list`
+**View Schedule** | `viewsched d/DOCTOR_NAME date/YYYY-MM-DD`<br> e.g., `viewsched d/John Tan date/2026-03-20`
 **Help**   | `help`
