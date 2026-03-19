@@ -131,6 +131,55 @@ Examples:
 
 To delete the doctor, type `deldoc 2`
 
+### Viewing a doctor's schedule : `viewsched`
+
+Displays all appointment slots for a specific doctor on a given date, showing whether each slot is available or booked.
+
+Format: `viewsched d/DOCTOR_NAME date/DATE`
+
+<box type="info" seamless>
+
+**Notes:**
+* `DOCTOR_NAME` must match an existing doctor's name. The match is case-insensitive. e.g. `john tan` will match `John Tan`.
+* `DATE` must be in the strict `YYYY-MM-DD` format. Other formats such as `22-02-2026` or `Feb 22 2026` are not accepted.
+* The date cannot be in the past.
+* Appointment slots are displayed in half-hourly intervals from 09:00 to 17:00.
+
+</box>
+
+<box type="tip" seamless>
+
+**Tip:** Use `viewsched` before booking an appointment with `addappt` to confirm which slots are free, so you can advise the patient on available timings.
+
+</box>
+
+Examples:
+* `viewsched d/John Tan date/2026-02-22` displays John Tan's schedule on 22 Feb 2026.
+* `viewsched d/Alice Lim date/2026-03-01` displays Alice Lim's schedule on 1 Mar 2026.
+
+Expected output:
+```
+Schedule for John Tan on 2026-02-22
+
+09:00 – Available
+09:30 – Booked
+10:00 – Available
+10:30 – Available
+11:00 – Booked
+11:30 – Available
+12:00 – Available
+12:30 – Available
+13:00 – Booked
+13:30 – Available
+14:00 – Available
+14:30 – Available
+15:00 – Available
+15:30 – Booked
+16:00 – Available
+16:30 – Available
+17:00 – Available
+```
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the app UI temporarily. This does not delete data.
