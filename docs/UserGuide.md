@@ -20,18 +20,18 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
 1. Ensure you have Java `17` or above installed in your Computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the latest `.jar` file from [here](https://github.com/se-edu/addressbook-level3/releases).
+1. Download the latest `.jar` file from [here](https://github.com/AY2526S2-CS2103T-W12-1/tp/releases).
 
 1. Copy the file to the folder you want to use as the _home folder_ for your CLInicDesk.
 
-1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar addressbook.jar` command to run the application.<br>
+1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar clinicdesk.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
    ![Ui](images/Ui.png)
 
 1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
 
-   * `list` : Lists all contacts.
+   * `list` : Lists all patients and doctors.
 
    * `adddoc n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01` : Adds a doctor named `John Doe` to the application.
 
@@ -90,7 +90,7 @@ Examples:
 
 ### Listing all persons : `list`
 
-Shows a list of all persons in the app.
+Shows a list of all persons (doctors and patients) in the app.
 
 Format: `list`
 
@@ -124,16 +124,16 @@ Format: `deldoc INDEX`
 
 
 Examples:
-* The list may be as follows:
-1. Patient
-2. Doctor
-3. Patient
+- The list may be as follows:
+  1. Patient
+  2. Doctor
+  3. Patient
 
-  To delete the doctor, type `deldoc 2`
+To delete the doctor, type `deldoc 2`
 
 ### Clearing all entries : `clear`
 
-Clears all entries from the address book.
+Clears all entries from the app UI temporarily. This does not delete data.
 
 Format: `clear`
 
@@ -143,11 +143,15 @@ Exits the program.
 
 Format: `exit`
 
-### Saving the data
+--------------------------------------------------------------------------------------------------------------------
+
+## Saving the data
 
 CLInicDesk data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
 
-### Editing the data files
+--------------------------------------------------------------------------------------------------------------------
+
+## Editing the data files
 
 * The doctors' data is saved automatically to the JSON file `[JAR file location]/data/doctors.json`. Advanced users are welcome to update data directly by editing that data file.
 
@@ -182,10 +186,9 @@ Furthermore, certain edits can cause the CLInicDesk to behave in unexpected ways
 
 Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add**    | `addoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​` <br> e.g., `adddoc n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665`
+**Add Doctor**    | `addoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​` <br> e.g., `adddoc n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665`
 **Clear**  | `clear`
-**Delete** | `deldoc INDEX`<br> e.g., `deldoc 3`
-**Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
+**Delete Doctor** | `deldoc INDEX`<br> e.g., `deldoc 3`
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list`
 **Help**   | `help`
