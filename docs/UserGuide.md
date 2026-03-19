@@ -177,7 +177,7 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 
 ### Archiving data files `[coming in v2.0]`
 
-_Details coming soon ..._
+_Details coming soon ...._
 
 --------------------------------------------------------------------------------------------------------------------
 
