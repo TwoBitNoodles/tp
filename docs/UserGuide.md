@@ -73,25 +73,30 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
 
 Shows a message explaining how to access the help page.
 
-![help message](images/helpMessage.png)
+![help message](images/helpMessageTwo.png)
 
 Format: `help`
 
 
-### Adding a person: `add`
+### Adding a patient: `addpat`
 
-Adds a person to the address book.
+Adds a patient to CLInicDesk.
 
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
+Format: `addpat n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
 
-<box type="tip" seamless>
-
-**Tip:** A person can have any number of tags (including 0)
-</box>
+Notes:
+* `NAME` is the name of the patient. It should not be blank. Only alphabets and spaces are allowed.
+* `PHONE_NUMBER` should only contain numbers.
+* `EMAIL` must match standard email format
 
 Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+* `add n/Alice Crowe e/betsycrowe@example.com a/Newgate Prison p/12345678`
+
+Expected output:
+```
+New patient added: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags:
+```
 
 ### Listing all persons : `list`
 
@@ -116,6 +121,8 @@ Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
 
+
+``
 ### Locating persons by name: `find`
 
 Finds persons whose names contain any of the given keywords.
@@ -134,19 +141,24 @@ Examples:
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
-### Deleting a person : `delete`
+### Deleting a patient : `delpat`
 
-Deletes the specified person from the address book.
+Deletes the specified patient from the address book.
 
-Format: `delete INDEX`
+Format: `delpat INDEX`
 
+Notes:
 * Deletes the person at the specified `INDEX`.
 * The index refers to the index number shown in the displayed person list.
 * The index **must be a positive integer** 1, 2, 3, …​
 
 Examples:
-* `list` followed by `delete 2` deletes the 2nd person in the address book.
-* `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
+* `delpat 2` deletes the 2nd person (if the 2nd person is a patient) in CLInicDesk.
+
+Expected output:
+```
+Deleted Patient: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags: 
+```
 
 ### Clearing all entries : `clear`
 
