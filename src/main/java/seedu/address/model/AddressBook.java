@@ -97,6 +97,16 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Replaces the given doctor {@code target} in the list with {@code editedDoctor}.
+     * {@code target} must exist in the address book.
+     */
+    public void setDoctor(Doctor target, Doctor editedDoctor) {
+        requireNonNull(editedDoctor);
+
+        persons.setPerson(target, editedDoctor);
+    }
+
+    /**
      * Removes {@code doc} from this {@code AddressBook}.
      * {@code key} must exist in the address book.
      */

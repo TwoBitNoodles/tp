@@ -129,13 +129,13 @@ public interface Model {
 
     /**
      * Adds the given doctor.
-     * {@code doctor} must not already exist in the address book.
+     * {@code doctor} must not already exist in the app.
      */
     void addDoctor(Doctor doctor);
 
     /**
      * Adds the given patient.
-     * {@code patient} must not already exist in the address book.
+     * {@code patient} must not already exist in the app.
      */
     void addPatient(Patient patient);
 
@@ -145,6 +145,13 @@ public interface Model {
      * The person identity of {@code editedPerson} must not be the same as another existing person in the address book.
      */
     void setPerson(Person target, Person editedPerson);
+
+    /**
+     * Replaces the given doctor {@code target} with {@code editedDoctor}.
+     * {@code target} must exist in the app.
+     * The person identity of {@code editedDoctor} must not be the same as another existing doctor in the app.
+     */
+    void setDoctor(Doctor target, Doctor editedDoctor);
 
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();
