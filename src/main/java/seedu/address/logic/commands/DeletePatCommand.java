@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
@@ -11,6 +12,7 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Patient;
 import seedu.address.model.person.Person;
+
 
 /**
  * Deletes a patient identified using it's displayed index from the address book.
@@ -24,6 +26,7 @@ public class DeletePatCommand extends Command {
             + "Example: " + COMMAND_WORD + " 1";
 
     public static final String MESSAGE_DELETE_PATIENT_SUCCESS = "Deleted Patient: %1$s";
+    private static final Logger logger = Logger.getLogger(DeletePatCommand.class.getName());
 
     private final Index targetIndex;
 
@@ -45,6 +48,7 @@ public class DeletePatCommand extends Command {
             throw new CommandException("The person at the specified index is not a patient.");
         }
         model.deletePatient((Patient) personToDelete);
+        logger.info("Deleted patient: " + Messages.format(personToDelete));
         return new CommandResult(String.format(MESSAGE_DELETE_PATIENT_SUCCESS, Messages.format(personToDelete)));
     }
 
