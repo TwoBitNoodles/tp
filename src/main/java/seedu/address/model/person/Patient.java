@@ -38,18 +38,6 @@ public class Patient extends Person {
         this.apptList.remove(appt);
     }
 
-    public ArrayList<Appointment> getApptList() {
-        return this.apptList;
-    }
-
-    public void addAppt(Appointment appt) {
-        this.apptList.add(appt);
-    }
-
-    public void delAppt(Appointment appt) {
-        this.apptList.remove(appt);
-    }
-
     /*@Override
     public String toString() {
       return "Patient: " + super.toString();
