@@ -267,6 +267,19 @@ Expected output:
 ```
 Edited Patient: John Doe; Phone: 91234567; Email: johndoe@example.com; Address: 123456; Tags: 
 ```
+## Editing an appointment : `editappt` 
+Edits the details of an existing appointment 
+Format : `editappt d/OLD_DOCTOR date/OLD_DATE time/OLD_TIME (n/NEW_NAME) (d/NEW_DOC) (date/NEW_DATE) (time/NEW_TIME)`
+
+**Notes**
+* Edits the appointment at the old date and time for the old doctor
+* The new fields in brackets are optional, but there must be at least one new field to edit. 
+e.g. `editappt d/Louis date/2026-03-28 time/09:00 time/10:00` is acceptable and will rebook the slot to 10am 
+for the same patient,but `editappt d/Louis date/2026-03-28 time/09:00` is invalid on its own.
+
+Examples:
+* `editappt d/Louis date/2026-03-28 time/09:00 d/Harvey time/10:00` edits the appointment to be with Dr Harvey instead of Dr Louis at 10am on the same date
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the app UI temporarily. This does not delete data.
