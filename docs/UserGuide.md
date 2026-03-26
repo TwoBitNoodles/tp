@@ -101,6 +101,11 @@ Adds a doctor to the app.
 
 Format: `adddoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​`
 
+Notes:
+* `NAME` is the name of the patient. It should not be blank. Only alphabets and spaces are allowed.
+* `PHONE_NUMBER` should only contain numbers.
+* `EMAIL` must match standard email format
+
 Examples:
 * `adddoc n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01`
 * `adddoc n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/1234567`
@@ -136,9 +141,11 @@ Edits an existing doctor in the app.
 
 Format: `editdoc INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS]`
 
-Edits the doctor at the specified INDEX. The index refers to the index number shown in the displayed list of doctor's and/or patients. The index must be a positive integer 1, 2, 3, …​
-At least one of the following fields must be provided: name, phone, email, or address.
-Existing values will be updated to the input values.
+Notes:
+* Edits the doctor at the specified INDEX.
+* The index refers to the index number shown in the displayed list of doctor's and/or patients. The index must be a positive integer 1, 2, 3, …​
+* At least one of the following fields must be provided: name, phone, email, or address.
+* Existing values will be updated to the input values.
 
 Examples:
 * `editdoc 1 p/91234567 e/johnd@doctor.com`
@@ -197,6 +204,7 @@ Deletes the specified doctor from the app.
 
 Format: `deldoc INDEX`
 
+Notes:
 * Deletes the doctor at the specified `INDEX`.
 * The index refers to the index number shown in the displayed doctor list.
 * The index **must be a positive integer** 1, 2, 3, …​
