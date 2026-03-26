@@ -19,6 +19,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.testutil.EditPatientDescriptorBuilder;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 
 /**
@@ -28,12 +29,20 @@ public class CommandTestUtil {
 
     public static final String VALID_NAME_AMY = "Amy Bee";
     public static final String VALID_NAME_BOB = "Bob Choo";
+    public static final String VALID_NAME_JOHN = "John Tee";
+    public static final String VALID_NAME_SAM = "Sam Cho";
     public static final String VALID_PHONE_AMY = "11111111";
     public static final String VALID_PHONE_BOB = "22222222";
+    public static final String VALID_PHONE_JOHN = "33333333";
+    public static final String VALID_PHONE_SAM = "44444444";
     public static final String VALID_EMAIL_AMY = "amy@example.com";
     public static final String VALID_EMAIL_BOB = "bob@example.com";
+    public static final String VALID_EMAIL_JOHN = "john@example.com";
+    public static final String VALID_EMAIL_SAM = "sam@example.com";
     public static final String VALID_ADDRESS_AMY = "Block 312, Amy Street 1";
     public static final String VALID_ADDRESS_BOB = "Block 123, Bobby Street 3";
+    public static final String VALID_ADDRESS_JOHN = "Block 456, Jo Street 1";
+    public static final String VALID_ADDRESS_SAM = "Block 546, Sammy Street 3";
     public static final String VALID_TAG_HUSBAND = "husband";
     public static final String VALID_TAG_FRIEND = "friend";
 
@@ -60,6 +69,9 @@ public class CommandTestUtil {
     public static final EditCommand.EditPersonDescriptor DESC_AMY;
     public static final EditCommand.EditPersonDescriptor DESC_BOB;
 
+    public static final EditPatCommand.EditPatDescriptor DESC_JOHN;
+    public static final EditPatCommand.EditPatDescriptor DESC_SAM;
+
     static {
         DESC_AMY = new EditPersonDescriptorBuilder().withName(VALID_NAME_AMY)
                 .withPhone(VALID_PHONE_AMY).withEmail(VALID_EMAIL_AMY).withAddress(VALID_ADDRESS_AMY)
@@ -68,6 +80,17 @@ public class CommandTestUtil {
                 .withPhone(VALID_PHONE_BOB).withEmail(VALID_EMAIL_BOB).withAddress(VALID_ADDRESS_BOB)
                 .withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND).build();
     }
+
+    static {
+        DESC_JOHN = new EditPatientDescriptorBuilder().withName(VALID_NAME_JOHN)
+            .withPhone(VALID_PHONE_JOHN).withEmail(VALID_EMAIL_JOHN).withAddress(VALID_ADDRESS_JOHN)
+            .build();
+        DESC_SAM = new EditPatientDescriptorBuilder().withName(VALID_NAME_SAM)
+            .withPhone(VALID_PHONE_SAM).withEmail(VALID_EMAIL_SAM).withAddress(VALID_ADDRESS_SAM)
+            .build();
+    }
+
+
 
     /**
      * Executes the given {@code command}, confirms that <br>

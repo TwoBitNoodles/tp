@@ -21,7 +21,7 @@ import seedu.address.model.tag.Tag;
 /**
  * Parses input arguments and creates a new EditPatCommand object
  */
-public class EditPatCommandParser {
+public class EditPatCommandParser implements Parser<EditPatCommand> {
     /**
      * Parses the given {@code String} of arguments in the context of the EditDocCommand
      * and returns an EditDocCommand object for execution.

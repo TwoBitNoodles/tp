@@ -14,9 +14,9 @@ public class Patient extends Person {
         super(name, phone, email, address, tags);
     }
 
-    @Override
-    public String toString() {
-        return "Patient: " + super.toString();
-    }
+//    @Override
+//    public String toString() {
+//        return "Patient: " + super.toString();
+//    }
 
 }

@@ -55,8 +55,8 @@ public class EditPatCommand extends Command {
     private final EditPatCommand.EditPatDescriptor editPatDescriptor;
 
     /**
-     * @param index of the doctor in the filtered doctor list to edit
-     * @param editPatDescriptor details to edit the doctor with
+     * @param index of the patient in the filtered patient list to edit
+     * @param editPatDescriptor details to edit the patient with
      */
     public EditPatCommand(Index index, EditPatCommand.EditPatDescriptor editPatDescriptor) {
         requireNonNull(index);
@@ -94,12 +94,12 @@ public class EditPatCommand extends Command {
     }
 
     /**
-     * Creates and returns a {@code Doctor} with the details of {@code doctorToEdit}
-     * edited with {@code editDoctorDescriptor}.
+     * Creates and returns a {@code Patient} with the details of {@code patientToEdit}
+     * edited with {@code editPatientDescriptor}.
      */
     private static Patient createEditedPatient(Patient patientToEdit,
                                                EditPatCommand.EditPatDescriptor editPatDescriptor) {
-        requireNonNull(patientToEdit);
+        assert patientToEdit != null;
 
         Name updatedName = editPatDescriptor.getName().orElse(patientToEdit.getName());
         Phone updatedPhone = editPatDescriptor.getPhone().orElse(patientToEdit.getPhone());
@@ -134,8 +134,8 @@ public class EditPatCommand extends Command {
     }
 
     /**
-     * Stores the details to edit the doctor with. Each non-empty field value will replace the
-     * corresponding field value of the doctor.
+     * Stores the details to edit the patient with. Each non-empty field value will replace the
+     * corresponding field value of the patient.
      */
     public static class EditPatDescriptor {
         private Name name;
