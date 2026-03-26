@@ -145,7 +145,7 @@ public class ScheduleManager {
             }
         }
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
-
+        System.out.println("sched added appt");
 
     }
 
@@ -188,5 +188,31 @@ public class ScheduleManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Reads the schedule.json file to find the patient currently booked at a specific slot.
+     */
+    public static String getPatientAtSlot(String doctorName, String date, String time) throws IOException {
+        File file = new File(FILE_PATH);
+        if (!file.exists() || file.length() == 0) {
+            return null;
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Map<String, Map<String, String>>> data =
+                mapper.readValue(file, Map.class);
+
+        String matchedDoctor = data.keySet().stream()
+                .filter(name -> name.equalsIgnoreCase(doctorName))
+                .findFirst()
+                .orElse(null);
+
+        if (matchedDoctor == null) return null;
+
+        Map<String, Map<String, String>> doctorSchedule = data.get(matchedDoctor);
+        if (!doctorSchedule.containsKey(date)) return null;
+
+        return doctorSchedule.get(date).get(time);
+
     }
 }

@@ -125,7 +125,20 @@ public interface Model {
      * deletes the given appointment
      * @param appt
      */
-    void delAppt(Appointment appt);
+    void delAppt(Appointment appt) throws IOException;
+
+    /**
+     * edits the given appointment to alter the info
+     * @param oldDoc
+     * @param oldDate
+     * @param oldTime
+     * @param newPat
+     * @param newDoc
+     * @param newDate
+     * @param newTime
+     */
+    void editAppt(String oldDoc, String oldDate,
+                  String oldTime, String newPat, String newDoc, String newDate, String newTime) throws IOException;
 
     /**
      * Adds the given doctor.

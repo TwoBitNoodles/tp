@@ -6,6 +6,8 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
 
+import java.io.IOException;
+
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.appointment.Appointment;
@@ -39,8 +41,13 @@ public class DeleteApptCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        model.delAppt(toDel);
-        return new CommandResult(MESSAGE_SUCCESS);
+        try {
+            model.delAppt(toDel);
+            return new CommandResult(MESSAGE_SUCCESS);
+        } catch(IOException e) {
+            return new CommandResult("Invalid input" + MESSAGE_USAGE);
+        }
+
 
     }
 }

@@ -25,6 +25,7 @@ public class AddApptCommand extends Command {
             + PREFIX_DATE + " DATE (yyyy-mm-dd)"
             + PREFIX_TIME + " TIME (H:MM)\n"
             + "Example: " + COMMAND_WORD + " "
+            + PREFIX_DOCTOR + "Sally Tan"
             + PREFIX_NAME + " John Doe "
             + PREFIX_DATE + " 2026-03-11 "
             + PREFIX_TIME + " 9:00 ";
