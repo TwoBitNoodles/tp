@@ -49,7 +49,7 @@ The bulk of the app's work is done by the following four components:
 
 **How the architecture components interact with each other**
 
-The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
+The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `deldoc 1`.
 
 <puml src="diagrams/ArchitectureSequenceDiagram.puml" width="574" />
 
@@ -284,7 +284,7 @@ _{Explain here how the data archiving feature will be implemented}_
 * prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
 
-**Value proposition**: quickly access patient contact details, practitioner schedules and scheduled appointments 
+**Value proposition**: quickly access patient contact details, practitioner schedules and scheduled appointments
 for patients faster than a typical mouse/GUI driven app via high-speed, keyboard-driven workflows, reducing time spent
 searching, scrolling, or clicking during live interactions.
 
@@ -341,22 +341,22 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 2a. The name contains invalid characters or is out of the allowed length range.
   * 2a1. System shows: `Invalid doctor name. Must contain only alphabets and spaces.`
-  
+
     Use case resumes at step 1.
 
 * 2b. The phone number is not exactly 8 digits.
   * 2b1. System shows: `Invalid phone number. Must be exactly 8 digits.`
-  
+
     Use case resumes at step 1.
 
 * 2c. The email is not in a valid format.
   * 2c1. System shows: `Invalid email format.`
-  
+
     Use case resumes at step 1.
 
 * 2d. A doctor with the same name (case-insensitive) already exists.
   * 2d1. System shows: `This doctor already exists.`
-  
+
     Use case ends.
 
 ---
@@ -375,22 +375,22 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 2a. The name contains invalid characters or is out of the allowed length range.
   * 2a1. System shows: `Invalid patient name. Must contain only alphabets and spaces.`
-  
+
     Use case resumes at step 1.
 
 * 2b. The phone number is not exactly 8 digits.
   * 2b1. System shows: `Invalid phone number. Must be exactly 8 digits.`
-  
+
     Use case resumes at step 1.
 
 * 2c. The email is not in a valid format.
   * 2c1. System shows: `Invalid email format.`
-  
+
     Use case resumes at step 1.
 
 * 2d. A patient with the same name (case-insensitive) and same phone number already exists.
   * 2d1. System shows: `This patient already exists.`
-  
+
     Use case ends.
 
 ---
@@ -409,17 +409,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 2a. The doctor name does not match any existing doctor.
   * 2a1. System shows: `Doctor not found.`
-  
+
     Use case ends.
 
 * 2b. The date is in an invalid format.
   * 2b1. System shows: `Invalid date format. Use YYYY-MM-DD.`
-  
+
     Use case resumes at step 1.
 
 * 2c. The date is in the past.
   * 2c1. System shows: `Cannot view schedule for past dates.`
-  
+
     Use case resumes at step 1.
 
 ---
@@ -439,32 +439,32 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 3a. The patient name does not match any existing patient.
   * 3a1. System shows: `Patient not found. Please add the patient first.`
-  
+
     Use case ends.
 
 * 3b. The doctor name does not match any existing doctor.
   * 3b1. System shows: `Doctor not found. Please check again.`
-  
+
     Use case ends.
 
 * 3c. The date is invalid or in the past.
   * 3c1. System shows: `Invalid date format. Use YYYY-MM-DD.` or `Cannot book appointments for past dates.`
-  
+
     Use case resumes at step 2.
 
 * 3d. The time is not one of the valid hourly slots (09:00–16:00).
   * 3d1. System shows: `Invalid time. Must be one of the clinic's available hourly slots (09:00–16:00).`
-  
+
     Use case resumes at step 2.
 
 * 3e. The selected slot is already booked with that doctor.
   * 3e1. System shows that the slot is unavailable.
-  
+
     Use case resumes at step 1.
 
 * 3f. The patient already has an appointment at the same date and time.
   * 3f1. System shows that the patient has a conflicting appointment.
-  
+
     Use case resumes at step 2.
 
 ---
@@ -483,27 +483,27 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 2a. The list is empty.
-  
+
   Use case ends.
 
 * 3a. A name is entered instead of an index.
   * 3a1. System shows: `Invalid index. Please enter a valid index number.`
-  
+
     Use case resumes at step 2.
 
 * 3b. The index does not refer to any entry in the currently displayed list.
   * 3b1. System shows: `Invalid index. Please enter a valid index number.`
-  
+
     Use case resumes at step 2.
 
 * 4a. The deleted entry is a doctor.
   * 4a1. System also deletes all appointments associated with that doctor.
-  
+
     Use case ends.
 
 * 4b. The deleted entry is a patient.
   * 4b1. System also deletes all appointments associated with that patient.
-  
+
     Use case ends.
 
 ### Non-Functional Requirements
