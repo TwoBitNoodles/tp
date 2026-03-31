@@ -310,7 +310,7 @@
 
 /* Schedule background */
 .schedule-root {
-    -fx-background-color: #2b2b2b; /* dark grey */
+    -fx-background-color: #cccccc;
     -fx-padding: 10;
 }
 

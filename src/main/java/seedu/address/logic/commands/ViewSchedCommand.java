@@ -1,11 +1,15 @@
 package seedu.address.logic.commands;
 
+import static java.util.Objects.requireNonNull;
+
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.person.Person;
 import seedu.address.storage.ScheduleManager;
 
 /**
@@ -24,6 +28,8 @@ public class ViewSchedCommand extends Command {
 
     public static final String MESSAGE_DOCTOR_NOT_FOUND = "Doctor not found.";
     public static final String MESSAGE_DATE_NOT_AVAILABLE = "No schedule available for this date.";
+    public static final String MESSAGE_INVALID_DOCTOR_NAME =
+            "The specified name belongs to a patient. Please enter a doctor's name.";
 
     private final String doctorName;
     private final LocalDate date;
@@ -37,8 +43,14 @@ public class ViewSchedCommand extends Command {
     }
 
     @Override
-    public CommandResult execute(Model model) {
+    public CommandResult execute(Model model) throws CommandException {
+        requireNonNull(model);
+
         try {
+            if (isPatientName(model) && !isDoctorName(model)) {
+                throw new CommandException(MESSAGE_INVALID_DOCTOR_NAME);
+            }
+
             if (date != null) {
                 // Single day behavior
                 Map<String, String> schedule =
@@ -56,6 +68,10 @@ public class ViewSchedCommand extends Command {
             } else {
                 // Weekly behavior: collect schedules for 7 days
                 Map<String, Map<String, String>> weeklySchedule = new LinkedHashMap<>();
+
+                if (!isDoctorName(model)) {
+                    return new CommandResult(MESSAGE_DOCTOR_NOT_FOUND);
+                }
 
                 LocalDate today = LocalDate.now();
                 for (int i = 0; i < 7; i++) {
@@ -80,6 +96,18 @@ public class ViewSchedCommand extends Command {
      */
     private String normalizeSpaces(String s) {
         return s.trim().replaceAll("\\s+", " ");
+    }
+
+    private boolean isDoctorName(Model model) {
+        return model.getDoctorData().getPersonList().stream()
+                .map(Person::getName)
+                .anyMatch(name -> name.fullName.equalsIgnoreCase(doctorName));
+    }
+
+    private boolean isPatientName(Model model) {
+        return model.getPatientData().getPersonList().stream()
+                .map(Person::getName)
+                .anyMatch(name -> name.fullName.equalsIgnoreCase(doctorName));
     }
 
 
