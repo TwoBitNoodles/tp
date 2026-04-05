@@ -17,11 +17,21 @@ public class Patient extends Person {
      * @param phone
      * @param email
      * @param address
-     * @param tags
      */
     public Patient(Name name, Phone phone, Email email, Address address) {
         super(name, phone, email, address);
         this.apptList = new ArrayList<>();
+    }
+
+    @Override
+    public boolean isSamePerson(Person otherPerson) {
+        if (otherPerson == this) {
+            return true;
+        }
+
+        return otherPerson != null
+            && otherPerson.getName().fullName.equalsIgnoreCase(getName().fullName)
+            && otherPerson.getEmail().equals(getEmail());
     }
 
     public ArrayList<Appointment> getApptList() {
