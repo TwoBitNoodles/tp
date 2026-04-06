@@ -29,6 +29,10 @@ public class Patient extends Person {
             return true;
         }
 
+        if (!(otherPerson instanceof Patient)) {
+            return false;
+        }
+
         return otherPerson != null
             && otherPerson.getName().fullName.equalsIgnoreCase(getName().fullName)
             && otherPerson.getEmail().equals(getEmail());

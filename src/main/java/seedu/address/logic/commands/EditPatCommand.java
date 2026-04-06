@@ -80,7 +80,7 @@ public class EditPatCommand extends Command {
         Patient patientToEdit = (Patient) personToEdit;
         Patient editedPatient = createEditedPatient(patientToEdit, editPatDescriptor);
 
-        if (!patientToEdit.isSamePerson(editedPatient) && model.hasPerson(editedPatient)) {
+        if (!patientToEdit.isSamePerson(editedPatient) && model.hasPatient(editedPatient)) {
             throw new CommandException(MESSAGE_DUPLICATE_PATIENT);
         }
 

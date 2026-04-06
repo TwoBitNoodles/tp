@@ -103,6 +103,11 @@ public interface Model {
     boolean hasDoctor(Doctor doctor);
 
     /**
+     * Returns true if a patient with the same identity as {@code patient} exists in the patients list.
+     */
+    boolean hasPatient(Patient patient);
+
+    /**
      * Deletes the given patient.
      * The patient must exist in the address book.
      */

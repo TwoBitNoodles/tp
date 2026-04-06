@@ -53,7 +53,7 @@ public class AddPatCommand extends Command {
         requireNonNull(model);
         logger.info("Executing AddPatCommand with patient: " + Messages.format(toAdd));
 
-        if (model.hasPerson(toAdd)) {
+        if (model.hasPatient(toAdd)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 
