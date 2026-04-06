@@ -1,10 +1,12 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.*;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
 
 import java.io.IOException;
-import java.time.LocalDate;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -23,10 +25,10 @@ public class AddApptCommand extends Command {
             + PREFIX_DATE + " DATE (yyyy-mm-dd)"
             + PREFIX_TIME + " TIME (H:MM)\n"
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_NEWDOC + "Sally Tan"
-            + PREFIX_NEWNAME + " John Doe "
-            + PREFIX_NEWDATE + " 2026-03-11 "
-            + PREFIX_NEWTIME + " 9:00 ";
+            + PREFIX_DOCTOR + "Sally Tan"
+            + PREFIX_NAME + " John Doe "
+            + PREFIX_DATE + " 2026-03-11 "
+            + PREFIX_TIME + " 9:00 ";
 
     public static final String MESSAGE_SUCCESS = "New appointment added!";
     public static final String MESSAGE_DUPLICATE_APPT = "This appointment already exists in the address book";
@@ -61,7 +63,7 @@ public class AddApptCommand extends Command {
             return true;
         }
 
-        if(!(o instanceof AddApptCommand)) {
+        if (!(o instanceof AddApptCommand)) {
             return false;
         }
 

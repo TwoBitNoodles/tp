@@ -34,8 +34,11 @@ public class DeleteApptCommand extends Command {
 
     private final Appointment toDel;
 
+    /**
+     * initialises the delAppt command
+     * @param appt
+     */
     public DeleteApptCommand(Appointment appt) {
-
         this.toDel = appt;
     }
 

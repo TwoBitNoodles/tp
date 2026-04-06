@@ -1,6 +1,12 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.parser.CliSyntax.*;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWDATE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWDOC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWNAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWTIME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
 
 import seedu.address.logic.commands.EditApptCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -16,7 +22,7 @@ public class EditApptCommandParser {
      */
     public EditApptCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args,
-                PREFIX_DATE, PREFIX_TIME, PREFIX_DOCTOR, PREFIX_NAME,
+                PREFIX_DATE, PREFIX_TIME, PREFIX_DOCTOR,
                 PREFIX_NEWDATE, PREFIX_NEWTIME, PREFIX_NEWDOC, PREFIX_NEWNAME);
 
         if (argMultimap.getAllValues(PREFIX_DOCTOR).isEmpty()

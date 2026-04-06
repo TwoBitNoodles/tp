@@ -13,7 +13,6 @@ import java.util.TreeMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.appointment.Appointment;
 
 /**
@@ -127,7 +126,7 @@ public class ScheduleManager {
         String time = appt.getTime();
         boolean found = false;
 
-        if(!isValidDate(date)) {
+        if (!isValidDate(date)) {
             throw new IOException("Please input a valid date. The date must be formatted as YYYY-MM-DD");
         }
         //checks if date is within 7 days
@@ -139,7 +138,7 @@ public class ScheduleManager {
             throw new IOException("Appointment date must be within 7 days from today!");
         }
 
-        if(!isValidTime(time)) {
+        if (!isValidTime(time)) {
             throw new IOException("Please input a valid time. Time must be formatted as HH:MM");
         }
 
@@ -180,7 +179,8 @@ public class ScheduleManager {
                     found = true;
                     mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
                 } else {
-                    throw new IOException("This slot is already booked. Please edit the appointment if you wish to change it");
+                    throw new IOException("This slot is already booked. "
+                                            + "Please edit the appointment if you wish to change it");
                 }
                 break;
             }
@@ -226,7 +226,7 @@ public class ScheduleManager {
      * deletes an appointment according to the time and date from a doctor's schedule
      * @param appt
      */
-    public static void delAppt(Appointment appt) throws IOException{
+    public static void delAppt(Appointment appt) throws IOException {
         String doctorName = appt.getDocName();
         String pat = appt.getPatName();
         String date = appt.getDate();
@@ -262,7 +262,7 @@ public class ScheduleManager {
 
                 }
 
-                if (slots.get(time) == null || !slots.get(time).equals(pat) ) {
+                if (slots.get(time) == null || !slots.get(time).equals(pat)) {
                     throw new IOException("No such appointment exists.");
 
                 }
@@ -273,7 +273,7 @@ public class ScheduleManager {
 
             }
         }
-        if(!found) {
+        if (!found) {
             throw new IOException("Doctor not regiestered");
         }
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);

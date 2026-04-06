@@ -247,7 +247,7 @@ public class ModelManager implements Model {
 
         Appointment editedAppt = new Appointment(finalDoc, finalPat, finalDate, finalTime);
 
-        if(LocalTime.parse(finalTime).getMinute() % 30 != 0) {
+        if (LocalTime.parse(finalTime).getMinute() % 30 != 0) {
             throw new IOException("Please choose a valid timeslot.");
         }
 
