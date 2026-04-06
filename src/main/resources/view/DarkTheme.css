@@ -104,7 +104,7 @@
 }
 
 .list-cell:filled:odd {
-    -fx-background-color: #e7dbef;
+    -fx-background-color: #e2d4ed;
 }
 
 .list-cell:filled:selected {
@@ -151,7 +151,7 @@
     -fx-background-color: transparent;
     -fx-font-family: "Segoe UI Light";
     -fx-font-size: 13pt;
-    -fx-text-fill: white;
+    -fx-text-fill: #49225b;
 }
 
 .result-display .label {
@@ -160,7 +160,7 @@
 
 .status-bar .label {
     -fx-font-family: "Segoe UI Light";
-    -fx-text-fill: white;
+    -fx-text-fill: #49225b;
     -fx-padding: 4px;
     -fx-pref-height: 30px;
 }
@@ -172,7 +172,7 @@
 }
 
 .status-bar-with-border .label {
-    -fx-text-fill: white;
+    -fx-text-fill: #49225b;
 }
 
 .grid-pane {
@@ -339,7 +339,8 @@
 
 #cardPane {
     -fx-background-color: transparent;
-    -fx-border-width: 0;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: derive(#c9b8d8, -10%);
 }
 
 #commandTypeLabel {
@@ -363,8 +364,8 @@
 }
 
 #resultDisplay .content {
-    -fx-background-color: transparent, #e7dbef, transparent, #e7dbef;
-    -fx-background-radius: 0;
+    -fx-background-color: white; /* slightly deeper than #e7dbef */
+    -fx-background-radius: 4;
 }
 
 #tags {
