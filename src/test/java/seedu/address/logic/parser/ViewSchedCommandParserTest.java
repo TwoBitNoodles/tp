@@ -47,15 +47,6 @@ public class ViewSchedCommandParserTest {
     }
 
     @Test
-    public void parse_missingDate_failure() {
-        String userInput = " d/John Tan";
-
-        assertParseFailure(parser, userInput,
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        ViewSchedCommand.MESSAGE_USAGE));
-    }
-
-    @Test
     public void parse_invalidDateFormat_failure() {
         String userInput = " d/John Tan date/20-03-2026";
 

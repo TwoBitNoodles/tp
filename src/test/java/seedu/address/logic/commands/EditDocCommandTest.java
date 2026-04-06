@@ -2,9 +2,12 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
@@ -14,18 +17,24 @@ import static seedu.address.testutil.TypicalDoctors.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 
+import java.io.File;
+import java.nio.file.Files;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditDocCommand.EditDoctorDescriptor;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Doctor;
+import seedu.address.model.person.Patient;
 import seedu.address.testutil.DoctorBuilder;
 import seedu.address.testutil.EditDoctorDescriptorBuilder;
+import seedu.address.testutil.PatientBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for EditDocCommand.
@@ -53,6 +62,7 @@ public class EditDocCommandTest {
 
     @Test
     public void execute_someFieldsSpecifiedUnfilteredList_success() {
+        // Edit name and phone only
         Index indexLastDoctor = Index.fromOneBased(model.getFilteredPersonList().size());
         Doctor lastDoctor = (Doctor) model.getFilteredPersonList().get(indexLastDoctor.getZeroBased());
 
@@ -67,6 +77,28 @@ public class EditDocCommandTest {
                 Messages.format(editedDoctor));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), model.getPatientData(),
+                model.getDoctorData(), new UserPrefs());
+        expectedModel.setDoctor(lastDoctor, editedDoctor);
+
+        assertCommandSuccess(editDocCommand, model, expectedMessage, expectedModel);
+
+        // edit email+address only now
+        model = new ModelManager(getTypicalAddressBook(), getTypicalAddressBook(),
+                getTypicalAddressBook(), new UserPrefs());
+        indexLastDoctor = Index.fromOneBased(model.getFilteredPersonList().size());
+        lastDoctor = (Doctor) model.getFilteredPersonList().get(indexLastDoctor.getZeroBased());
+
+        doctorInList = new DoctorBuilder(lastDoctor);
+        editedDoctor = doctorInList.withEmail(VALID_EMAIL_BOB).withAddress(VALID_ADDRESS_BOB).build();
+
+        descriptor = new EditDoctorDescriptorBuilder()
+                .withEmail(VALID_EMAIL_BOB).withAddress(VALID_ADDRESS_BOB).build();
+        editDocCommand = new EditDocCommand(indexLastDoctor, descriptor);
+
+        expectedMessage = String.format(EditDocCommand.MESSAGE_EDIT_DOCTOR_SUCCESS,
+                Messages.format(editedDoctor));
+
+        expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), model.getPatientData(),
                 model.getDoctorData(), new UserPrefs());
         expectedModel.setDoctor(lastDoctor, editedDoctor);
 
@@ -151,6 +183,36 @@ public class EditDocCommandTest {
                 new EditDoctorDescriptorBuilder().withName(VALID_NAME_BOB).build());
 
         assertCommandFailure(editDocCommand, model, Messages.MESSAGE_INVALID_DOCTOR_DISPLAYED_INDEX);
+    }
+
+    @Test
+    public void execute_personToEditNotDoctor_throwsCommandException() {
+        Model noDoctorModel = new ModelManager();
+        Patient patient = new PatientBuilder().withName("Alice")
+                .withPhone("11111111")
+                .withEmail("alice@tan.com")
+                .withAddress("11 Conlins St").build();
+
+        noDoctorModel.addPatient(patient);
+        EditDoctorDescriptor descriptor = new EditDoctorDescriptorBuilder().withName("Bob").build();
+        EditDocCommand editDocCommand = new EditDocCommand(INDEX_FIRST_PERSON, descriptor);
+        assertCommandFailure(editDocCommand, noDoctorModel, "The person at the specified index is not a doctor.");
+    }
+
+    // test added by Copilot
+    @Test
+    public void execute_scheduleIoError_throwsCommandException() throws Exception {
+        File scheduleFile = new File("data/schedule.json");
+        byte[] backup = Files.readAllBytes(scheduleFile.toPath());
+        try {
+            Files.writeString(scheduleFile.toPath(), "not valid json");
+            EditDoctorDescriptor descriptor = new EditDoctorDescriptorBuilder()
+                    .withName("Completely Different Name").build();
+            EditDocCommand editDocCommand = new EditDocCommand(INDEX_FIRST_PERSON, descriptor);
+            assertThrows(CommandException.class, () -> editDocCommand.execute(model));
+        } finally {
+            Files.write(scheduleFile.toPath(), backup);
+        }
     }
 
     @Test

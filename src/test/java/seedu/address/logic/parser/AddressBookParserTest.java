@@ -13,14 +13,22 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.AddApptCommand;
+import seedu.address.logic.commands.AddDocCommand;
 import seedu.address.logic.commands.AddPatCommand;
 import seedu.address.logic.commands.ClearCommand;
+import seedu.address.logic.commands.DeleteApptCommand;
+import seedu.address.logic.commands.DeleteDocCommand;
+import seedu.address.logic.commands.DeletePatCommand;
+import seedu.address.logic.commands.EditApptCommand;
 import seedu.address.logic.commands.EditDocCommand;
 import seedu.address.logic.commands.EditDocCommand.EditDoctorDescriptor;
+import seedu.address.logic.commands.EditPatCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.ViewSchedCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Doctor;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
@@ -35,10 +43,23 @@ public class AddressBookParserTest {
     private final AddressBookParser parser = new AddressBookParser();
 
     @Test
+    public void parseCommand_addDoc() throws Exception {
+        Doctor doctor = new DoctorBuilder().build();
+        AddDocCommand command = (AddDocCommand) parser.parseCommand(PersonUtil.getDocAddCommand(doctor));
+        assertEquals(new AddDocCommand(doctor), command);
+    }
+
+    @Test
     public void parseCommand_addPat() throws Exception {
         Patient patient = new PatientBuilder().build();
         AddPatCommand command = (AddPatCommand) parser.parseCommand(PersonUtil.getPatAddCommand(patient));
         assertEquals(new AddPatCommand(patient), command);
+    }
+
+    @Test
+    public void parseCommand_addAppt() throws Exception {
+        assertTrue(parser.parseCommand(AddApptCommand.COMMAND_WORD
+                + " d/Mavis Goh n/Papa Drac date/2026-04-30 time/09:00") instanceof AddApptCommand);
     }
 
     @Test
@@ -48,18 +69,25 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_delete_throwsParseException() {
-        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, ()
-            -> parser.parseCommand("delete 1"));
-    }
-
-    @Test
     public void parseCommand_editDoctor() throws Exception {
         Doctor doctor = new DoctorBuilder().build();
         EditDoctorDescriptor descriptor = new EditDoctorDescriptorBuilder(doctor).build();
         EditDocCommand command = (EditDocCommand) parser.parseCommand(EditDocCommand.COMMAND_WORD + " "
                 + INDEX_FIRST_PERSON.getOneBased() + " " + PersonUtil.getEditDoctorDescriptorDetails(descriptor));
         assertEquals(new EditDocCommand(INDEX_FIRST_PERSON, descriptor), command);
+    }
+
+    @Test
+    public void parseCommand_editPatient() throws Exception {
+        assertTrue(parser.parseCommand(EditPatCommand.COMMAND_WORD + " "
+                + INDEX_FIRST_PERSON.getOneBased() + " n/Kitty") instanceof EditPatCommand);
+    }
+
+    @Test
+    public void parseCommand_editAppt() throws Exception {
+        assertTrue(parser.parseCommand(EditApptCommand.COMMAND_WORD
+                + " d/Mavis Goh date/2026-04-30 time/09:00 d/Johnny date/2026-05-01 time/10:00")
+                instanceof EditApptCommand);
     }
 
     @Test
@@ -87,6 +115,29 @@ public class AddressBookParserTest {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
     }
+
+    @Test
+    public void parseCommand_deleteDoc() throws Exception {
+        assertTrue(parser.parseCommand(DeleteDocCommand.COMMAND_WORD + " 1") instanceof DeleteDocCommand);
+    }
+
+    @Test
+    public void parseCommand_deletePat() throws Exception {
+        assertTrue(parser.parseCommand(DeletePatCommand.COMMAND_WORD + " 1") instanceof DeletePatCommand);
+    }
+
+    @Test
+    public void parseCommand_deleteAppt() throws Exception {
+        assertTrue(parser.parseCommand(DeleteApptCommand.COMMAND_WORD
+                + " d/Mavis Goh n/Papa Drac date/2026-04-30 time/09:00") instanceof DeleteApptCommand);
+    }
+
+    @Test
+    public void parseCommand_viewSched() throws Exception {
+        assertTrue(parser.parseCommand(ViewSchedCommand.COMMAND_WORD
+                + " d/Mavis Goh date/2026-04-30") instanceof ViewSchedCommand);
+    }
+
 
     @Test
     public void parseCommand_unrecognisedInput_throwsParseException() {

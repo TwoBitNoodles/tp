@@ -308,6 +308,35 @@
     -fx-padding: 8 1 8 1;
 }
 
+/* Schedule background */
+.schedule-root {
+    -fx-background-color: #cccccc;
+    -fx-padding: 10;
+}
+
+/* Grid lines */
+.schedule-grid {
+    -fx-grid-lines-visible: true;
+}
+
+/* Time labels */
+.time-label {
+    -fx-text-fill: #cccccc;
+    -fx-font-size: 11px;
+}
+
+/* Available slot */
+.slot-available {
+    -fx-background-color: #4CAF50; /* green */
+    -fx-border-color: #555;
+}
+
+/* Booked slot */
+.slot-booked {
+    -fx-background-color: #F44336; /* red */
+    -fx-border-color: #555;
+}
+
 #cardPane {
     -fx-background-color: transparent;
     -fx-border-width: 0;
@@ -351,3 +380,4 @@
     -fx-background-radius: 2;
     -fx-font-size: 11;
 }
+

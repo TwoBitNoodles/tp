@@ -7,12 +7,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import seedu.address.commons.core.index.Index;
@@ -27,7 +24,6 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Patient;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
-import seedu.address.model.tag.Tag;
 
 /**
 * Edits the details of an existing patient in the app.
@@ -95,7 +91,7 @@ public class EditPatCommand extends Command {
 
     /**
      * Creates and returns a {@code Patient} with the details of {@code patientToEdit}
-     * edited with {@code editPatientDescriptor}.
+     * edited with {@code editPatDescriptor}.
      */
     private static Patient createEditedPatient(Patient patientToEdit,
                                                EditPatCommand.EditPatDescriptor editPatDescriptor) {
@@ -105,9 +101,8 @@ public class EditPatCommand extends Command {
         Phone updatedPhone = editPatDescriptor.getPhone().orElse(patientToEdit.getPhone());
         Email updatedEmail = editPatDescriptor.getEmail().orElse(patientToEdit.getEmail());
         Address updatedAddress = editPatDescriptor.getAddress().orElse(patientToEdit.getAddress());
-        Set<Tag> updatedTags = editPatDescriptor.getTags().orElse(patientToEdit.getTags());
 
-        return new Patient(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
+        return new Patient(updatedName, updatedPhone, updatedEmail, updatedAddress);
     }
 
     @Override
@@ -142,7 +137,6 @@ public class EditPatCommand extends Command {
         private Phone phone;
         private Email email;
         private Address address;
-        private Set<Tag> tags;
 
         public EditPatDescriptor() {
         }
@@ -156,14 +150,13 @@ public class EditPatCommand extends Command {
             setPhone(toCopy.phone);
             setEmail(toCopy.email);
             setAddress(toCopy.address);
-            setTags(toCopy.tags);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, address, tags);
+            return CollectionUtil.isAnyNonNull(name, phone, email, address);
         }
 
         public void setName(Name name) {
@@ -198,23 +191,6 @@ public class EditPatCommand extends Command {
             return Optional.ofNullable(address);
         }
 
-        /**
-         * Sets {@code tags} to this object's {@code tags}.
-         * A defensive copy of {@code tags} is used internally.
-         */
-        public void setTags(Set<Tag> tags) {
-            this.tags = (tags != null) ? new HashSet<>(tags) : null;
-        }
-
-        /**
-         * Returns an unmodifiable tag set, which throws {@code UnsupportedOperationException}
-         * if modification is attempted.
-         * Returns {@code Optional#empty()} if {@code tags} is null.
-         */
-        public Optional<Set<Tag>> getTags() {
-            return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
-        }
-
         @Override
         public boolean equals(Object other) {
             if (other == this) {
@@ -229,8 +205,7 @@ public class EditPatCommand extends Command {
             return Objects.equals(name, otherEditPatDescriptor.name)
                             && Objects.equals(phone, otherEditPatDescriptor.phone)
                             && Objects.equals(email, otherEditPatDescriptor.email)
-                            && Objects.equals(address, otherEditPatDescriptor.address)
-                            && Objects.equals(tags, otherEditPatDescriptor.tags);
+                            && Objects.equals(address, otherEditPatDescriptor.address);
         }
 
         @Override
@@ -240,7 +215,6 @@ public class EditPatCommand extends Command {
                             .add("phone", phone)
                             .add("email", email)
                             .add("address", address)
-                            .add("tags", tags)
                             .toString();
         }
     }

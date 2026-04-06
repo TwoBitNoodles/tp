@@ -14,11 +14,12 @@ Class UserPrefs
 
 Class UniquePersonList
 Class Person
+Class Patient
+Class Doctor
 Class Address
 Class Email
 Class Name
 Class Phone
-Class Tag
 
 Class I #FFFFFF
 }
@@ -41,8 +42,9 @@ Person *--> Name
 Person *--> Phone
 Person *--> Email
 Person *--> Address
-Person *--> "*" Tag
 
+Patient .up.|> Person
+Doctor .up.|> Person
 Person -[hidden]up--> I
 UniquePersonList -[hidden]right-> I
 

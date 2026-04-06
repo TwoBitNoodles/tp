@@ -1,9 +1,11 @@
 package seedu.address.ui;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCombination;
@@ -168,6 +170,57 @@ public class MainWindow extends UiPart<Stage> {
     }
 
     /**
+     * Shows the schedule in a popup window.
+     */
+    private void showSchedulePopup(Map<String, String> schedule) {
+        try {
+            SchedulePanel panel = new SchedulePanel();
+            panel.displaySchedule(schedule);
+
+            Stage stage = new Stage();
+            stage.setTitle("Doctor Schedule");
+
+            Scene scene = new Scene(panel.getRoot());
+
+            scene.getStylesheets().add(
+                getClass().getResource("/view/DarkTheme.css").toExternalForm()
+            );
+
+            stage.setScene(scene);
+
+            stage.setWidth(400);
+            stage.setHeight(300);
+
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showWeeklySchedulePopup(Map<String, Map<String, String>> weeklySchedule) {
+        try {
+            SchedulePanel panel = new SchedulePanel();
+            panel.displayWeeklySchedule(weeklySchedule);
+
+            Stage stage = new Stage();
+            stage.setTitle("Weekly Doctor Schedule");
+
+            Scene scene = new Scene(panel.getRoot());
+            scene.getStylesheets().add(getClass().getResource("/view/DarkTheme.css").toExternalForm());
+
+            stage.setScene(scene);
+            stage.setWidth(800); // wider for weekly view
+            stage.setHeight(400);
+
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Executes the command and returns the result.
      *
      * @see seedu.address.logic.Logic#execute(String)
@@ -177,6 +230,12 @@ public class MainWindow extends UiPart<Stage> {
             CommandResult commandResult = logic.execute(commandText);
             logger.info("Result: " + commandResult.getFeedbackToUser());
             resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
+
+            if (commandResult.isWeekly() && commandResult.getWeeklySchedule() != null) {
+                showWeeklySchedulePopup(commandResult.getWeeklySchedule());
+            } else if (commandResult.getSchedule() != null) {
+                showSchedulePopup(commandResult.getSchedule());
+            }
 
             if (commandResult.isShowHelp()) {
                 handleHelp();

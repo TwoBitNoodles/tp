@@ -11,6 +11,7 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Doctor;
 import seedu.address.model.person.Person;
+import seedu.address.storage.ScheduleManager;
 
 /**
  * Deletes a person identified using it's displayed index from the address book.
@@ -38,7 +39,7 @@ public class DeleteDocCommand extends Command {
         List<? extends Person> lastShownList = model.getFilteredPersonList();
 
         if (targetIndex.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+            throw new CommandException(Messages.MESSAGE_INVALID_DOCTOR_DISPLAYED_INDEX);
         }
 
         Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
@@ -46,6 +47,11 @@ public class DeleteDocCommand extends Command {
             throw new CommandException("The person at the specified index is not a doctor.");
         }
         model.deleteDoctor((Doctor) personToDelete);
+        try {
+            ScheduleManager.removeDoctorSchedule(personToDelete.getName().fullName);
+        } catch (java.io.IOException e) {
+            throw new CommandException("Failed to update schedule file.");
+        }
         return new CommandResult(String.format(MESSAGE_DELETE_DOCTOR_SUCCESS, Messages.format(personToDelete)));
     }
 

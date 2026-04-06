@@ -85,6 +85,5 @@ public class AddPatCommandTest {
         assertTrue(actual.contains("98765432"));
         assertTrue(actual.contains("123 Street"));
         assertTrue(actual.contains("alice@example.com"));
-        assertTrue(actual.contains("tags=[]"));
     }
 }

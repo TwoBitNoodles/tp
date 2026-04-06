@@ -163,6 +163,12 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean hasDoctor(Doctor doctor) {
+        requireNonNull(doctor);
+        return doctors.hasPerson(doctor);
+    }
+
+    @Override
     public void deleteDoctor(Doctor doctor) {
         doctors.removeDoctor(doctor);
         addressBook.removeDoctor(doctor);
