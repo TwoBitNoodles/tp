@@ -23,6 +23,21 @@ public class Patient extends Person {
         this.apptList = new ArrayList<>();
     }
 
+    @Override
+    public boolean isSamePerson(Person otherPerson) {
+        if (otherPerson == this) {
+            return true;
+        }
+
+        if (!(otherPerson instanceof Patient)) {
+            return false;
+        }
+
+        return otherPerson != null
+            && otherPerson.getName().fullName.equalsIgnoreCase(getName().fullName)
+            && otherPerson.getEmail().equals(getEmail());
+    }
+
     public ArrayList<Appointment> getApptList() {
         return this.apptList;
     }

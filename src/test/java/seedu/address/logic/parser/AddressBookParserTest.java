@@ -135,7 +135,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_viewSched() throws Exception {
         assertTrue(parser.parseCommand(ViewSchedCommand.COMMAND_WORD
-                + " d/Mavis Goh date/2026-04-30") instanceof ViewSchedCommand);
+                + " d/Mavis Goh id/1 date/2026-04-30") instanceof ViewSchedCommand);
     }
 
 

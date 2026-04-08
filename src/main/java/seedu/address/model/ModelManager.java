@@ -177,6 +177,12 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean hasPatient(Patient patient) {
+        requireNonNull(patient);
+        return patients.hasPerson(patient);
+    }
+
+    @Override
     public void deleteDoctor(Doctor doctor) {
         doctors.removeDoctor(doctor);
         addressBook.removeDoctor(doctor);

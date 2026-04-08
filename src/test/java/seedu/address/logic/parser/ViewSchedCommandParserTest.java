@@ -19,20 +19,20 @@ public class ViewSchedCommandParserTest {
 
     @Test
     public void parse_allFieldsPresent_success() {
-        String userInput = " d/John Tan date/2026-03-20";
+        String userInput = " d/John Tan id/1 date/2026-03-20";
 
         ViewSchedCommand expectedCommand =
-                new ViewSchedCommand("John Tan", LocalDate.of(2026, 3, 20));
+                new ViewSchedCommand("John Tan", 1, LocalDate.of(2026, 3, 20));
 
         assertParseSuccess(parser, userInput, expectedCommand);
     }
 
     @Test
     public void parse_extraWhitespace_success() {
-        String userInput = "   d/   John   Tan   date/2026-03-20   ";
+        String userInput = "   d/   John   Tan   id/  1   date/2026-03-20   ";
 
         ViewSchedCommand expectedCommand =
-                new ViewSchedCommand("John Tan", LocalDate.of(2026, 3, 20));
+                new ViewSchedCommand("John Tan", 1, LocalDate.of(2026, 3, 20));
 
         assertParseSuccess(parser, userInput, expectedCommand);
     }
@@ -47,8 +47,26 @@ public class ViewSchedCommandParserTest {
     }
 
     @Test
+    public void parse_missingDoctorId_failure() {
+        String userInput = " d/John Tan date/2026-03-20";
+
+        assertParseFailure(parser, userInput,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        ViewSchedCommand.MESSAGE_USAGE));
+    }
+
+    @Test
     public void parse_invalidDateFormat_failure() {
-        String userInput = " d/John Tan date/20-03-2026";
+        String userInput = " d/John Tan id/1 date/20-03-2026";
+
+        assertParseFailure(parser, userInput,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        ViewSchedCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_invalidDoctorId_failure() {
+        String userInput = " d/John Tan id/abc date/2026-03-20";
 
         assertParseFailure(parser, userInput,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,

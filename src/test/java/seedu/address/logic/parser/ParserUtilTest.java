@@ -137,4 +137,23 @@ public class ParserUtilTest {
         Email expectedEmail = new Email(VALID_EMAIL);
         assertEquals(expectedEmail, ParserUtil.parseEmail(emailWithWhitespace));
     }
+
+    @Test
+    public void parseDelpatIndex_validInput_success() throws Exception {
+        // No whitespaces
+        assertEquals(INDEX_FIRST_PERSON, ParserUtil.parseDelIndex("1"));
+
+        // Leading and trailing whitespaces
+        assertEquals(INDEX_FIRST_PERSON, ParserUtil.parseDelIndex("  1  "));
+    }
+
+    @Test
+    public void parseDelpatIndex_invalidInput_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseDelIndex("10 a"));
+    }
+
+    @Test
+    public void parseDelpatIndex_negativeInput_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseDelIndex("-1"));
+    }
 }

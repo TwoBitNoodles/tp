@@ -91,7 +91,7 @@ public class EditDocCommand extends Command {
 
         if (!currDoctorName.equalsIgnoreCase(newDoctorName)) {
             try {
-                ScheduleManager.renameDoctorSchedule(currDoctorName, newDoctorName);
+                ScheduleManager.renameDoctorSchedule(editedDoctor);
             } catch (java.io.IOException e) {
                 throw new CommandException("Failed to update schedule file.");
             }
@@ -113,7 +113,7 @@ public class EditDocCommand extends Command {
         Email updatedEmail = editDoctorDescriptor.getEmail().orElse(doctorToEdit.getEmail());
         Address updatedAddress = editDoctorDescriptor.getAddress().orElse(doctorToEdit.getAddress());
 
-        return new Doctor(updatedName, updatedPhone, updatedEmail, updatedAddress);
+        return new Doctor(updatedName, updatedPhone, updatedEmail, updatedAddress, ((Doctor) doctorToEdit).getDocId());
     }
 
     @Override

@@ -55,7 +55,7 @@ public class AddDocCommand extends Command {
         }
 
         model.addDoctor(toAdd);
-        ScheduleManager.addDoctorSchedule(toAdd.getName().fullName);
+        ScheduleManager.addDoctorSchedule(toAdd);
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
     }
 

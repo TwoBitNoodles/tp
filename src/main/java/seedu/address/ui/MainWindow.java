@@ -26,6 +26,10 @@ import seedu.address.logic.parser.exceptions.ParseException;
 public class MainWindow extends UiPart<Stage> {
 
     private static final String FXML = "MainWindow.fxml";
+    private static final double SINGLE_SCHEDULE_MIN_WIDTH = 400;
+    private static final double SINGLE_SCHEDULE_MIN_HEIGHT = 400;
+    private static final double WEEKLY_SCHEDULE_MIN_WIDTH = 800;
+    private static final double WEEKLY_SCHEDULE_MIN_HEIGHT = 400;
 
     private final Logger logger = LogsCenter.getLogger(getClass());
 
@@ -178,7 +182,10 @@ public class MainWindow extends UiPart<Stage> {
             panel.displaySchedule(schedule);
 
             Stage stage = new Stage();
-            stage.setTitle("Doctor Schedule");
+            stage.setTitle("Doctor Schedule for the Day");
+
+            panel.getRoot().setMinWidth(SINGLE_SCHEDULE_MIN_WIDTH);
+            panel.getRoot().setMinHeight(SINGLE_SCHEDULE_MIN_HEIGHT);
 
             Scene scene = new Scene(panel.getRoot());
 
@@ -190,6 +197,8 @@ public class MainWindow extends UiPart<Stage> {
 
             stage.setWidth(400);
             stage.setHeight(300);
+            stage.setMinWidth(SINGLE_SCHEDULE_MIN_WIDTH);
+            stage.setMinHeight(SINGLE_SCHEDULE_MIN_HEIGHT);
 
             stage.show();
 
@@ -206,12 +215,17 @@ public class MainWindow extends UiPart<Stage> {
             Stage stage = new Stage();
             stage.setTitle("Weekly Doctor Schedule");
 
+            panel.getRoot().setMinWidth(WEEKLY_SCHEDULE_MIN_WIDTH);
+            panel.getRoot().setMinHeight(WEEKLY_SCHEDULE_MIN_HEIGHT);
+
             Scene scene = new Scene(panel.getRoot());
             scene.getStylesheets().add(getClass().getResource("/view/DarkTheme.css").toExternalForm());
 
             stage.setScene(scene);
             stage.setWidth(800); // wider for weekly view
             stage.setHeight(400);
+            stage.setMinWidth(WEEKLY_SCHEDULE_MIN_WIDTH);
+            stage.setMinHeight(WEEKLY_SCHEDULE_MIN_HEIGHT);
 
             stage.show();
 
