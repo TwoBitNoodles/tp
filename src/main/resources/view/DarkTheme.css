@@ -7,6 +7,8 @@
     -dark-text:     #193b68;
     -normal-text:   #6f85a4;
     -light-text:    #dde8f8;
+    -patient-tag:   #3e7b91;
+    -doctor-tag:    #daa520;
 }
 
 .background {
@@ -389,5 +391,13 @@
     -fx-border-radius: 2;
     -fx-background-radius: 2;
     -fx-font-size: 11;
+}
+
+#tags .patient-tag {
+    -fx-background-color: -patient-tag;
+}
+
+#tags .doctor-tag {
+    -fx-background-color: -doctor-tag;
 }
 

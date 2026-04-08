@@ -53,7 +53,13 @@ public class PersonCard extends UiPart<Region> {
         phone.setText(person.getPhone().value);
         address.setText(person.getAddress().value);
         email.setText(person.getEmail().value);
-        tags.getChildren().add(new Label(person.getRoleTag()));
+        Label roleTag = new Label(person.getRoleTag());
+        if (person instanceof Doctor) {
+            roleTag.getStyleClass().add("doctor-tag");
+        } else if (person instanceof seedu.address.model.person.Patient) {
+            roleTag.getStyleClass().add("patient-tag");
+        }
+        tags.getChildren().add(roleTag);
         // doctor id information added by copilot
         if (person instanceof Doctor) {
             doctorId.setText("Doctor ID: " + ((Doctor) person).getDocId());
