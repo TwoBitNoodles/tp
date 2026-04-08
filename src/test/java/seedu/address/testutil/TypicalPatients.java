@@ -33,17 +33,17 @@ public class TypicalPatients {
             .withEmail("heinz@example.com").withAddress("wall street").build();
     public static final Patient DANIEL = new PatientBuilder().withName("Daniel Meier").withPhone("87652533")
             .withEmail("cornelia@example.com").withAddress("10th street").build();
-    public static final Patient ELLE = new PatientBuilder().withName("Elle Meyer").withPhone("9482224")
+    public static final Patient ELLE = new PatientBuilder().withName("Elle Meyer").withPhone("94822241")
             .withEmail("werner@example.com").withAddress("michegan ave").build();
-    public static final Patient FIONA = new PatientBuilder().withName("Fiona Kunz").withPhone("9482427")
+    public static final Patient FIONA = new PatientBuilder().withName("Fiona Kunz").withPhone("94824271")
             .withEmail("lydia@example.com").withAddress("little tokyo").build();
-    public static final Patient GEORGE = new PatientBuilder().withName("George Best").withPhone("9482442")
+    public static final Patient GEORGE = new PatientBuilder().withName("George Best").withPhone("94824421")
             .withEmail("anna@example.com").withAddress("4th street").build();
 
     // Manually added
-    public static final Patient HOON = new PatientBuilder().withName("Hoon Meier").withPhone("8482424")
+    public static final Patient HOON = new PatientBuilder().withName("Hoon Meier").withPhone("84824241")
             .withEmail("stefan@example.com").withAddress("little india").build();
-    public static final Patient IDA = new PatientBuilder().withName("Ida Mueller").withPhone("8482131")
+    public static final Patient IDA = new PatientBuilder().withName("Ida Mueller").withPhone("84821311")
             .withEmail("hans@example.com").withAddress("chicago ave").build();
 
     // Manually added - Person's details found in {@code CommandTestUtil}

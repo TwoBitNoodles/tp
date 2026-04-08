@@ -185,6 +185,14 @@ public class ModelManager implements Model {
     public void deletePatient(Patient patient) {
         patients.removePatient(patient);
         addressBook.removePatient(patient);
+        deletePatientByAppt(patient);
+
+    }
+
+    private void deletePatientByAppt(Patient patient) {
+        for (Appointment appt : patient.getApptList()) {
+            ScheduleManager.delAppt(appt);
+        }
     }
 
     @Override

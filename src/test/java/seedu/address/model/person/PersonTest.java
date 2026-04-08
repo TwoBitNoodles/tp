@@ -2,6 +2,7 @@ package seedu.address.model.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
@@ -37,10 +38,10 @@ public class PersonTest {
         Person editedBob = new PersonBuilder(BOB).withName(VALID_NAME_BOB.toLowerCase()).build();
         assertFalse(BOB.isSamePerson(editedBob));
 
-        // name has trailing spaces, all other attributes same -> returns false
+        // name has trailing spaces, all other attributes same -> throws IllegalArgumentException
         String nameWithTrailingSpaces = VALID_NAME_BOB + " ";
-        editedBob = new PersonBuilder(BOB).withName(nameWithTrailingSpaces).build();
-        assertFalse(BOB.isSamePerson(editedBob));
+        assertThrows(IllegalArgumentException.class, () ->
+            new PersonBuilder(BOB).withName(nameWithTrailingSpaces).build());
     }
 
     @Test
