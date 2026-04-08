@@ -372,11 +372,11 @@ Action     | Format, Examples
 **Add Doctor**    | `adddoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​` <br> e.g., `adddoc n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665`
 **Add Patient** | `addpat n/NAME p/PHONE e/EMAIL a/ADDRESS` <br> e.g., `addpat n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665`
 **Clear**  | `clear`
-**Delete Appointment** | `delappt d/DOCTOR_NAME n/PATIENT_NAME date/YYYY-MM-DD time/HH:MM` <br> e.g., `delappt d/James Ho n/Jane Tan date/2026-03-21 time/09:00`
+**Delete Appointment** | `delappt id/ID` <br> e.g., `delappt id/3`
 **Delete Doctor** | `deldoc INDEX`<br> e.g., `deldoc 3`
 **Delete Patient** | `delpat INDEX` <br> e.g., `delpat 2`
 **Edit Patient** | `editpat INDEX n/NAME p/PHONE e/EMAIL a/ADDRESS` <br> e.g., `editpat 2 n/James Ho p/22224444
-**Edit Appointment**|  `editappt d/OLD_DOCTOR date/OLD_DATE time/OLD_TIME (n/NEW_NAME) (d/NEW_DOC) (date/NEW_DATE) (time/NEW_TIME)` <br> e.g., `editappt d/Louis date/2026-03-28 time/09:00 d/Harvey time/10:00`p/22224444
+**Edit Appointment**|  `editappt id/ID (nd/NEW_DOC) (ndate/NEW_DATE) (ntime/NEW_TIME)` <br> e.g., `editappt id/3 nd/Harvey ntime/10:00`p/22224444
 **Exit** | `exit`
 **Edit Doctor** | `editdoc INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS]`<br> e.g., `editdoc 1 p/91234567 e/johnd@doctor.com`
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
