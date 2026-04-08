@@ -39,8 +39,9 @@ public class DeletePatCommand extends Command {
         requireNonNull(model);
         List<? extends Person> lastShownList = model.getFilteredPersonList();
 
-        if (targetIndex.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        if (targetIndex.getZeroBased() >= lastShownList.size() || targetIndex.getZeroBased() < 0) {
+            logger.info("Invalid index: " + targetIndex.getOneBased());
+            throw new CommandException(Messages.MESSAGE_INVALID_PATIENT_DISPLAYED_INDEX);
         }
 
         Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
@@ -48,6 +49,7 @@ public class DeletePatCommand extends Command {
             throw new CommandException("The person at the specified index is not a patient.");
         }
         model.deletePatient((Patient) personToDelete);
+
         logger.info("Deleted patient: " + Messages.format(personToDelete));
         return new CommandResult(String.format(MESSAGE_DELETE_PATIENT_SUCCESS, Messages.format(personToDelete)));
     }

@@ -5,6 +5,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalTime;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -169,6 +170,12 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean hasPatient(Patient patient) {
+        requireNonNull(patient);
+        return patients.hasPerson(patient);
+    }
+
+    @Override
     public void deleteDoctor(Doctor doctor) {
         doctors.removeDoctor(doctor);
         addressBook.removeDoctor(doctor);
@@ -178,6 +185,14 @@ public class ModelManager implements Model {
     public void deletePatient(Patient patient) {
         patients.removePatient(patient);
         addressBook.removePatient(patient);
+        deletePatientByAppt(patient);
+
+    }
+
+    private void deletePatientByAppt(Patient patient) {
+        for (Appointment appt : patient.getApptList()) {
+            ScheduleManager.delAppt(appt);
+        }
     }
 
     @Override
@@ -250,6 +265,10 @@ public class ModelManager implements Model {
         String finalTime = (newTime != null) ? newTime : oldTime;
 
         Appointment editedAppt = new Appointment(finalDoc, finalPat, finalDate, finalTime);
+
+        if (LocalTime.parse(finalTime).getMinute() % 30 != 0) {
+            throw new IOException("Please choose a valid timeslot.");
+        }
 
         if (newPat != null && !hasPatientWithName(newPat)) {
             throw new IOException("The new patient '" + newPat + "' does not exist in the Address Book.");

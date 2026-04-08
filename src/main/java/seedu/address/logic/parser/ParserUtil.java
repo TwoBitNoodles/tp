@@ -1,9 +1,13 @@
 package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
+import seedu.address.logic.Messages;
+import seedu.address.logic.commands.DeletePatCommand;
+import seedu.address.logic.commands.EditPatCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
@@ -26,6 +30,44 @@ public class ParserUtil {
         String trimmedIndex = oneBasedIndex.trim();
         if (!StringUtil.isNonZeroUnsignedInteger(trimmedIndex)) {
             throw new ParseException(MESSAGE_INVALID_INDEX);
+        }
+        return Index.fromOneBased(Integer.parseInt(trimmedIndex));
+    }
+
+    /**
+    * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
+    * trimmed.
+    * @throws ParseException if the specified index is invalid (not non-zero unsigned integer).
+    */
+    public static Index parseDelIndex(String oneBasedIndex) throws ParseException {
+        String trimmedIndex = oneBasedIndex.trim();
+        System.out.println("Parsing index: " + trimmedIndex); // Debug statement
+        if (!StringUtil.isInteger(trimmedIndex)) {
+            throw new ParseException(
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeletePatCommand.MESSAGE_USAGE));
+        }
+        int value = Integer.parseInt(trimmedIndex);
+        if (value <= 0) {
+            throw new ParseException(Messages.MESSAGE_INVALID_PATIENT_DISPLAYED_INDEX);
+        }
+        return Index.fromOneBased(Integer.parseInt(trimmedIndex));
+    }
+
+    /**
+     * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
+     * trimmed.
+     * @throws ParseException if the specified index is invalid (not non-zero unsigned integer).
+     */
+    public static Index parseEditIndex(String oneBasedIndex) throws ParseException {
+        String trimmedIndex = oneBasedIndex.trim();
+        System.out.println("Parsing index: " + trimmedIndex); // Debug statement
+        if (!StringUtil.isInteger(trimmedIndex)) {
+            throw new ParseException(
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditPatCommand.MESSAGE_USAGE));
+        }
+        int value = Integer.parseInt(trimmedIndex);
+        if (value <= 0) {
+            throw new ParseException(Messages.MESSAGE_INVALID_PATIENT_DISPLAYED_INDEX);
         }
         return Index.fromOneBased(Integer.parseInt(trimmedIndex));
     }

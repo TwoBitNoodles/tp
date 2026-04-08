@@ -59,7 +59,7 @@ public class AddDocCommandTest {
         // Copilot assisted with coding the following lines
         @SuppressWarnings("unchecked")
         Map<String, Object> scheduleData = mapper.readValue(schedule, Map.class);
-        assertTrue(scheduleData.containsKey("Grace Wong"));
+        assertTrue(scheduleData.containsKey(validDoctor.getDocIdFromSchedule()));
     }
 
     @Test

@@ -1,0 +1,72 @@
+
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":DeletePatCommandParser" as DeletePatCommandParser LOGIC_COLOR
+participant "d:DeletePatCommand" as DeletePatCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("delpat 1")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("delpat 1")
+activate AddressBookParser
+
+create DeletePatCommandParser
+AddressBookParser -> DeletePatCommandParser
+activate DeletePatCommandParser
+
+DeletePatCommandParser --> AddressBookParser
+deactivate DeletePatCommandParser
+
+AddressBookParser -> DeletePatCommandParser : parse("1")
+activate DeletePatCommandParser
+
+create DeletePatCommand
+DeletePatCommandParser -> DeletePatCommand
+activate DeletePatCommand
+
+DeletePatCommand --> DeletePatCommandParser :
+deactivate DeletePatCommand
+
+DeletePatCommandParser --> AddressBookParser : d
+deactivate DeletePatCommandParser
+'Hidden arrow to position the destroy marker below the end of the activation bar.'
+DeletePatCommandParser -[hidden]-> AddressBookParser
+destroy DeletePatCommandParser
+
+AddressBookParser --> LogicManager : d
+deactivate AddressBookParser
+
+LogicManager -> DeletePatCommand : execute(m)
+activate DeletePatCommand
+
+DeletePatCommand -> Model : deletePatient(1)
+activate Model
+
+Model --> DeletePatCommand
+deactivate Model
+
+create CommandResult
+DeletePatCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> DeletePatCommand
+deactivate CommandResult
+
+DeletePatCommand --> LogicManager : r
+deactivate DeletePatCommand
+
+[<--LogicManager
+deactivate LogicManager
+@enduml
+

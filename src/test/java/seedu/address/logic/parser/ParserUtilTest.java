@@ -20,7 +20,7 @@ public class ParserUtilTest {
     private static final String INVALID_EMAIL = "example.com";
 
     private static final String VALID_NAME = "Rachel Walker";
-    private static final String VALID_PHONE = "123456";
+    private static final String VALID_PHONE = "12345678";
     private static final String VALID_ADDRESS = "123 Main Street #0505";
     private static final String VALID_EMAIL = "rachel@example.com";
 
@@ -136,5 +136,24 @@ public class ParserUtilTest {
         String emailWithWhitespace = WHITESPACE + VALID_EMAIL + WHITESPACE;
         Email expectedEmail = new Email(VALID_EMAIL);
         assertEquals(expectedEmail, ParserUtil.parseEmail(emailWithWhitespace));
+    }
+
+    @Test
+    public void parseDelpatIndex_validInput_success() throws Exception {
+        // No whitespaces
+        assertEquals(INDEX_FIRST_PERSON, ParserUtil.parseDelIndex("1"));
+
+        // Leading and trailing whitespaces
+        assertEquals(INDEX_FIRST_PERSON, ParserUtil.parseDelIndex("  1  "));
+    }
+
+    @Test
+    public void parseDelpatIndex_invalidInput_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseDelIndex("10 a"));
+    }
+
+    @Test
+    public void parseDelpatIndex_negativeInput_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseDelIndex("-1"));
     }
 }

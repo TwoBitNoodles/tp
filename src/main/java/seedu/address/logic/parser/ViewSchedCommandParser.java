@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
+import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.ViewSchedCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
@@ -21,19 +22,33 @@ public class ViewSchedCommandParser implements Parser<ViewSchedCommand> {
         requireNonNull(args);
 
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, CliSyntax.PREFIX_DOCTOR, CliSyntax.PREFIX_DATE);
+                ArgumentTokenizer.tokenize(args, CliSyntax.PREFIX_DOCTOR, CliSyntax.PREFIX_DOCTOR_ID,
+                        CliSyntax.PREFIX_DATE);
 
-        // Doctor prefix is required
         Optional<String> doctorOpt = argMultimap.getValue(CliSyntax.PREFIX_DOCTOR);
+        Optional<String> doctorIdOpt = argMultimap.getValue(CliSyntax.PREFIX_DOCTOR_ID);
         if (doctorOpt.isEmpty()) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                            ViewSchedCommand.MESSAGE_USAGE));
+        }
+        if (doctorIdOpt.isEmpty()) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                             ViewSchedCommand.MESSAGE_USAGE));
         }
 
         String doctorName = doctorOpt.get().trim();
+        int doctorId;
+        try {
+            Index parsedDoctorId = ParserUtil.parseIndex(doctorIdOpt.get().trim());
+            doctorId = parsedDoctorId.getOneBased();
+        } catch (ParseException e) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                            ViewSchedCommand.MESSAGE_USAGE));
+        }
 
-        // Date prefix is optional
         Optional<String> dateOpt = argMultimap.getValue(CliSyntax.PREFIX_DATE);
         LocalDate date = null;
         if (dateOpt.isPresent()) {
@@ -46,6 +61,6 @@ public class ViewSchedCommandParser implements Parser<ViewSchedCommand> {
             }
         }
 
-        return new ViewSchedCommand(doctorName, date);
+        return new ViewSchedCommand(doctorName, doctorId, date);
     }
 }

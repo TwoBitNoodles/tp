@@ -3,6 +3,7 @@ package seedu.address.ui;
 import java.util.Map;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -55,14 +56,7 @@ public class SchedulePanel extends UiPart<Region> {
             timeLabel.getStyleClass().add("time-label");
             scheduleGrid.add(timeLabel, 0, row);
 
-            // Slot
-            Region slot = new Region();
-            slot.setPrefSize(80, 30);
-            if (entry.getValue() == null) {
-                slot.getStyleClass().add("slot-available");
-            } else {
-                slot.getStyleClass().add("slot-booked");
-            }
+            Label slot = createSlotLabel(entry.getValue());
             scheduleGrid.add(slot, 1, row);
             row++;
         }
@@ -114,17 +108,26 @@ public class SchedulePanel extends UiPart<Region> {
             colIndex = 1;
             for (String date : weeklySchedule.keySet()) {
                 Map<String, String> day = weeklySchedule.get(date);
-                Region slot = new Region();
-                slot.setPrefSize(80, 30);
-                String patient = day.get(times[row]);
-                if (patient == null) {
-                    slot.getStyleClass().add("slot-available");
-                } else {
-                    slot.getStyleClass().add("slot-booked");
-                }
+                Label slot = createSlotLabel(day.get(times[row]));
                 scheduleGrid.add(slot, colIndex++, row + 1);
             }
         }
     }
-}
 
+    private Label createSlotLabel(String patient) {
+        Label slot = new Label(patient == null ? "" : patient);
+        slot.getStyleClass().add("schedule-slot");
+        slot.setAlignment(Pos.CENTER);
+        slot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        slot.setPrefHeight(34);
+        slot.setWrapText(true);
+
+        if (patient == null) {
+            slot.getStyleClass().add("slot-available");
+        } else {
+            slot.getStyleClass().add("slot-booked");
+        }
+
+        return slot;
+    }
+}

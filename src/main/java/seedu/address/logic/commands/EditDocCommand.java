@@ -91,7 +91,7 @@ public class EditDocCommand extends Command {
 
         if (!currDoctorName.equalsIgnoreCase(newDoctorName)) {
             try {
-                ScheduleManager.renameDoctorSchedule(currDoctorName, newDoctorName);
+                ScheduleManager.renameDoctorSchedule(editedDoctor);
             } catch (java.io.IOException e) {
                 throw new CommandException(Messages.MESSAGE_SCHEDULE_UPDATE_FAILED);
             }

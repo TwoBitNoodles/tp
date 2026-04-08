@@ -333,20 +333,38 @@
 
 /* Time labels */
 .time-label {
-    -fx-text-fill: #cccccc;
-    -fx-font-size: 11px;
+    -fx-text-fill: #49225b;
+    -fx-font-size: 13px;
+}
+
+.date-label {
+    -fx-text-fill: #49225b;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
 }
 
 /* Available slot */
-.slot-available {
-    -fx-background-color: #4CAF50; /* green */
+.schedule-slot {
     -fx-border-color: #555;
+    -fx-border-width: 1;
+    -fx-background-insets: 0;
+    -fx-background-radius: 2;
+    -fx-border-radius: 2;
+    -fx-font-size: 11px;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+}
+
+.slot-available {
+    -fx-background-color: #e7dbef; /* green */
+    -fx-text-fill: transparent;
 }
 
 /* Booked slot */
 .slot-booked {
-    -fx-background-color: #F44336; /* red */
-    -fx-border-color: #555;
+    -fx-background-color: #49225b; /* red */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
 }
 
 #cardPane {
@@ -392,4 +410,3 @@
     -fx-background-radius: 2;
     -fx-font-size: 11;
 }
-
