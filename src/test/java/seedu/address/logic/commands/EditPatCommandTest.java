@@ -187,6 +187,18 @@ public class EditPatCommandTest {
         assertEquals(expected, editPatCommand.toString());
     }
 
+    @Test
+    public void execute_noFieldsSpecifiedUnfilteredList_outOfBoundsIndex() {
+        model = new ModelManager();
+        Patient originalPatient = new PatientBuilder().build();
+        model.addPatient(originalPatient);
+
+        EditPatCommand editPatCommand = new EditPatCommand(Index.fromOneBased(10),
+            new EditPatCommand.EditPatDescriptor());
+        String expectedMessage = Messages.MESSAGE_INVALID_PATIENT_DISPLAYED_INDEX;
+        assertCommandFailure(editPatCommand, model, expectedMessage);
+    }
+
 
 
 }

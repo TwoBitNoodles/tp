@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.person.Doctor;
+import seedu.address.model.person.Patient;
 import seedu.address.model.person.Person;
 
 /**
@@ -38,6 +39,8 @@ public class PersonCard extends UiPart<Region> {
     private Label email;
     @FXML
     private Label doctorId;
+    @FXML
+    private Label patientId;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -53,9 +56,17 @@ public class PersonCard extends UiPart<Region> {
         // doctor id information added by copilot
         if (person instanceof Doctor) {
             doctorId.setText("Doctor ID: " + ((Doctor) person).getDocId());
+            patientId.setVisible(false);
+            patientId.setManaged(false);
+        } else if (person instanceof Patient) {
+            patientId.setText("Patient ID: " + ((Patient) person).getPatientId());
+            doctorId.setVisible(false);
+            doctorId.setManaged(false);
         } else {
             doctorId.setVisible(false);
             doctorId.setManaged(false);
+            patientId.setVisible(false);
+            patientId.setManaged(false);
         }
     }
 }

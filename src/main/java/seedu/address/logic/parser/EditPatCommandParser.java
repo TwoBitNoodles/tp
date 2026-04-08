@@ -50,10 +50,6 @@ public class EditPatCommandParser implements Parser<EditPatCommand> {
             editPatDescriptor.setAddress(ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get()));
         }
 
-        if (!editPatDescriptor.isAnyFieldEdited()) {
-            throw new ParseException(EditPatCommand.MESSAGE_NOT_EDITED);
-        }
-
         return new EditPatCommand(index, editPatDescriptor);
     }
 }

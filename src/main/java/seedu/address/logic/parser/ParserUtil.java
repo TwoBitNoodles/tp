@@ -41,7 +41,6 @@ public class ParserUtil {
     */
     public static Index parseDelIndex(String oneBasedIndex) throws ParseException {
         String trimmedIndex = oneBasedIndex.trim();
-        System.out.println("Parsing index: " + trimmedIndex); // Debug statement
         if (!StringUtil.isInteger(trimmedIndex)) {
             throw new ParseException(
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeletePatCommand.MESSAGE_USAGE));
