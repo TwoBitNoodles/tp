@@ -31,6 +31,7 @@ class JsonAdaptedPerson {
     private final String email;
     private final String address;
     private final Integer docId;
+    private final Integer patId;
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -39,13 +40,15 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(@JsonProperty("type") String type,
             @JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("docId") Integer docId) {
+            @JsonProperty("docId") Integer docId,
+            @JsonProperty("patId") Integer patId) {
         this.type = type;
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.docId = docId;
+        this.patId = patId;
     }
 
     /**
@@ -55,12 +58,15 @@ class JsonAdaptedPerson {
         if (source instanceof Doctor) {
             type = TYPE_DOCTOR;
             docId = ((Doctor) source).getDocId();
+            patId = null;
         } else if (source instanceof Patient) {
             type = TYPE_PATIENT;
             docId = null;
+            patId = ((Patient) source).getPatientId();
         } else {
             type = TYPE_PERSON;
             docId = null;
+            patId = null;
         }
         name = source.getName().fullName;
         phone = source.getPhone().value;
@@ -85,6 +91,9 @@ class JsonAdaptedPerson {
             }
             return new Doctor(modelName, modelPhone, modelEmail, modelAddress);
         } else if (TYPE_PATIENT.equals(type)) {
+            if (patId != null) {
+                return new Patient(modelName, modelPhone, modelEmail, modelAddress, patId);
+            }
             return new Patient(modelName, modelPhone, modelEmail, modelAddress);
         }
         return new Person(modelName, modelPhone, modelEmail, modelAddress);

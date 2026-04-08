@@ -190,7 +190,6 @@ public class ModelManager implements Model {
         } catch (IOException e) {
             logger.warning("Failed to delete patient's appointments: " + e.getMessage());
         }
-
     }
 
     /**
