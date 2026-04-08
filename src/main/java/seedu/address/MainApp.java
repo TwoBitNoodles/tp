@@ -22,6 +22,8 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Doctor;
+import seedu.address.model.person.Person;
 import seedu.address.storage.AddressBookStorage;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
@@ -108,6 +110,15 @@ public class MainApp extends Application {
             logger.warning("Doctor data could not be loaded. Starting with empty doctor data.");
             doctorData = new AddressBook();
         }
+
+        int maxId = 0;
+        for (Person p : doctorData.getPersonList()) {
+            if (p instanceof Doctor && ((Doctor) p).getDocId() > maxId) {
+                maxId = ((Doctor) p).getDocId();
+            }
+        }
+        // max id is the highest available ID, we assume it doesn't exceed MAX_INT
+        Doctor.setIdTracker(maxId + 1);
 
         return new ModelManager(initialData, patientData, doctorData, userPrefs);
     }

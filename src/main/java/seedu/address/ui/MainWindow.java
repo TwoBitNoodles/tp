@@ -1,9 +1,11 @@
 package seedu.address.ui;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCombination;
@@ -24,6 +26,10 @@ import seedu.address.logic.parser.exceptions.ParseException;
 public class MainWindow extends UiPart<Stage> {
 
     private static final String FXML = "MainWindow.fxml";
+    private static final double SINGLE_SCHEDULE_MIN_WIDTH = 400;
+    private static final double SINGLE_SCHEDULE_MIN_HEIGHT = 400;
+    private static final double WEEKLY_SCHEDULE_MIN_WIDTH = 800;
+    private static final double WEEKLY_SCHEDULE_MIN_HEIGHT = 400;
 
     private final Logger logger = LogsCenter.getLogger(getClass());
 
@@ -168,6 +174,67 @@ public class MainWindow extends UiPart<Stage> {
     }
 
     /**
+     * Shows the schedule in a popup window.
+     */
+    private void showSchedulePopup(Map<String, String> schedule) {
+        try {
+            SchedulePanel panel = new SchedulePanel();
+            panel.displaySchedule(schedule);
+
+            Stage stage = new Stage();
+            stage.setTitle("Doctor Schedule for the Day");
+
+            panel.getRoot().setMinWidth(SINGLE_SCHEDULE_MIN_WIDTH);
+            panel.getRoot().setMinHeight(SINGLE_SCHEDULE_MIN_HEIGHT);
+
+            Scene scene = new Scene(panel.getRoot());
+
+            scene.getStylesheets().add(
+                getClass().getResource("/view/DarkTheme.css").toExternalForm()
+            );
+
+            stage.setScene(scene);
+
+            stage.setWidth(400);
+            stage.setHeight(300);
+            stage.setMinWidth(SINGLE_SCHEDULE_MIN_WIDTH);
+            stage.setMinHeight(SINGLE_SCHEDULE_MIN_HEIGHT);
+
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showWeeklySchedulePopup(Map<String, Map<String, String>> weeklySchedule) {
+        try {
+            SchedulePanel panel = new SchedulePanel();
+            panel.displayWeeklySchedule(weeklySchedule);
+
+            Stage stage = new Stage();
+            stage.setTitle("Weekly Doctor Schedule");
+
+            panel.getRoot().setMinWidth(WEEKLY_SCHEDULE_MIN_WIDTH);
+            panel.getRoot().setMinHeight(WEEKLY_SCHEDULE_MIN_HEIGHT);
+
+            Scene scene = new Scene(panel.getRoot());
+            scene.getStylesheets().add(getClass().getResource("/view/DarkTheme.css").toExternalForm());
+
+            stage.setScene(scene);
+            stage.setWidth(800); // wider for weekly view
+            stage.setHeight(400);
+            stage.setMinWidth(WEEKLY_SCHEDULE_MIN_WIDTH);
+            stage.setMinHeight(WEEKLY_SCHEDULE_MIN_HEIGHT);
+
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Executes the command and returns the result.
      *
      * @see seedu.address.logic.Logic#execute(String)
@@ -177,6 +244,12 @@ public class MainWindow extends UiPart<Stage> {
             CommandResult commandResult = logic.execute(commandText);
             logger.info("Result: " + commandResult.getFeedbackToUser());
             resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
+
+            if (commandResult.isWeekly() && commandResult.getWeeklySchedule() != null) {
+                showWeeklySchedulePopup(commandResult.getWeeklySchedule());
+            } else if (commandResult.getSchedule() != null) {
+                showSchedulePopup(commandResult.getSchedule());
+            }
 
             if (commandResult.isShowHelp()) {
                 handleHelp();

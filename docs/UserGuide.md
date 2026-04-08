@@ -101,6 +101,11 @@ Adds a doctor to the app.
 
 Format: `adddoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​`
 
+Notes:
+* `NAME` is the name of the patient. It should not be blank. Only alphabets and spaces are allowed.
+* `PHONE_NUMBER` should only contain numbers.
+* `EMAIL` must match standard email format
+
 Examples:
 * `adddoc n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01`
 * `adddoc n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/1234567`
@@ -130,6 +135,26 @@ Examples:
 New patient added: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags:
 ```
 
+### Editing a doctor: `editdoc`
+
+Edits an existing doctor in the app.
+
+Format: `editdoc INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS]`
+
+Notes:
+* Edits the doctor at the specified INDEX.
+* The index refers to the index number shown in the displayed list of doctor's and/or patients. The index must be a positive integer 1, 2, 3, …​
+* At least one of the following fields must be provided: name, phone, email, or address.
+* Existing values will be updated to the input values.
+
+Examples:
+* `editdoc 1 p/91234567 e/johnd@doctor.com`
+* `editdoc 2 n/Betsy Crower`
+
+Expected output:
+```
+Edited Doctor: John Doe; Phone: 91234567; Email: johnd@doctor.com; Address: 21 Bencoolen; Tags:
+```
 
 ### Listing all persons : `list`
 
@@ -178,6 +203,7 @@ Deletes the specified doctor from the app.
 
 Format: `deldoc INDEX`
 
+Notes:
 * Deletes the doctor at the specified `INDEX`.
 * The index refers to the index number shown in the displayed doctor list.
 * The index **must be a positive integer** 1, 2, 3, …​
@@ -212,21 +238,21 @@ Examples:
 
 Expected output:
 ```
-Deleted Patient: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags: 
+Deleted Patient: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags:
 ```
 
 ### Viewing a doctor's schedule : `viewsched`
 
-Displays all appointment slots for a specific doctor on a given date, showing whether each slot is available or booked.
+Displays all appointment slots for a specific doctor for a week or on a given date, showing whether each slot is available or booked.
 
-Format: `viewsched d/DOCTOR_NAME date/DATE`
+Format: `viewsched d/DOCTOR_NAME [date/DATE]`
 
 <box type="info" seamless>
 
 **Notes:**
 * `DOCTOR_NAME` must match an existing doctor's name. The match is case-insensitive. e.g. `john tan` will match `John Tan`.
 * `DATE` must be in the strict `YYYY-MM-DD` format. Other formats such as `22-02-2026` or `Feb 22 2026` are not accepted.
-* The date cannot be in the past.
+* The date cannot be in the past and must be within 7 days of local date.
 * Appointment slots are displayed in half-hourly intervals from 09:00 to 17:00.
 
 </box>
@@ -239,30 +265,45 @@ Format: `viewsched d/DOCTOR_NAME date/DATE`
 
 Examples:
 * `viewsched d/John Tan date/2026-02-22` displays John Tan's schedule on 22 Feb 2026.
-* `viewsched d/Alice Lim date/2026-03-01` displays Alice Lim's schedule on 1 Mar 2026.
+* `viewsched d/Alice Lim` displays Alice Lim's schedule for next 7 days.
 
 Expected output:
 ```
-Schedule for John Tan on 2026-02-22
+Schedule for John Tan on 2026-03-31
 
-09:00 – Available
-09:30 – Booked
-10:00 – Available
-10:30 – Available
-11:00 – Available
-11:30 – Available
-12:00 – Available
-12:30 – Available
-13:00 – Booked
-13:30 – Available
-14:00 – Available
-14:30 – Available
-15:00 – Available
-15:30 – Booked
-16:00 – Available
-16:30 – Available
-17:00 – Available
 ```
+
+### Editing a patient's details : `editpat`
+
+Edits the details of an existing patient in the app.
+Format: `editpat INDEX n/NAME p/PHONE e/EMAIL a/ADDRESS`
+
+**Notes:**
+* Edits the patient at the specified `INDEX`.
+* The index refers to the index number shown in the displayed list.
+* The index **must be a positive integer** 1, 2, 3, …​
+* There must be at least one field to edit. e.g. `editpat 2 n/John Doe` is acceptable, but `editpat 2` is not.
+
+
+Examples:
+* `editpat 2 n/John Doe` changes the name of a patient in the index to `John Doe`.
+
+Expected output:
+```
+Edited Patient: John Doe; Phone: 91234567; Email: johndoe@example.com; Address: 123456; Tags: 
+```
+## Editing an appointment : `editappt` 
+Edits the details of an existing appointment 
+Format : `editappt d/OLD_DOCTOR date/OLD_DATE time/OLD_TIME (n/NEW_NAME) (d/NEW_DOC) (date/NEW_DATE) (time/NEW_TIME)`
+
+**Notes**
+* Edits the appointment at the old date and time for the old doctor
+* The new fields in brackets are optional, but there must be at least one new field to edit. 
+e.g. `editappt d/Louis date/2026-03-28 time/09:00 time/10:00` is acceptable and will rebook the slot to 10am 
+for the same patient,but `editappt d/Louis date/2026-03-28 time/09:00` is invalid on its own.
+
+Examples:
+* `editappt d/Louis date/2026-03-28 time/09:00 d/Harvey time/10:00` edits the appointment to be with Dr Harvey instead of Dr Louis at 10am on the same date
 
 ### Clearing all entries : `clear`
 
@@ -297,6 +338,7 @@ CLInicDesk data are saved in the hard disk automatically after any command that 
 **Caution:**
 If your changes to the data file makes its format invalid, CLInicDesk will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
 Furthermore, certain edits can cause the CLInicDesk to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
+
 </box>
 
 ### Archiving data files `[coming in v2.0]`
@@ -330,8 +372,11 @@ Action     | Format, Examples
 **Delete Appointment** | `delappt d/DOCTOR_NAME n/PATIENT_NAME date/YYYY-MM-DD time/HH:MM` <br> e.g., `delappt d/James Ho n/Jane Tan date/2026-03-21 time/09:00`
 **Delete Doctor** | `deldoc INDEX`<br> e.g., `deldoc 3`
 **Delete Patient** | `delpat INDEX` <br> e.g., `delpat 2`
+**Edit Patient** | `editpat INDEX n/NAME p/PHONE e/EMAIL a/ADDRESS` <br> e.g., `editpat 2 n/James Ho p/22224444
+**Edit Appointment**|  `editappt d/OLD_DOCTOR date/OLD_DATE time/OLD_TIME (n/NEW_NAME) (d/NEW_DOC) (date/NEW_DATE) (time/NEW_TIME)` <br> e.g., `editappt d/Louis date/2026-03-28 time/09:00 d/Harvey time/10:00`p/22224444
 **Exit** | `exit`
+**Edit Doctor** | `editdoc INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS]`<br> e.g., `editdoc 1 p/91234567 e/johnd@doctor.com`
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list`
-**View Schedule** | `viewsched d/DOCTOR_NAME date/YYYY-MM-DD`<br> e.g., `viewsched d/John Tan date/2026-03-20`
+**View Schedule** | `viewsched d/DOCTOR_NAME [date/YYYY-MM-DD]`<br> e.g., `viewsched d/John Tan date/2026-03-20`
 **Help**   | `help`

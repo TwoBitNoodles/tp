@@ -1,15 +1,10 @@
 package seedu.address.testutil;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Doctor;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
-import seedu.address.model.tag.Tag;
-import seedu.address.model.util.SampleDataUtil;
 
 /**
  * A utility class to help with building Doctor objects.
@@ -25,7 +20,7 @@ public class DoctorBuilder {
     private Phone phone;
     private Email email;
     private Address address;
-    private Set<Tag> tags;
+    private Integer docId;
 
     /**
      * Creates a {@code DoctorBuilder} with the default details.
@@ -35,7 +30,7 @@ public class DoctorBuilder {
         phone = new Phone(DEFAULT_PHONE);
         email = new Email(DEFAULT_EMAIL);
         address = new Address(DEFAULT_ADDRESS);
-        tags = new HashSet<>();
+        docId = null;
     }
 
     /**
@@ -46,7 +41,7 @@ public class DoctorBuilder {
         phone = doctorToCopy.getPhone();
         email = doctorToCopy.getEmail();
         address = doctorToCopy.getAddress();
-        tags = new HashSet<>(doctorToCopy.getTags());
+        docId = doctorToCopy.getDocId();
     }
 
     /**
@@ -54,14 +49,6 @@ public class DoctorBuilder {
      */
     public DoctorBuilder withName(String name) {
         this.name = new Name(name);
-        return this;
-    }
-
-    /**
-     * Parses the {@code tags} into a {@code Set<Tag>} and set it to the {@code Person} that we are building.
-     */
-    public DoctorBuilder withTags(String ... tags) {
-        this.tags = SampleDataUtil.getTagSet(tags);
         return this;
     }
 
@@ -89,8 +76,22 @@ public class DoctorBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code docId} of the {@code Doctor} that we are building.
+     */
+    public DoctorBuilder withDocId(int docId) {
+        this.docId = docId;
+        return this;
+    }
+
+    /**
+     * Creates and returns the {@code Doctor} based on id availability.
+     */
     public Doctor build() {
-        return new Doctor(name, phone, email, address, tags);
+        if (docId != null) {
+            return new Doctor(name, phone, email, address, docId);
+        }
+        return new Doctor(name, phone, email, address);
     }
 
 }

@@ -15,8 +15,15 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.person.Doctor;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.Patient;
+import seedu.address.model.person.Person;
+import seedu.address.model.person.exceptions.PersonNotFoundException;
 import seedu.address.testutil.AddressBookBuilder;
+import seedu.address.testutil.DoctorBuilder;
+import seedu.address.testutil.PatientBuilder;
+import seedu.address.testutil.PersonBuilder;
 
 public class ModelManagerTest {
 
@@ -27,6 +34,19 @@ public class ModelManagerTest {
         assertEquals(new UserPrefs(), modelManager.getUserPrefs());
         assertEquals(new GuiSettings(), modelManager.getGuiSettings());
         assertEquals(new AddressBook(), new AddressBook(modelManager.getAddressBook()));
+    }
+
+    @Test
+    public void constructor_doctorsNotInAddressBook_mergedIntoAddressBook() {
+        Doctor doctor = new DoctorBuilder().withName("Grey").withPhone("00121212")
+                .withEmail("grey@doc.com").withAddress("20 Haji Lane").build();
+        AddressBook newAddressBook = new AddressBook();
+        AddressBook newPatientsAddressBook = new AddressBook();
+        AddressBook doctorsAddressBook = new AddressBook();
+        doctorsAddressBook.addDoctor(doctor);
+        ModelManager modelManager = new ModelManager(newAddressBook, newPatientsAddressBook,
+                doctorsAddressBook, new UserPrefs());
+        assertTrue(modelManager.hasPerson(doctor));
     }
 
     @Test
@@ -88,9 +108,106 @@ public class ModelManagerTest {
         assertTrue(modelManager.hasPerson(ALICE));
     }
 
+
     @Test
     public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredPersonList().remove(0));
+    }
+
+    @Test
+    public void setDoctorsFilePath_nullPath_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.setDoctorsFilePath(null));
+    }
+
+    @Test
+    public void setDoctorsFilePath_validPath_setsDoctorsFilePath() {
+        Path path = Paths.get("doctors/file/path");
+        modelManager.setDoctorsFilePath(path);
+        assertEquals(path, modelManager.getDoctorsFilePath());
+    }
+
+    @Test
+    public void getDoctorData_defaultModelManager_returnsEmptyAddressBook() {
+        assertEquals(new AddressBook(), new AddressBook(modelManager.getDoctorData()));
+    }
+
+    @Test
+    public void hasDoctor_nullDoctor_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.hasDoctor(null));
+    }
+
+    @Test
+    public void hasDoctor_doctorNotInModel_returnsFalse() {
+        Doctor doctor = new DoctorBuilder().withName("Peabody").withPhone("67676767")
+                .withEmail("peabody@doc.com").withAddress("Sherman St").build();
+        assertFalse(modelManager.hasDoctor(doctor));
+    }
+
+    @Test
+    public void hasDoctor_doctorInModel_returnsTrue() {
+        Doctor doctor = new DoctorBuilder().withName("House").withPhone("76767676")
+                .withEmail("house@doc.com").withAddress("Princeton Plainsborough").build();
+        modelManager.addDoctor(doctor);
+        assertTrue(modelManager.hasDoctor(doctor));
+    }
+
+    @Test
+    public void addDoctor_validDoctor_addsBoth() {
+        Doctor doctor = new DoctorBuilder().withName("Mickey Mouse").withPhone("20202020")
+                .withEmail("mickey@doc.com").withAddress("11 Clubhouse St").build();
+        modelManager.addDoctor(doctor);
+
+        assertTrue(modelManager.hasDoctor(doctor));
+        assertTrue(modelManager.hasPerson(doctor));
+    }
+
+    @Test
+    public void deleteDoctor_doctorInModel_removesBoth() {
+        Doctor doctor = new DoctorBuilder().withName("Nefario").withPhone("82828282")
+                .withEmail("nefario@minions.com").withAddress("32 AVL Headquarters").build();
+        modelManager.addDoctor(doctor);
+        assertTrue(modelManager.hasDoctor(doctor));
+
+        modelManager.deleteDoctor(doctor);
+        assertFalse(modelManager.hasDoctor(doctor));
+        assertFalse(modelManager.hasPerson(doctor));
+    }
+
+    @Test
+    public void setDoctor_validEdit_updatesBoth() {
+        Doctor oldDoc = new DoctorBuilder().withName("McDonald").withPhone("44445555")
+                .withEmail("mcd@doc.com").withAddress("Old Road").build();
+        modelManager.addDoctor(oldDoc);
+
+        Doctor newDoc = new DoctorBuilder().withName("Kentucky").withPhone("44445555")
+                .withEmail("mcd@doc.com").withAddress("Chicken Road").build();
+        modelManager.setDoctor(oldDoc, newDoc);
+
+        assertFalse(modelManager.hasDoctor(oldDoc));
+        assertFalse(modelManager.hasPerson(oldDoc));
+        assertTrue(modelManager.hasDoctor(newDoc));
+        assertTrue(modelManager.hasPerson(newDoc));
+    }
+
+    @Test
+    public void hasDoctorWithName_doctorExists_returnsTrue() {
+        Doctor doctor = new DoctorBuilder().withName("Gru").withPhone("67896789")
+                .withEmail("gru@minions.com").withAddress("33 AVL").build();
+        modelManager.addDoctor(doctor);
+        assertTrue(modelManager.hasDoctorWithName("Gru"));
+    }
+
+    @Test
+    public void hasDoctorWithName_doctorDoesNotExist_returnsFalse() {
+        assertFalse(modelManager.hasDoctorWithName("Invisidoc"));
+    }
+
+    @Test
+    public void hasDoctorWithName_nameIsCaseInsensitive_returnsTrue() {
+        Doctor doctor = new DoctorBuilder().withName("Gru").withPhone("67896789")
+                .withEmail("gru@minions.com").withAddress("33 AVL").build();
+        modelManager.addDoctor(doctor);
+        assertTrue(modelManager.hasDoctorWithName("gru"));
     }
 
     @Test
@@ -134,4 +251,85 @@ public class ModelManagerTest {
         differentUserPrefs.setAddressBookFilePath(Paths.get("differentFilePath"));
         assertFalse(modelManager.equals(new ModelManager(addressBook, patients, doctors, differentUserPrefs)));
     }
+
+    @Test
+    public void getPatientsFilePath_returnsCorrectFilePath() {
+        Path expectedPath = Paths.get("data/patients.json");
+        modelManager.setPatientsFilePath(expectedPath);
+        assertEquals(expectedPath, modelManager.getPatientsFilePath());
+    }
+
+    @Test
+    public void getDoctorsFilePath_returnsCorrectFilePath() {
+        Path expectedPath = Paths.get("data/doctors.json");
+        modelManager.setDoctorsFilePath(expectedPath);
+        assertEquals(expectedPath, modelManager.getDoctorsFilePath());
+    }
+
+    @Test
+    public void getScheduleFilePath_returnsCorrectFilePath() {
+        Path expectedPath = Paths.get("data/schedule.json");
+        modelManager.setScheduleFilePath(expectedPath);
+        assertEquals(expectedPath, modelManager.getScheduleFilePath());
+    }
+
+    @Test
+    public void deletePatient_patientExists_patientDeletedSuccessfully() {
+        Patient patient = new PatientBuilder().withName("Mary Tan").build();
+        modelManager.addPatient(patient);
+        assertTrue(modelManager.hasPerson(patient));
+
+        modelManager.deletePatient(patient);
+        assertFalse(modelManager.hasPerson(patient));
+    }
+
+    @Test
+    public void deletePatient_patientDoesNotExist_throwsNullPointerException() {
+        Patient patient = new PatientBuilder().withName("Does Not Exist").build();
+        assertThrows(PersonNotFoundException.class, () -> modelManager.deletePatient(patient));
+    }
+
+    @Test
+    public void setPatient_patientExists_patientUpdatedSuccessfully() {
+        Patient patient = new PatientBuilder().withName("Pat One").build();
+        modelManager.addPatient(patient);
+        assertTrue(modelManager.hasPerson(patient));
+
+        Patient updatedPatient = new PatientBuilder().withName("Pat One Updated").build();
+        modelManager.setPatient(patient, updatedPatient);
+        assertFalse(modelManager.hasPerson(patient));
+        assertTrue(modelManager.hasPerson(updatedPatient));
+    }
+
+    @Test
+    public void setDoctor_doctorExists_doctorUpdatedSuccessfully() {
+        Doctor doctor = new DoctorBuilder().withName("Doc One").build();
+        modelManager.addDoctor(doctor);
+        assertTrue(modelManager.hasPerson(doctor));
+
+        Doctor updatedDoctor = new DoctorBuilder().withName("Doc One Updated").build();
+        modelManager.setDoctor(doctor, updatedDoctor);
+        assertFalse(modelManager.hasPerson(doctor));
+        assertTrue(modelManager.hasPerson(updatedDoctor));
+    }
+
+    @Test
+    public void setPerson_personExists_personUpdatedSuccessfully() {
+        Person person = new PersonBuilder().withName("Person One").build();
+        modelManager.addPerson(person);
+        assertTrue(modelManager.hasPerson(person));
+
+        Person updatedPerson = new PatientBuilder().withName("Person One Updated").build();
+        modelManager.setPerson(person, updatedPerson);
+        assertFalse(modelManager.hasPerson(person));
+        assertTrue(modelManager.hasPerson(updatedPerson));
+    }
+
+    @Test
+    public void getPatientData_returnsCorrectPatientData() {
+        Patient patient = new PatientBuilder().withName("Patient Data").build();
+        modelManager.addPatient(patient);
+        assertEquals(patient, modelManager.getPatientData().getPersonList().get(0));
+    }
+
 }

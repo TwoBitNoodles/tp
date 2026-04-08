@@ -37,6 +37,7 @@ task coverage(type: JacocoReport) {
     reports {
         html.required = true
         xml.required = true
+        csv.required = true
     }
 }
 
@@ -71,6 +72,10 @@ dependencies {
 
 shadowJar {
     archiveFileName = 'clinicdesk.jar'
+}
+
+run {
+    enableAssertions = true
 }
 
 defaultTasks 'clean', 'test'

@@ -77,7 +77,9 @@ public class DeletePatCommandTest {
         CommandException thrown = assertThrows(CommandException.class, () ->
                 deletePatCommand.execute(model));
 
-        assertEquals(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX, thrown.getMessage());
+        // Check that the exception message is correct
+        // Out-of-bounds index -> show MESSAGE_INVALID_PATIENT_DISPLAYED_INDEX
+        assertEquals(Messages.MESSAGE_INVALID_PATIENT_DISPLAYED_INDEX, thrown.getMessage());
     }
 
     @Test

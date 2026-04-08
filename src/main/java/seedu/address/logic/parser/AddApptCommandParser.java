@@ -1,9 +1,12 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.commands.AddApptCommand.MESSAGE_USAGE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
+
+import java.util.stream.Stream;
 
 import seedu.address.logic.commands.AddApptCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -23,16 +26,26 @@ public class AddApptCommandParser {
                                                                     PREFIX_DOCTOR, PREFIX_NAME);
 
 
-        if (argMultimap.getValue(PREFIX_DATE).isEmpty() || argMultimap.getValue(PREFIX_TIME).isEmpty()) {
-            throw new ParseException("Missing date (date/) or time (time/)!");
+        if (!arePrefixesPresent(argMultimap, PREFIX_DOCTOR, PREFIX_NAME, PREFIX_DATE, PREFIX_TIME)
+                || !argMultimap.getPreamble().isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_USAGE));
         }
 
-        String person = argMultimap.getValue(PREFIX_NAME).get(); // This gets whatever is before the first prefix
+
+        String person = argMultimap.getValue(PREFIX_NAME).get();
         String date = argMultimap.getValue(PREFIX_DATE).get();
         String time = argMultimap.getValue(PREFIX_TIME).get();
         String doctor = argMultimap.getValue(PREFIX_DOCTOR).get();
         Appointment appt = new Appointment(doctor, person, date, time);
 
         return new AddApptCommand(appt);
+    }
+
+    /**
+     * Returns true if none of the prefixes contains empty {@code Optional} values in the given
+     * {@code ArgumentMultimap}.
+     */
+    private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
+        return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
     }
 }

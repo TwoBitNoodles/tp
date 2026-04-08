@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Map;
 import java.util.Objects;
 
 import seedu.address.commons.util.ToStringBuilder;
@@ -19,13 +20,22 @@ public class CommandResult {
     /** The application should exit. */
     private final boolean exit;
 
+    private final Map<String, Map<String, String>> weeklySchedule;
+    private final boolean isWeekly;
+    private final Map<String, String> schedule;
+
+
     /**
      * Constructs a {@code CommandResult} with the specified fields.
      */
-    public CommandResult(String feedbackToUser, boolean showHelp, boolean exit) {
+    public CommandResult(String feedbackToUser, boolean showHelp, boolean exit, Map<String, String> schedule,
+                        Map<String, Map<String, String>> weeklySchedule, boolean isWeekly) {
         this.feedbackToUser = requireNonNull(feedbackToUser);
         this.showHelp = showHelp;
         this.exit = exit;
+        this.schedule = schedule;
+        this.weeklySchedule = weeklySchedule;
+        this.isWeekly = isWeekly;
     }
 
     /**
@@ -33,7 +43,43 @@ public class CommandResult {
      * and other fields set to their default value.
      */
     public CommandResult(String feedbackToUser) {
-        this(feedbackToUser, false, false);
+        this(feedbackToUser, false, false, null, null, false);
+    }
+
+    /**
+     * Constructs a {@code CommandResult} with the specified {@code feedbackToUser} and {@code schedule},
+     * and other fields set to their default value.
+     * @param feedbackToUser
+     * @param schedule
+     */
+    public CommandResult(String feedbackToUser, Map<String, String> schedule) {
+        this(feedbackToUser, false, false, schedule, null, false);
+    }
+
+    /**
+     * Weekly schedule constructor
+     */
+    public CommandResult(String feedbackToUser, Map<String, Map<String, String>> weeklySchedule, boolean isWeekly) {
+        this(feedbackToUser, false, false, null, weeklySchedule, isWeekly);
+    }
+
+    /**
+     * For help/exit commands
+     */
+    public CommandResult(String feedbackToUser, boolean showHelp, boolean exit) {
+        this(feedbackToUser, showHelp, exit, null, null, false);
+    }
+
+    public boolean isWeekly() {
+        return isWeekly;
+    }
+
+    public Map<String, String> getSchedule() {
+        return schedule;
+    }
+
+    public Map<String, Map<String, String>> getWeeklySchedule() {
+        return weeklySchedule;
     }
 
     public String getFeedbackToUser() {

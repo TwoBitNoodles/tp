@@ -5,6 +5,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalTime;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -163,6 +164,18 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean hasDoctor(Doctor doctor) {
+        requireNonNull(doctor);
+        return doctors.hasPerson(doctor);
+    }
+
+    @Override
+    public boolean hasPatient(Patient patient) {
+        requireNonNull(patient);
+        return patients.hasPerson(patient);
+    }
+
+    @Override
     public void deleteDoctor(Doctor doctor) {
         doctors.removeDoctor(doctor);
         addressBook.removeDoctor(doctor);
@@ -172,6 +185,14 @@ public class ModelManager implements Model {
     public void deletePatient(Patient patient) {
         patients.removePatient(patient);
         addressBook.removePatient(patient);
+        deletePatientByAppt(patient);
+
+    }
+
+    private void deletePatientByAppt(Patient patient) {
+        for (Appointment appt : patient.getApptList()) {
+            ScheduleManager.delAppt(appt);
+        }
     }
 
     @Override
@@ -194,15 +215,89 @@ public class ModelManager implements Model {
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 
+    /**
+     * Checks if a doctor with the given name exists in the internal list.
+     */
+    public boolean hasDoctorWithName(String name) {
+        return addressBook.getPersonList().stream()
+                .anyMatch(p -> p instanceof Doctor
+                        && p.getName().fullName.equalsIgnoreCase(name));
+    }
+
     @Override
     public void addAppt(Appointment appt) throws IOException {
+        Patient patient = getFilteredPersonList().stream()
+                .filter(p -> p instanceof Patient && p.getName().fullName.equalsIgnoreCase(appt.getPatName()))
+                .map(p -> (Patient) p)
+                .findFirst()
+                .orElseThrow(() -> new IOException("Patient not found: " + appt.getPatName()));
+
+        patient.addAppt(appt);
+        System.out.println("Model manager appt added to patient");
         ScheduleManager.addAppt(appt);
 
     }
 
     @Override
-    public void delAppt(Appointment appt) {
+    public void delAppt(Appointment appt) throws IOException {
+        Patient patient = getFilteredPersonList().stream()
+                .filter(p -> p instanceof Patient && p.getName().fullName.equalsIgnoreCase(appt.getPatName()))
+                .map(p -> (Patient) p)
+                .findFirst()
+                .orElseThrow(() -> new IOException("Patient not found: " + appt.getPatName()));
+        patient.delAppt(appt);
         ScheduleManager.delAppt(appt);
+    }
+
+    @Override
+    public void editAppt(String oldDoc, String oldDate, String oldTime,
+                         String newPat, String newDoc, String newDate, String newTime) throws IOException {
+
+        String oldPatName = ScheduleManager.getPatientAtSlot(oldDoc, oldDate, oldTime);
+        if (oldPatName == null) {
+            throw new IOException("No appointment exists at: " + oldDoc + " on " + oldDate + " at " + oldTime);
+        }
+
+        Appointment oldAppt = new Appointment(oldDoc, oldPatName, oldDate, oldTime);
+
+        String finalPat = (newPat != null) ? newPat : oldPatName;
+        String finalDoc = (newDoc != null) ? newDoc : oldDoc;
+        String finalDate = (newDate != null) ? newDate : oldDate;
+        String finalTime = (newTime != null) ? newTime : oldTime;
+
+        Appointment editedAppt = new Appointment(finalDoc, finalPat, finalDate, finalTime);
+
+        if (LocalTime.parse(finalTime).getMinute() % 30 != 0) {
+            throw new IOException("Please choose a valid timeslot.");
+        }
+
+        if (newPat != null && !hasPatientWithName(newPat)) {
+            throw new IOException("The new patient '" + newPat + "' does not exist in the Address Book.");
+        }
+
+        deleteApptFromPatient(oldPatName, oldAppt);
+        ScheduleManager.delAppt(oldAppt);
+
+        this.addAppt(editedAppt);
+    }
+
+    /**
+     * Helper to find a patient and remove an appointment from their internal list.
+     */
+    private void deleteApptFromPatient(String name, Appointment appt) {
+        addressBook.getPersonList().stream()
+                .filter(p -> p instanceof Patient && p.getName().fullName.equalsIgnoreCase(name))
+                .map(p -> (Patient) p)
+                .findFirst()
+                .ifPresent(patient -> patient.getApptList().remove(appt));
+    }
+
+    /**
+     * Helper to check if a patient exists in the master list.
+     */
+    private boolean hasPatientWithName(String name) {
+        return addressBook.getPersonList().stream()
+                .anyMatch(p -> p instanceof Patient && p.getName().fullName.equalsIgnoreCase(name));
     }
 
     @Override
@@ -218,6 +313,14 @@ public class ModelManager implements Model {
 
         doctors.setDoctor(target, editedDoctor);
         addressBook.setPerson(target, editedDoctor);
+    }
+
+    @Override
+    public void setPatient(Patient target, Patient editedPatient) {
+        requireAllNonNull(target, editedPatient);
+
+        patients.setPatient(target, editedPatient);
+        addressBook.setPerson(target, editedPatient);
     }
     //=========== Filtered Person List Accessors =============================================================
 
