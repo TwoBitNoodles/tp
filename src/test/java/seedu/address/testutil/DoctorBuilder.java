@@ -20,6 +20,7 @@ public class DoctorBuilder {
     private Phone phone;
     private Email email;
     private Address address;
+    private Integer docId;
 
     /**
      * Creates a {@code DoctorBuilder} with the default details.
@@ -29,6 +30,7 @@ public class DoctorBuilder {
         phone = new Phone(DEFAULT_PHONE);
         email = new Email(DEFAULT_EMAIL);
         address = new Address(DEFAULT_ADDRESS);
+        docId = null;
     }
 
     /**
@@ -39,6 +41,7 @@ public class DoctorBuilder {
         phone = doctorToCopy.getPhone();
         email = doctorToCopy.getEmail();
         address = doctorToCopy.getAddress();
+        docId = doctorToCopy.getDocId();
     }
 
     /**
@@ -73,7 +76,21 @@ public class DoctorBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code docId} of the {@code Doctor} that we are building.
+     */
+    public DoctorBuilder withDocId(int docId) {
+        this.docId = docId;
+        return this;
+    }
+
+    /**
+     * Creates and returns the {@code Doctor} based on id availability.
+     */
     public Doctor build() {
+        if (docId != null) {
+            return new Doctor(name, phone, email, address, docId);
+        }
         return new Doctor(name, phone, email, address);
     }
 

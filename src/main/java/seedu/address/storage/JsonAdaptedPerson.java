@@ -26,6 +26,7 @@ class JsonAdaptedPerson {
     private final String phone;
     private final String email;
     private final String address;
+    private final Integer docId;
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -33,12 +34,14 @@ class JsonAdaptedPerson {
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("type") String type,
             @JsonProperty("name") String name, @JsonProperty("phone") String phone,
-            @JsonProperty("email") String email, @JsonProperty("address") String address) {
+            @JsonProperty("email") String email, @JsonProperty("address") String address,
+            @JsonProperty("docId") Integer docId) {
         this.type = type;
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
+        this.docId = docId;
     }
 
     /**
@@ -48,10 +51,13 @@ class JsonAdaptedPerson {
         // if else blocks added by Copilot
         if (source instanceof Doctor) {
             type = "doctor";
+            docId = ((Doctor) source).getDocId();
         } else if (source instanceof Patient) {
             type = "patient";
+            docId = null;
         } else {
             type = "person";
+            docId = null;
         }
         name = source.getName().fullName;
         phone = source.getPhone().value;
@@ -98,6 +104,9 @@ class JsonAdaptedPerson {
         final Address modelAddress = new Address(address);
         // if else blocks added by Copilot
         if ("doctor".equals(type)) {
+            if (docId != null) {
+                return new Doctor(modelName, modelPhone, modelEmail, modelAddress, docId);
+            }
             return new Doctor(modelName, modelPhone, modelEmail, modelAddress);
         } else if ("patient".equals(type)) {
             return new Patient(modelName, modelPhone, modelEmail, modelAddress);
