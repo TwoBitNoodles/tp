@@ -72,6 +72,33 @@ public class ScheduleInitialiserTest {
         assertEquals(2, doctorTwo.get("docId"));
     }
 
+    // test written by codex
+    @Test
+    public void initialize_currentSchedule_keepsExistingDates() throws Exception {
+        LocalDate today = LocalDate.now();
+        writeScheduleFile(today);
+
+        AddressBook doctorBook = new AddressBook();
+        doctorBook.addDoctor(new DoctorBuilder().withName("John Tan").withPhone("11111111")
+                .withEmail("john1@doc.com").withDocId(1).build());
+
+        Model model = new ModelManager(doctorBook, new AddressBook(), new AddressBook(),
+                new seedu.address.model.UserPrefs());
+
+        ScheduleInitialiser.initialize(model);
+
+        Map<String, Object> data = mapper.readValue(new File(FILE_PATH), LinkedHashMap.class);
+        assertEquals(today.toString(), data.get(LAST_UPDATED_KEY));
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> doctorOne = (Map<String, Object>) data.get("doc_1");
+        @SuppressWarnings("unchecked")
+        Map<String, Object> doctorTwo = (Map<String, Object>) data.get("doc_2");
+        assertTrue(doctorOne.containsKey(today.toString()));
+        assertTrue(doctorOne.containsKey(today.plusDays(6).toString()));
+        assertEquals("Alice Lim", ((Map<String, String>) doctorTwo.get(today.plusDays(1).toString())).get("10:00"));
+    }
+
     @SuppressWarnings("unchecked")
     private void writeScheduleFile(LocalDate lastUpdatedDate) throws IOException {
         File file = new File(FILE_PATH);
