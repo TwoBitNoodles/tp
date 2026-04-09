@@ -10,12 +10,13 @@ CLInicDesk is a desktop application designed for **receptionists at small-scale 
 
 CLInicDesk is optimized for use through a Command Line Interface (CLI) while still providing the convenience of a Graphical User Interface (GUI). CLInicDesk enables receptionists who can type quickly to perform clinic management tasks such as adding patients, viewing doctor availabilities, and booking appointments faster than traditional systems.
 
+**Note:** This app is meant to be used with commands in English only.
 <!-- * Table of Contents -->
 <page-nav-print />
 
 --------------------------------------------------------------------------------------------------------------------
 
-## Quick start
+## Setup Guidelines
 
 <div class="quick-start-steps">
 
@@ -310,44 +311,17 @@ Examples:
 
 Expected output:
 ```
-Appointment deleted!
+Edited Patient: John Doe; Phone: 91234567; Email: johndoe@example.com; Address: 123456; Tags:
 ```
+## Editing an appointment : `editappt`
+Edits the details of an existing appointment
+Format : `editappt d/OLD_DOCTOR date/OLD_DATE time/OLD_TIME (n/NEW_NAME) (d/NEW_DOC) (date/NEW_DATE) (time/NEW_TIME)`
 
---------------------------------------------------------------------------------------------------------------------
-
-### General commands
-
-#### Viewing help : `help`
-
-Shows a message explaining how to access the help page.
-
-<div class="image-container">
-
-![help message](images/helpMessageTwo.png)
-
-</div>
-
-Format: `help`
-
-#### Listing all persons : `list`
-
-Shows a list of all persons (doctors and patients) in the app.
-
-Format: `list`
-
-#### Locating persons by name : `find`
-
-Finds persons whose names contain any of the given keywords.
-
-Format: `find KEYWORD [MORE_KEYWORDS]`
-
-**Notes:**
-* The search is case-insensitive. e.g. `hans` will match `Hans`.
-* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`.
-* Only the name is searched.
-* Only full words will be matched. e.g. `Han` will not match `Hans`.
-* Persons matching at least one keyword will be returned (i.e. `OR` search).
-  e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`.
+**Notes**
+* Edits the appointment at the old date and time for the old doctor
+* The new fields in brackets are optional, but there must be at least one new field to edit.
+e.g. `editappt d/Louis date/2026-03-28 time/09:00 time/10:00` is acceptable and will rebook the slot to 10am
+for the same patient,but `editappt d/Louis date/2026-03-28 time/09:00` is invalid on its own.
 
 Examples:
 * `find John` returns `john` and `John Doe`.
@@ -394,7 +368,6 @@ If your changes to a data file make its format invalid, CLInicDesk will discard 
 Furthermore, certain edits can cause CLInicDesk to behave in unexpected ways (e.g. if a value entered is outside the acceptable range). Therefore, edit the data files only if you are confident that you can update them correctly.
 
 </box>
-
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
