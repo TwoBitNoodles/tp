@@ -13,24 +13,21 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.appointment.Appointment;
 
 /**
- * Parses input appointments and creates a new AddApptCommand object
+ * Parses input and creates an AddApptCommand object.
  */
 public class AddApptCommandParser {
     /**
-     * Parses the given {@code String} of arguments in the context of the AddApptCommand
-     * and returns an AddApptCommand object for execution.
-     * @throws ParseException if the user input does not conform the expected format
+     * Parses the given string of arguments and returns an AddApptCommand object.
+     * @throws ParseException if the user input does not conform to the expected format
      */
     public AddApptCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_DATE, PREFIX_TIME,
                                                                     PREFIX_DOCTOR_ID, PREFIX_PATIENT_ID);
 
-
         if (!arePrefixesPresent(argMultimap, PREFIX_DOCTOR_ID, PREFIX_PATIENT_ID, PREFIX_DATE, PREFIX_TIME)
                 || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_USAGE));
         }
-
 
         String date = argMultimap.getValue(PREFIX_DATE).get();
         String time = argMultimap.getValue(PREFIX_TIME).get();
@@ -63,8 +60,7 @@ public class AddApptCommandParser {
     }
 
     /**
-     * Returns true if none of the prefixes contains empty {@code Optional} values in the given
-     * {@code ArgumentMultimap}.
+     * Returns true if all specified prefixes have values in the given ArgumentMultimap.
      */
     private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
         return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());

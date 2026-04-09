@@ -21,12 +21,12 @@ public class AddApptCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Adds an Appointment for a person at the specified date and time.\n"
             + "Parameters: "
-            + PREFIX_DOCTOR_ID + " DOCTOR_ID"
-            + PREFIX_PATIENT_ID + " PATIENT_ID"
+            + PREFIX_DOCTOR_ID + " DOCTOR_ID "
+            + PREFIX_PATIENT_ID + " PATIENT_ID "
             + PREFIX_DATE + " DATE (yyyy-mm-dd)"
             + PREFIX_TIME + " TIME (H:MM)\n"
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_DOCTOR_ID + "1"
+            + PREFIX_DOCTOR_ID + "1 "
             + PREFIX_PATIENT_ID + " 3 "
             + PREFIX_DATE + " 2026-03-11 "
             + PREFIX_TIME + " 9:00 ";
@@ -53,19 +53,19 @@ public class AddApptCommand extends Command {
             model.addAppt(toAdd);
             AppointmentManager.addAppointment(toAdd);
         } catch (IOException e) {
-            // Best-effort rollback if one of the two persistence steps fails.
+            // Rollback if one of the two persistence steps fails.
             try {
                 if (toAdd.getApptID() != Appointment.UNASSIGNED_ID) {
                     AppointmentManager.deleteAppointment(toAdd.getApptID());
                 }
             } catch (IOException ignored) {
-                // Ignore rollback failure.
+                // Unable to rollback from AppointmentManager; continue with model rollback.
             }
 
             try {
                 model.delAppt(toAdd);
             } catch (IOException ignored) {
-                // Ignore rollback failure.
+                // Unable to rollback from model; exception will be thrown below.
             }
             throw new CommandException(e.getMessage());
         }

@@ -269,42 +269,46 @@ Schedule for John Tan (ID: 1) on 2026-04-10
 
 #### Adding an appointment : `addappt`
 
-Adds an appointment on a specific date, at a specific time in a doctor's schedule.
+Books an appointment with a doctor for a patient on a specified date and time.
 
-Format: `addappt id/DOCTOR_ID pid/PATIENT_ID date/YYYY-MM-DD time/HH:MM`
+Format: `addappt id/DOCTOR_ID pid/PATIENT_ID date/YYYY-MM-DD time/H:MM`
 
 **Notes:**
-* Books an appointment in the relevant doctor's schedule at the specified date and time.
-* `DOCTOR_ID` and `PATIENT_ID` are the numeric IDs shown on the person cards in the displayed list.
-* Date must be within the next 7 days (counted from today's date).
-* Time must fall within operating hours (09:00 to 16:30), in 30-minute intervals.
+* Books an appointment for the patient with the doctor at the specified date and time.
+* Date must be in format YYYY-MM-DD (e.g. 2026-04-10).
+* Time must be in 30-minute intervals from 09:00 to 16:30 (e.g. 09:00, 09:30, 10:00, …, 16:30).
 
 Examples:
-* `addappt id/1 pid/3 date/2026-04-10 time/09:00` books an appointment for Patient 3 in Doctor 1's schedule on 2026-04-10 at 9am.
+* `addappt id/1 pid/3 date/2026-04-10 time/09:00` books an appointment for patient 3 with doctor 1 on 2026-04-10 at 9am.
 
 Expected output:
 ```
-New appointment added! ID: 0
+New appointment added! ID: X
 ```
 
 #### Editing an appointment : `editappt`
 
 Edits the details of an existing appointment.
 
-Format: `editappt apptid/APPOINTMENT_ID [nd/NEW_DOCTOR_ID] [ndate/NEW_DATE] [ntime/NEW_TIME]`
+Format: `editappt apptid/APPOINTMENT_ID [nid/NEW_DOCTOR_ID] [ndate/NEW_DATE] [ntime/NEW_TIME]`
 
 **Notes:**
-* Identifies the appointment by its `APPOINTMENT_ID` (shown when the appointment was created).
+* Edits the appointment identified by its appointment ID.
 * The new fields in square brackets are optional, but at least one new field must be provided.
-* Editing the patient on an existing appointment is not supported. Delete the appointment and add a new one instead.
+* `nid/` is used to change the doctor (provide the doctor ID).
+* `ndate/` is used to change the appointment date (format: YYYY-MM-DD).
+* `ntime/` is used to change the appointment time (format: H:MM, e.g. 09:00 or 9:00).
 
 Examples:
-* `editappt apptid/0 nd/2 ntime/10:00` changes appointment 0 to Doctor 2 at 10:00.
+* `editappt apptid/3 ntime/10:00` changes the appointment with ID 3 to 10:00.
+* `editappt apptid/5 nid/2 ndate/2026-04-12` changes appointment 5 to be with doctor 2 on 2026-04-12.
 
 Expected output:
 ```
 Edited appointment!
 ```
+Warnings:
+* Changing a patient name for an appointment is not possible, user will need to delete the appointment and make a new appointment 
 
 #### Deleting an appointment : `delappt`
 
@@ -313,10 +317,11 @@ Deletes an appointment identified by its appointment ID.
 Format: `delappt apptid/APPOINTMENT_ID`
 
 **Notes:**
-* Deletes the appointment identified by its `APPOINTMENT_ID` (shown when the appointment was created).
+* Deletes the appointment identified by the appointment ID.
+* The appointment ID is a unique identifier for each appointment.
 
 Examples:
-* `delappt apptid/0` deletes the appointment with ID 0.
+* `delappt apptid/3` deletes the appointment with ID 3.
 
 Expected output:
 ```
@@ -324,13 +329,13 @@ Edited Patient: John Doe; Phone: 91234567; Email: johndoe@example.com; Address: 
 ```
 ## Editing an appointment : `editappt`
 Edits the details of an existing appointment
-Format : `editappt d/OLD_DOCTOR date/OLD_DATE time/OLD_TIME (n/NEW_NAME) (d/NEW_DOC) (date/NEW_DATE) (time/NEW_TIME)`
+Format : `editappt apptid/APPT_ID (nd/NEW_DOC) (ndate/NEW_DATE) (ntime/NEW_TIME)`
 
 **Notes**
 * Edits the appointment at the old date and time for the old doctor
 * The new fields in brackets are optional, but there must be at least one new field to edit.
-e.g. `editappt d/Louis date/2026-03-28 time/09:00 time/10:00` is acceptable and will rebook the slot to 10am
-for the same patient,but `editappt d/Louis date/2026-03-28 time/09:00` is invalid on its own.
+e.g. `editappt apptid/ID ntime/10:00` is acceptable and will rebook the slot to 10am
+for the same patient,but `editappt apptid/ID` is invalid on its own.
 
 ### Listing all persons : `list`
 
@@ -448,15 +453,15 @@ Furthermore, certain edits can cause CLInicDesk to behave in unexpected ways (e.
 </tr>
 <tr>
   <td><strong>Add Appointment</strong></td>
-  <td><code>addappt id/DOCTOR_ID pid/PATIENT_ID date/YYYY-MM-DD time/HH:MM</code><br>e.g., <code>addappt id/1 pid/3 date/2026-04-10 time/09:00</code></td>
+  <td><code>addappt id/DOCTOR_ID pid/PATIENT_ID date/YYYY-MM-DD time/H:MM</code><br>e.g., <code>addappt id/1 pid/3 date/2026-04-10 time/09:00</code></td>
 </tr>
 <tr>
   <td><strong>Edit Appointment</strong></td>
-  <td><code>editappt apptid/APPOINTMENT_ID [nd/NEW_DOCTOR_ID] [ndate/NEW_DATE] [ntime/NEW_TIME]</code><br>e.g., <code>editappt apptid/0 nd/2 ntime/10:00</code></td>
+  <td><code>editappt apptid/APPOINTMENT_ID [nid/NEW_DOCTOR_ID] [ndate/NEW_DATE] [ntime/NEW_TIME]</code><br>e.g., <code>editappt apptid/3 ntime/10:00</code></td>
 </tr>
 <tr>
   <td><strong>Delete Appointment</strong></td>
-  <td><code>delappt apptid/APPOINTMENT_ID</code><br>e.g., <code>delappt apptid/0</code></td>
+  <td><code>delappt apptid/APPOINTMENT_ID</code><br>e.g., <code>delappt apptid/3</code></td>
 </tr>
 <tr class="cat-divider">
   <td class="cat-general" rowspan="5">General</td>

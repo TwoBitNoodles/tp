@@ -39,19 +39,14 @@ public class EditApptCommand extends Command {
     private final String newTime;
 
     /**
-     * creates an EditApptCommand to edit an existing appointment
-     * @param apptId
-     * @param newDoc
-     * @param newDate
-     * @param newTime
+     * Creates a command to edit an appointment with new details.
+     * At least one new field must be provided (enforced by parser).
      */
     public EditApptCommand(int apptId, String newDoc, String newDate, String newTime) {
         this.apptId = apptId;
         this.newDoc = newDoc;
         this.newDate = newDate;
         this.newTime = newTime;
-
-
     }
 
     @Override
@@ -70,7 +65,6 @@ public class EditApptCommand extends Command {
         } catch (IOException e) {
             throw new CommandException("Could not edit appointment: " + e.getMessage());
         } catch (DateTimeParseException | IllegalArgumentException e) {
-            // Convert parsing/validation runtime errors into a user-visible message.
             throw new CommandException("Could not edit appointment: " + e.getMessage());
         }
     }

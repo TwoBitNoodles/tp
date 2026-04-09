@@ -367,52 +367,64 @@ public class ScheduleManager {
      */
     public static void removeApptIfExists(Appointment appt) {
         try {
-            String pat = appt.getPatName();
-            String date = appt.getDate();
-            String time = appt.getTime();
-
             Map<String, Object> data = readScheduleFile();
 
-            // Prefer ID-based lookup but fallback to name-based lookup for safety
-            String matchedDoctor = null;
-            if (appt.getDocId() != Appointment.UNASSIGNED_ID) {
-                matchedDoctor = findDoctorKeyByDocId(data, appt.getDocId());
-            }
-            if (matchedDoctor == null && appt.getDocName() != null) {
-                matchedDoctor = findDoctorKey(data, appt.getDocName());
-            }
-
+            String matchedDoctor = findDoctorKey(data, appt.getDocName());
             if (matchedDoctor == null) {
                 return;
             }
 
             Map<String, Object> doctorSchedule = getDoctorSchedule(data, matchedDoctor);
-            if (!doctorSchedule.containsKey(date)) {
+            if (!doctorSchedule.containsKey(appt.getDate())) {
                 return;
             }
 
-            Map<String, String> slots = getDateSlots(doctorSchedule, date);
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            String standardizedTime = LocalTime.parse(time,
-                    DateTimeFormatter.ofPattern("H:mm")).format(formatter);
+            Map<String, String> slots = getDateSlots(doctorSchedule, appt.getDate());
+            String standardizedTime = getStandardizedTime(appt.getTime());
 
             if (!slots.containsKey(standardizedTime)) {
                 return;
             }
 
-            String currentOccupant = slots.get(standardizedTime);
-            if (currentOccupant == null || !currentOccupant.equalsIgnoreCase(pat)) {
+            if (!isPatientAtSlot(slots, standardizedTime, appt.getPatName())) {
                 return;
             }
 
             slots.put(standardizedTime, null);
-            ObjectMapper mapper = new ObjectMapper();
-            File file = new File(FILE_PATH);
-            mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
+            writeScheduleFile(data);
         } catch (IOException e) {
             System.err.println("Warning: could not clean up schedule entry: " + e.getMessage());
         }
+    }
+
+    /**
+     * Converts appointment time from input format (H:mm) to storage format (HH:mm).
+     */
+    private static String getStandardizedTime(String time) throws IOException {
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("H:mm");
+        DateTimeFormatter storageFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        try {
+            return LocalTime.parse(time, inputFormatter).format(storageFormatter);
+        } catch (DateTimeParseException e) {
+            throw new IOException("Invalid time format: " + time);
+        }
+    }
+
+    /**
+     * Checks if the specified patient is occupying the given time slot.
+     */
+    private static boolean isPatientAtSlot(Map<String, String> slots, String time, String patientName) {
+        String currentOccupant = slots.get(time);
+        return currentOccupant != null && currentOccupant.equalsIgnoreCase(patientName);
+    }
+
+    /**
+     * Writes the schedule data back to the schedule file.
+     */
+    private static void writeScheduleFile(Map<String, Object> data) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(FILE_PATH);
+        mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
     }
 
     /**
@@ -686,4 +698,57 @@ public class ScheduleManager {
     private static boolean isMetadataKey(String key) {
         return LAST_UPDATED_KEY.equals(key) || DOCTOR_NAME_KEY.equals(key) || DOC_ID_KEY.equals(key);
     }
+
+    /**
+     * Updates all appointments with the old patient name to use the new patient name in the schedule.
+     * @param oldName the previous patient name
+     * @param newName the new patient name
+     * @throws IOException
+     */
+    public static void updatePatientNameInSchedule(String oldName, String newName) throws IOException {
+        Map<String, Object> data = readScheduleFile();
+        boolean updated = false;
+
+        for (Map.Entry<String, Object> doctorEntry : data.entrySet()) {
+            if (isMetadataKey(doctorEntry.getKey())) {
+                continue;
+            }
+
+            Object scheduleData = doctorEntry.getValue();
+            if (!(scheduleData instanceof Map<?, ?>)) {
+                continue;
+            }
+
+            @SuppressWarnings("unchecked")
+            Map<String, Object> doctorSchedule = (Map<String, Object>) scheduleData;
+
+            for (Map.Entry<String, Object> dateEntry : doctorSchedule.entrySet()) {
+                if (isMetadataKey(dateEntry.getKey())) {
+                    continue;
+                }
+
+                Object slotsData = dateEntry.getValue();
+                if (!(slotsData instanceof Map<?, ?>)) {
+                    continue;
+                }
+
+                @SuppressWarnings("unchecked")
+                Map<String, String> slotsMap = (Map<String, String>) slotsData;
+
+                for (Map.Entry<String, String> slotEntry : slotsMap.entrySet()) {
+                    if (slotEntry.getValue() != null && slotEntry.getValue().equalsIgnoreCase(oldName)) {
+                        slotsMap.put(slotEntry.getKey(), newName);
+                        updated = true;
+                    }
+                }
+            }
+        }
+
+        if (updated) {
+            ObjectMapper mapper = new ObjectMapper();
+            File file = new File(FILE_PATH);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
+        }
+    }
 }
+

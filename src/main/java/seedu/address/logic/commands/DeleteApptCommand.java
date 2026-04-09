@@ -27,8 +27,7 @@ public class DeleteApptCommand extends Command {
     private final int apptId;
 
     /**
-     * initialises the delAppt command
-     * @param apptId
+     * Creates a command to delete the appointment with the specified ID.
      */
     public DeleteApptCommand(int apptId) {
         this.apptId = apptId;
@@ -50,7 +49,5 @@ public class DeleteApptCommand extends Command {
         } catch (IOException e) {
             throw new CommandException(e.getMessage());
         }
-
-
     }
 }

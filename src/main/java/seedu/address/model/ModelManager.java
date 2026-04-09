@@ -303,13 +303,13 @@ public class ModelManager implements Model {
             resolvedAppt.setPatName(patient.getName().fullName);
         }
         ScheduleManager.delAppt(resolvedAppt);
-        // Remove both the resolved appointment and the original (legacy) appointment to keep apptList consistent.
         patient.delAppt(resolvedAppt);
         if (appt != resolvedAppt) {
             patient.delAppt(appt);
         }
     }
 
+    // method debugged by copilot
     @Override
     public Appointment editAppt(Appointment oldAppt, String newDoc, String newDate, String newTime) throws IOException {
         Appointment resolvedOldAppt =
@@ -530,6 +530,42 @@ public class ModelManager implements Model {
                 .anyMatch(p -> p instanceof Patient && p.getName().fullName.equalsIgnoreCase(name));
     }
 
+    /**
+     * Updates all appointments for a doctor when the doctor's details change.
+     */
+    private void updateDoctorAppointmentsInStorage(Doctor oldDoctor, Doctor newDoctor) throws IOException {
+        String oldName = oldDoctor.getName().fullName;
+        String newName = newDoctor.getName().fullName;
+
+        if (!oldName.equals(newName)) {
+            seedu.address.storage.AppointmentManager.updateDoctorNameInAppointments(oldName, newName);
+        }
+    }
+
+    /**
+     * Updates all appointments for a patient when the patient's details change.
+     */
+    private void updatePatientAppointmentsInStorage(Patient oldPatient, Patient newPatient) throws IOException {
+        String oldName = oldPatient.getName().fullName;
+        String newName = newPatient.getName().fullName;
+
+        if (!oldName.equals(newName)) {
+            seedu.address.storage.AppointmentManager.updatePatientNameInAppointments(oldName, newName);
+        }
+    }
+
+    /**
+     * Updates all patient name entries in the schedule when the patient's details change.
+     */
+    private void updatePatientInSchedule(Patient oldPatient, Patient newPatient) throws IOException {
+        String oldName = oldPatient.getName().fullName;
+        String newName = newPatient.getName().fullName;
+
+        if (!oldName.equals(newName)) {
+            ScheduleManager.updatePatientNameInSchedule(oldName, newName);
+        }
+    }
+
     @Override
     public void setPerson(Person target, Person editedPerson) {
         requireAllNonNull(target, editedPerson);
@@ -543,6 +579,12 @@ public class ModelManager implements Model {
 
         doctors.setDoctor(target, editedDoctor);
         addressBook.setPerson(target, editedDoctor);
+
+        try {
+            updateDoctorAppointmentsInStorage(target, editedDoctor);
+        } catch (IOException e) {
+            logger.warning("Failed to update doctor appointments in storage: " + e.getMessage());
+        }
     }
 
     @Override
@@ -551,6 +593,13 @@ public class ModelManager implements Model {
 
         patients.setPatient(target, editedPatient);
         addressBook.setPerson(target, editedPatient);
+
+        try {
+            updatePatientAppointmentsInStorage(target, editedPatient);
+            updatePatientInSchedule(target, editedPatient);
+        } catch (IOException e) {
+            logger.warning("Failed to update patient in storage: " + e.getMessage());
+        }
     }
     //=========== Filtered Person List Accessors =============================================================
 

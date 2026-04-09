@@ -86,7 +86,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_editAppt() throws Exception {
         assertTrue(parser.parseCommand(EditApptCommand.COMMAND_WORD
-                + " apptid/3 ntime/10:00 nd/2 ndate/2026-05-01")
+                + " apptid/3 ntime/10:00 nid/2 ndate/2026-05-01")
                 instanceof EditApptCommand);
     }
 

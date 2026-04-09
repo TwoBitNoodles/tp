@@ -26,11 +26,7 @@ public class Appointment {
     private int apptID;
 
     /**
-     * Initialises an Appointment object with the doctorname, patient name, and the date and time
-     * @param doctorName
-     * @param patientName
-     * @param date
-     * @param time
+     * Creates an Appointment object with doctor and patient names.
      */
     public Appointment(String doctorName, String patientName, String date, String time) {
         this.doctorName = doctorName;
@@ -40,12 +36,10 @@ public class Appointment {
         this.doctorId = UNASSIGNED_ID;
         this.patientId = UNASSIGNED_ID;
         this.apptID = UNASSIGNED_ID;
-
     }
 
     /**
-     * Initialises an Appointment using a doctor id and patient id.
-     * The doctor/patient names can be resolved from the model when needed.
+     * Creates an Appointment with doctor and patient IDs (names can be resolved later).
      */
     public Appointment(int doctorId, int patientId, String date, String time) {
         this.doctorId = doctorId;
@@ -58,12 +52,7 @@ public class Appointment {
     }
 
     /**
-     * initialises an appointment with the ID inputted by the user
-     * @param doctorName
-     * @param patientName
-     * @param date
-     * @param time
-     * @param apptID
+     * Creates an Appointment with names and an existing appointment ID.
      */
     public Appointment(String doctorName, String patientName, String date, String time, int apptID) {
         this.doctorName = doctorName;
@@ -76,7 +65,7 @@ public class Appointment {
     }
 
     /**
-     * Initialises an appointment with explicit doctor/patient ids + appointment id.
+     * Creates an Appointment with all details including doctor/patient IDs and appointment ID.
      */
     public Appointment(int doctorId, String doctorName, int patientId, String patientName,
                        String date, String time, int apptID) {
@@ -90,7 +79,7 @@ public class Appointment {
     }
 
     public String getPatName() {
-        return this.patientName;
+        return patientName;
     }
 
     public void setPatName(String patientName) {
@@ -102,7 +91,7 @@ public class Appointment {
     }
 
     public String getDocName() {
-        return this.doctorName;
+        return doctorName;
     }
 
     public void setDocName(String doctorName) {
@@ -114,15 +103,15 @@ public class Appointment {
     }
 
     public String getDate() {
-        return this.date;
+        return date;
     }
 
     public String getTime() {
-        return this.time;
+        return time;
     }
 
     public int getApptID() {
-        return this.apptID;
+        return apptID;
     }
 
     public void setApptID(int apptID) {
@@ -142,7 +131,7 @@ public class Appointment {
                     ? thisTime.equals(otherTime)
                     : Objects.equals(this.time, other.getTime());
 
-            return this.patientName.equals(other.getPatName())
+            return Objects.equals(this.patientName, other.getPatName())
                     && this.doctorId == other.getDocId()
                     && this.patientId == other.getPatientId()
                     && this.date.equals(other.getDate())
@@ -150,6 +139,11 @@ public class Appointment {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(patientName, doctorId, patientId, date, time);
     }
 
     private static LocalTime parseTimeOrNull(String value) {

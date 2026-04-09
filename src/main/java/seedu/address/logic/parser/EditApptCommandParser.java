@@ -14,15 +14,14 @@ import seedu.address.logic.commands.EditApptCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
- * parses the input tp creat an EditApptCommand
+ * Parses input and creates an EditApptCommand object.
  */
 public class EditApptCommandParser {
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm");
 
     /**
-     * Parses the given {@code String} of arguments in the context of the EditApptCommand
-     * and returns an EditApptCommand object for execution.
-     * @throws ParseException if the user input does not conform the expected format
+     * Parses the given string of arguments and returns an EditApptCommand object.
+     * @throws ParseException if the user input does not conform to the expected format
      */
     public EditApptCommand parse(String args) throws ParseException {
         if (args.contains("newn/")) {
@@ -54,6 +53,10 @@ public class EditApptCommandParser {
         String newDoc = argMultimap.getValue(PREFIX_NEWDOC).map(String::trim).orElse(null);
         String newDate = argMultimap.getValue(PREFIX_NEWDATE).map(String::trim).orElse(null);
         String newTime = argMultimap.getValue(PREFIX_NEWTIME).map(String::trim).orElse(null);
+
+        if (newDoc == null && newDate == null && newTime == null) {
+            throw new ParseException("At least one new field is required");
+        }
 
         if ("".equals(newDoc)) {
             throw new ParseException("Doctor id cannot be empty.");

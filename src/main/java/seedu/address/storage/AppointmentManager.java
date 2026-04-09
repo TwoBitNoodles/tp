@@ -50,10 +50,10 @@ public class AppointmentManager {
     }
 
     /**
-     * Adds appointment to the JSON file with the id and all the info
-     * @param appt
-     * @return
-     * @throws IOException
+     * Adds a new appointment and persists it to the appointments file.
+     * @param appt the appointment to add
+     * @return the appointment ID assigned
+     * @throws IOException if file cannot be accessed
      */
     public static int addAppointment(Appointment appt) throws IOException {
         Map<String, AppointmentData> data = readAppointments();
@@ -74,10 +74,10 @@ public class AppointmentManager {
     }
 
     /**
-     * Retrieves the appointment info using its id number
-     * @param apptId
-     * @return
-     * @throws IOException
+     * Retrieves an appointment by its ID.
+     * @param apptId the appointment ID
+     * @return the appointment, or null if not found
+     * @throws IOException if file cannot be accessed
      */
     public static Appointment getAppointmentById(int apptId) throws IOException {
         Map<String, AppointmentData> data = readAppointments();
@@ -94,9 +94,12 @@ public class AppointmentManager {
     }
 
     /**
-     * Finds the appointment id for a given schedule slot.
-     *
-     * @return appointment id, or {@code null} if not found.
+     * Finds the appointment ID for a given doctor's time slot.
+     * @param doctorId the doctor's ID
+     * @param date the appointment date
+     * @param time the appointment time
+     * @return the appointment ID, or null if not found
+     * @throws IOException if file cannot be accessed
      */
     public static Integer findAppointmentIdBySlot(int doctorId, String date, String time) throws IOException {
         String normalizedTime = normalizeTime(time);
@@ -116,10 +119,10 @@ public class AppointmentManager {
     }
 
     /**
-     * updates appointment by retrieving th eappointment by ID, then updating its info
-     * @param apptId
-     * @param appt
-     * @throws IOException
+     * Updates an existing appointment with new details.
+     * @param apptId the ID of the appointment to update
+     * @param appt the new appointment details
+     * @throws IOException if file cannot be accessed or appointment not found
      */
     public static void updateAppointment(int apptId, Appointment appt) throws IOException {
         Map<String, AppointmentData> data = readAppointments();
@@ -137,9 +140,9 @@ public class AppointmentManager {
     }
 
     /**
-     * deletes the appointment from the JSON file
-     * @param apptId
-     * @throws IOException
+     * Deletes an appointment from the appointments file.
+     * @param apptId the ID of the appointment to delete
+     * @throws IOException if file cannot be accessed or appointment not found
      */
     public static void deleteAppointment(int apptId) throws IOException {
         Map<String, AppointmentData> data = readAppointments();
@@ -168,6 +171,9 @@ public class AppointmentManager {
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
     }
 
+    /**
+     * Data transfer object for serializing appointments to JSON.
+     */
     private static final class AppointmentData {
         private Integer doctorId;
         private String doctorName;
@@ -194,6 +200,50 @@ public class AppointmentManager {
             return LocalTime.parse(time, INPUT_TIME_FORMAT).format(STORAGE_TIME_FORMAT);
         } catch (DateTimeParseException e) {
             throw new IOException("Please input a valid time. Time must be formatted as H:MM (e.g. 9:00 or 09:00)");
+        }
+    }
+
+    /**
+     * Updates all appointments with the old doctor name to use the new doctor name.
+     * @param oldName the previous doctor name
+     * @param newName the new doctor name
+     * @throws IOException
+     */
+    public static void updateDoctorNameInAppointments(String oldName, String newName) throws IOException {
+        Map<String, AppointmentData> data = readAppointments();
+        boolean updated = false;
+
+        for (AppointmentData apptData : data.values()) {
+            if (apptData.doctorName != null && apptData.doctorName.equalsIgnoreCase(oldName)) {
+                apptData.doctorName = newName;
+                updated = true;
+            }
+        }
+
+        if (updated) {
+            writeAppointments(data);
+        }
+    }
+
+    /**
+     * Updates all appointments with the old patient name to use the new patient name.
+     * @param oldName the previous patient name
+     * @param newName the new patient name
+     * @throws IOException
+     */
+    public static void updatePatientNameInAppointments(String oldName, String newName) throws IOException {
+        Map<String, AppointmentData> data = readAppointments();
+        boolean updated = false;
+
+        for (AppointmentData apptData : data.values()) {
+            if (apptData.patientName != null && apptData.patientName.equalsIgnoreCase(oldName)) {
+                apptData.patientName = newName;
+                updated = true;
+            }
+        }
+
+        if (updated) {
+            writeAppointments(data);
         }
     }
 }
