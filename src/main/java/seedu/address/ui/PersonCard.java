@@ -2,6 +2,7 @@ package seedu.address.ui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.person.Doctor;
@@ -32,6 +33,8 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label id;
     @FXML
+    private FlowPane tags;
+    @FXML
     private Label phone;
     @FXML
     private Label address;
@@ -53,6 +56,13 @@ public class PersonCard extends UiPart<Region> {
         phone.setText(person.getPhone().value);
         address.setText(person.getAddress().value);
         email.setText(person.getEmail().value);
+        Label roleTag = new Label(person.getRoleTag());
+        if (person instanceof Doctor) {
+            roleTag.getStyleClass().add("doctor-tag");
+        } else if (person instanceof seedu.address.model.person.Patient) {
+            roleTag.getStyleClass().add("patient-tag");
+        }
+        tags.getChildren().add(roleTag);
         // doctor id information added by copilot
         if (person instanceof Doctor) {
             doctorId.setText("Doctor ID: " + ((Doctor) person).getDocId());

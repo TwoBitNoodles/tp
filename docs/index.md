@@ -15,7 +15,10 @@
 * If you are interested in using CLInicDesk, head over to the [_Quick Start_ section of the **User Guide**](UserGuide.html#quick-start).
 * If you are interested about developing CLInicDesk, the [**Developer Guide**](DeveloperGuide.html) is a good place to start.
 
+**Note**
+
+CLInicDesk is meant to be used with commands typed in English only.
 
 **Acknowledgements**
 
-* Libraries used: [JavaFX](https://openjfx.io/), [Jackson](https://github.com/FasterXML/jackson), [JUnit5](https://github.com/junit-team/junit5)
+Libraries used: [JavaFX](https://openjfx.io/), [Jackson](https://github.com/FasterXML/jackson), [JUnit5](https://github.com/junit-team/junit5)

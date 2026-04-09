@@ -48,6 +48,13 @@ public class Person {
     }
 
     /**
+     * Returns the role tag for this person.
+     */
+    public String getRoleTag() {
+        return "Person";
+    }
+
+    /**
      * Returns true if both persons have the same name.
      * This defines a weaker notion of equality between two persons.
      */

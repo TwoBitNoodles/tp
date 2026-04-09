@@ -127,14 +127,6 @@ The `Model` component,
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
-<box type="info" seamless>
-
-**Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
-
-<puml src="diagrams/BetterModelClassDiagram.puml" width="450" />
-
-</box>
-
 
 ### Storage component
 
@@ -406,7 +398,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     Use case resumes at step 1.
 
-* 2d. A patient with the same name (case-insensitive) and same phone number already exists.
+* 2d. A patient with the same name (case-insensitive) and same email already exists.
   * 2d1. System shows: `A patient with the same name and email already exists in the app`
 
     Use case ends.
@@ -417,9 +409,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. Receptionist enters the view schedule command with a doctor name and optionally a date.
-2. System validates the doctor name (and, if exists, the date).
-3. System displays all half-hourly slots for that doctor for next 7 days or on a specific date, each marked as Available or Booked.
+1. Receptionist enters the view schedule command with a doctor name, doctor id and optionally a date.
+2. System validates the doctor name and id (and, if exists, the date).
+3. System displays all half-hourly slots for that doctor for next 7 days or on a specific date, each marked as Available or Booked (with patient name).
 
    Use case ends.
 
@@ -431,12 +423,18 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case ends.
 
 * 2b. The date is in an invalid format.
-  * 2b1. System shows: `Invalid date format. Use YYYY-MM-DD.`
+  * 2b1. System shows: 
+  ```
+  Invalid command format!
+  viewsched: Views the schedule of a doctor (optionally for a specific date).
+  Parameters: d/DOCTOR_NAME id/DOCTOR_ID [date/YYYY-MM-DD]
+  Example: viewsched d/John Tan id/1 date/2026-03-20
+  ```
 
     Use case resumes at step 1.
 
 * 2c. The date is in the past.
-  * 2c1. System shows: `Cannot view schedule for past dates.`
+  * 2c1. System shows: `No schedule available for this date.`
 
     Use case resumes at step 1.
 
@@ -447,7 +445,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **MSS**
 
 1. Receptionist views the doctor's schedule (see Use case: View a doctor's schedule).
-2. Receptionist enters the add appointment command with patient name, doctor name, date, and time.
+2. Receptionist enters the add appointment command with patient ID, doctor ID, date, and time.
 3. System validates all fields and checks slot availability.
 4. System books the appointment and confirms with appointment details.
 
@@ -456,45 +454,46 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 3a. The patient name does not match any existing patient.
-  * 3a1. System shows: `Patient not found. Please add the patient first.`
+  * 3a1. System shows: `Patient not found: INDEX`
 
     Use case ends.
 
 * 3b. The doctor name does not match any existing doctor.
-  * 3b1. System shows: `Doctor not found. Please check again.`
+  * 3b1. System shows: `Doctor not found: INDEX`
 
     Use case ends.
 
 * 3c. The date is invalid or in the past.
-  * 3c1. System shows: `Invalid date format. Use YYYY-MM-DD.` or `Cannot book appointments for past dates.`
+  * 3c1. Date in the past, system shows: `Appointment date must be within 7 days from today!`
+  * 3c2. Invalid date, system shows: `Please input a valid date. The date must be formatted as YYYY-MM-DD`
 
     Use case resumes at step 2.
 
 * 3d. The time is not one of the valid hourly slots (09:00–16:00).
-  * 3d1. System shows: `Invalid time. Must be one of the clinic's available hourly slots (09:00–16:00).`
+  * 3d1. System shows: `Please choose a time within operating hours`
 
     Use case resumes at step 2.
 
 * 3e. The selected slot is already booked with that doctor.
-  * 3e1. System shows that the slot is unavailable.
+  * 3e1. System shows: `This slot is already booked. Please edit the appointment if you wish to change it`
 
     Use case resumes at step 1.
 
 * 3f. The patient already has an appointment at the same date and time.
-  * 3f1. System shows that the patient has a conflicting appointment.
+  * 3f1. System shows that the appointment slot is taken.
 
     Use case resumes at step 2.
 
 ---
 
-**Use case: Delete a doctor, patient, or appointment**
+**Use case: Delete a doctor**
 
 **MSS**
 
-1. Receptionist views the relevant list (doctors, patients, or appointments).
+1. Receptionist views the list.
 2. System displays the list with indices.
-3. Receptionist enters the delete command with the target index.
-4. System deletes the entry and confirms with the deleted record's details.
+3. Receptionist enters the `deldoc` command with the target index.
+4. System deletes the doctor entry and confirms with the deleted record's details.
 
    Use case ends.
 
@@ -505,24 +504,25 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   Use case ends.
 
 * 3a. A name is entered instead of an index.
-  * 3a1. System shows: `Invalid index. Please enter a valid index number.`
+  * 3a1. System shows: 
+  ```
+  Invalid command format!
+  deldoc: Deletes the doctor identified by the index number used in the displayed doctor list.
+  Parameters: INDEX (must be a positive integer)
+  Example: deldoc 1
+  ```
 
     Use case resumes at step 2.
 
 * 3b. The index does not refer to any entry in the currently displayed list.
-  * 3b1. System shows: `Invalid index. Please enter a valid index number.`
+  * 3b1. System shows: `The doctor index provided is invalid`
 
     Use case resumes at step 2.
 
-* 4a. The deleted entry is a doctor.
-  * 4a1. System also deletes all appointments associated with that doctor.
+* 3c. The deleted entry is not a doctor.
+  * 3c1. System shows `The person at the specified index is not a doctor.`
 
-    Use case ends.
-
-* 4b. The deleted entry is a patient.
-  * 4b1. System also deletes all appointments associated with that patient.
-
-    Use case ends.
+    Use case resumes at step 2.
 
 ### Non-Functional Requirements
 
@@ -537,6 +537,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Slot**: A time slot (30-minute intervals from 09:00 to 17:00, with the last slot at 16:30) in a doctor's schedule
+* **Schedule**: A calendar of available and booked time slots for a doctor
+* **Patient ID**: A unique auto-generated identifier for each patient (e.g., 1, 2, 3, ...)
+* **Doctor ID**: A unique auto-generated identifier for each doctor (e.g., 1, 2, 3, ...)
+* **Index**: A one-based number used to identify a person's position in the displayed list (e.g., 1st person, 2nd person)
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -557,16 +562,18 @@ testers are expected to do more *exploratory* testing.
 
    1. Download the jar file and copy into an empty folder
 
-   1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
-
+   2. Open a terminal and run `cd PATH_TO_FOLDER` to change directory to the location of the jar file. 
+   
+   3. Run the command `java -jar clinicdesk.jar` to launch the app.<br>
+       Expected: App launches successfully without any error.
+   
 1. Saving window preferences
 
    1. Resize the window to an optimum size. Move the window to a different location. Close the window.
 
-   1. Re-launch the app by double-clicking the jar file.<br>
+   2. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
-1. _{ more test cases …​ }_
 
 ### Deleting a doctor
 
@@ -574,21 +581,34 @@ testers are expected to do more *exploratory* testing.
 
    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list. Doctor is first person in the list.
 
-   1. Test case: `deldoc 1`<br>
+   2. Test case: `deldoc 1`<br>
       Expected: Doctor at index 1 is deleted from the list. Details of the deleted contact shown in the status message. 
 
-   1. Test case: `deldoc 0`<br>
+   3. Test case: `deldoc 0`<br>
       Expected: No person is deleted. Error details shown in the status message.
 
-   1. Other incorrect delete commands to try: `deldoc`, `delpat x`, `...` (where x is larger than the list size)<br>
+   4. Other incorrect delete commands to try: `deldoc`, `deldoc x` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
-1. _{ more test cases …​ }_ 
 
 ### Saving data
 
-1. Dealing with missing/corrupted data files
+1. Dealing with missing data files
+   1. When a data file (patients.json, doctors.json, schedule.json) is missing, the app starts with an empty data container for that file. 
+   
+   2. The app will continue to function normally, but there is no data loaded for that file. 
+   
+   3. Example: If patients.json is missing, the app starts with no patients but continues to function normally.
 
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+2. Dealing with corrupted data files 
+   1. If a data file exists but contains invalid JSON format or illegal values, no data will be loaded. 
+   
+   2. To solve this, the user can either fix the corrupted file (e.g., by correcting the JSON format or values) or delete the corrupted file to start with an empty data container for that file before relaunching the app.
+   
+   3. Example: If patients.json contains malformed JSON, the app will discard it and start with no data entry.
 
-1. _{ more test cases …​ }_
+**Data loss prevention:**
+- Make regular backups of the `data/` folder
+- Only edit JSON files if you understand the structure
+- Corrupted files are not repaired automatically; deleted data cannot be recovered
+
