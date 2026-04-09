@@ -18,6 +18,10 @@ import seedu.address.model.person.Phone;
 class JsonAdaptedPerson {
 
     public static final String MISSING_FIELD_MESSAGE_FORMAT = "Person's %s field is missing!";
+
+    private static final String TYPE_DOCTOR = "doctor";
+    private static final String TYPE_PATIENT = "patient";
+    private static final String TYPE_PERSON = "person";
     // We understood that we need to add a type to the json to differentiate b/w
     // doctors and patients, and asked Copilot to help identify what to change in order
     // to make data correctly persist using type
@@ -27,6 +31,7 @@ class JsonAdaptedPerson {
     private final String email;
     private final String address;
     private final Integer docId;
+    private final Integer patId;
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -35,29 +40,33 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(@JsonProperty("type") String type,
             @JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("docId") Integer docId) {
+            @JsonProperty("docId") Integer docId,
+            @JsonProperty("patId") Integer patId) {
         this.type = type;
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.docId = docId;
+        this.patId = patId;
     }
 
     /**
      * Converts a given {@code Person} into this class for Jackson use.
      */
     public JsonAdaptedPerson(Person source) {
-        // if else blocks added by Copilot
         if (source instanceof Doctor) {
-            type = "doctor";
+            type = TYPE_DOCTOR;
             docId = ((Doctor) source).getDocId();
+            patId = null;
         } else if (source instanceof Patient) {
-            type = "patient";
+            type = TYPE_PATIENT;
             docId = null;
+            patId = ((Patient) source).getPatientId();
         } else {
-            type = "person";
+            type = TYPE_PERSON;
             docId = null;
+            patId = null;
         }
         name = source.getName().fullName;
         phone = source.getPhone().value;
@@ -71,47 +80,64 @@ class JsonAdaptedPerson {
      * @throws IllegalValueException if there were any data constraints violated in the adapted person.
      */
     public Person toModelType() throws IllegalValueException {
+        final Name modelName = validateAndGetName();
+        final Phone modelPhone = validateAndGetPhone();
+        final Email modelEmail = validateAndGetEmail();
+        final Address modelAddress = validateAndGetAddress();
+
+        if (TYPE_DOCTOR.equals(type)) {
+            if (docId != null) {
+                return new Doctor(modelName, modelPhone, modelEmail, modelAddress, docId);
+            }
+            return new Doctor(modelName, modelPhone, modelEmail, modelAddress);
+        } else if (TYPE_PATIENT.equals(type)) {
+            if (patId != null) {
+                return new Patient(modelName, modelPhone, modelEmail, modelAddress, patId);
+            }
+            return new Patient(modelName, modelPhone, modelEmail, modelAddress);
+        }
+        return new Person(modelName, modelPhone, modelEmail, modelAddress);
+    }
+
+    private Name validateAndGetName() throws IllegalValueException {
         if (name == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Name.class.getSimpleName()));
         }
         if (!Name.isValidName(name)) {
             throw new IllegalValueException(Name.MESSAGE_CONSTRAINTS);
         }
-        final Name modelName = new Name(name);
+        return new Name(name);
+    }
 
+    private Phone validateAndGetPhone() throws IllegalValueException {
         if (phone == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Phone.class.getSimpleName()));
         }
         if (!Phone.isValidPhone(phone)) {
             throw new IllegalValueException(Phone.MESSAGE_CONSTRAINTS);
         }
-        final Phone modelPhone = new Phone(phone);
+        return new Phone(phone);
+    }
 
+    private Email validateAndGetEmail() throws IllegalValueException {
         if (email == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Email.class.getSimpleName()));
         }
         if (!Email.isValidEmail(email)) {
             throw new IllegalValueException(Email.MESSAGE_CONSTRAINTS);
         }
-        final Email modelEmail = new Email(email);
+        return new Email(email);
+    }
 
+    private Address validateAndGetAddress() throws IllegalValueException {
         if (address == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Address.class.getSimpleName()));
+            throw new IllegalValueException(
+                    String.format(MISSING_FIELD_MESSAGE_FORMAT, Address.class.getSimpleName()));
         }
         if (!Address.isValidAddress(address)) {
             throw new IllegalValueException(Address.MESSAGE_CONSTRAINTS);
         }
-        final Address modelAddress = new Address(address);
-        // if else blocks added by Copilot
-        if ("doctor".equals(type)) {
-            if (docId != null) {
-                return new Doctor(modelName, modelPhone, modelEmail, modelAddress, docId);
-            }
-            return new Doctor(modelName, modelPhone, modelEmail, modelAddress);
-        } else if ("patient".equals(type)) {
-            return new Patient(modelName, modelPhone, modelEmail, modelAddress);
-        }
-        return new Person(modelName, modelPhone, modelEmail, modelAddress);
+        return new Address(address);
     }
 
 }

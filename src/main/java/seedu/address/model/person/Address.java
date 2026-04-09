@@ -9,13 +9,15 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Address {
 
-    public static final String MESSAGE_CONSTRAINTS = "Addresses can take any values, and it should not be blank";
+    public static final String MESSAGE_CONSTRAINTS = "Address must start with a non-space character "
+        + "and be at least 3 characters long. It should not be blank";
 
     /*
      * The first character of the address must not be a whitespace,
      * otherwise " " (a blank string) becomes a valid input.
+     * The address must be at least 3 characters long to be valid.
      */
-    public static final String VALIDATION_REGEX = "[^\\s].*";
+    public static final String VALIDATION_REGEX = "^\\S.{2,}$";
 
     public final String value;
 

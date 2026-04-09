@@ -74,7 +74,7 @@ public class EditDocCommand extends Command {
 
         Person personToEdit = lastShownList.get(index.getZeroBased());
         if (!(personToEdit instanceof Doctor)) {
-            throw new CommandException("The person at the specified index is not a doctor.");
+            throw new CommandException(Messages.MESSAGE_NOT_A_DOCTOR);
         }
 
         Doctor doctorToEdit = (Doctor) personToEdit;
@@ -91,9 +91,9 @@ public class EditDocCommand extends Command {
 
         if (!currDoctorName.equalsIgnoreCase(newDoctorName)) {
             try {
-                ScheduleManager.renameDoctorSchedule(currDoctorName, newDoctorName);
+                ScheduleManager.renameDoctorSchedule(editedDoctor);
             } catch (java.io.IOException e) {
-                throw new CommandException("Failed to update schedule file.");
+                throw new CommandException(Messages.MESSAGE_SCHEDULE_UPDATE_FAILED);
             }
         }
 
@@ -105,7 +105,7 @@ public class EditDocCommand extends Command {
      * Creates and returns a {@code Doctor} with the details of {@code doctorToEdit}
      * edited with {@code editDoctorDescriptor}.
      */
-    private static Doctor createEditedDoctor(Person doctorToEdit, EditDoctorDescriptor editDoctorDescriptor) {
+    private static Doctor createEditedDoctor(Doctor doctorToEdit, EditDoctorDescriptor editDoctorDescriptor) {
         requireNonNull(doctorToEdit);
 
         Name updatedName = editDoctorDescriptor.getName().orElse(doctorToEdit.getName());
@@ -113,7 +113,7 @@ public class EditDocCommand extends Command {
         Email updatedEmail = editDoctorDescriptor.getEmail().orElse(doctorToEdit.getEmail());
         Address updatedAddress = editDoctorDescriptor.getAddress().orElse(doctorToEdit.getAddress());
 
-        return new Doctor(updatedName, updatedPhone, updatedEmail, updatedAddress);
+        return new Doctor(updatedName, updatedPhone, updatedEmail, updatedAddress, doctorToEdit.getDocId());
     }
 
     @Override
@@ -154,7 +154,6 @@ public class EditDocCommand extends Command {
 
         /**
          * Copy constructor.
-         * A defensive copy of {@code tags} is used internally.
          */
         public EditDoctorDescriptor(EditDoctorDescriptor toCopy) {
             setName(toCopy.name);

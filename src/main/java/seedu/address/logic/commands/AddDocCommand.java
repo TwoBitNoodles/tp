@@ -14,7 +14,7 @@ import seedu.address.model.person.Doctor;
 import seedu.address.storage.ScheduleManager;
 
 /**
- * Adds a person to the app.
+ * Adds a doctor to the app.
  */
 public class AddDocCommand extends Command {
 
@@ -39,7 +39,7 @@ public class AddDocCommand extends Command {
     private final Doctor toAdd;
 
     /**
-     * Creates an AddCommand to add the specified {@code Person}
+     * Creates an AddDocCommand to add the specified {@code Doctor}.
      */
     public AddDocCommand(Doctor doctor) {
         requireNonNull(doctor);
@@ -55,7 +55,11 @@ public class AddDocCommand extends Command {
         }
 
         model.addDoctor(toAdd);
-        ScheduleManager.addDoctorSchedule(toAdd.getName().fullName);
+        try {
+            ScheduleManager.addDoctorSchedule(toAdd);
+        } catch (java.io.IOException e) {
+            throw new CommandException(Messages.MESSAGE_SCHEDULE_UPDATE_FAILED);
+        }
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
     }
 

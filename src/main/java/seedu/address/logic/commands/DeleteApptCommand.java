@@ -1,45 +1,37 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_APPT_ID;
 
 import java.io.IOException;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.appointment.Appointment;
+import seedu.address.storage.AppointmentManager;
 
 /**
- * Deletes an appointment identified using the doctor name, and the date and time the appointment falls on
+ * Deletes an appointment identified by its appointment id.
  */
 public class DeleteApptCommand extends Command {
     public static final String COMMAND_WORD = "delappt";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Deletes the the appointment identified by the date and time in a specific doctor's schedule.\n"
+            + ": Deletes the appointment identified by its id.\n"
             + "Parameters: "
-            + PREFIX_DOCTOR + "DOCTOR NAME "
-            + PREFIX_NAME + "PATIENT NAME "
-            + PREFIX_DATE + "DATE (yyyy-mm-dd) "
-            + PREFIX_TIME + "TIME  (H:MM)\n"
+            + PREFIX_APPT_ID + "APPOINTMENT_ID\n"
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_DOCTOR + " John Doe "
-            + PREFIX_NAME + " Jane Tane "
-            + PREFIX_DATE + " 2026-03-11 "
-            + PREFIX_TIME + " 9:00 ";
+            + PREFIX_APPT_ID + "3";
     public static final String MESSAGE_SUCCESS = "Appointment deleted!";
 
-    private final Appointment toDel;
+    private final int apptId;
 
     /**
      * initialises the delAppt command
-     * @param appt
+     * @param apptId
      */
-    public DeleteApptCommand(Appointment appt) {
-        this.toDel = appt;
+    public DeleteApptCommand(int apptId) {
+        this.apptId = apptId;
     }
 
     @Override
@@ -47,7 +39,13 @@ public class DeleteApptCommand extends Command {
         requireNonNull(model);
 
         try {
-            model.delAppt(toDel);
+            Appointment appt = AppointmentManager.getAppointmentById(apptId);
+            if (appt == null) {
+                throw new CommandException("Appointment id not found: " + apptId);
+            }
+
+            model.delAppt(appt);
+            AppointmentManager.deleteAppointment(apptId);
             return new CommandResult(MESSAGE_SUCCESS);
         } catch (IOException e) {
             throw new CommandException(e.getMessage());

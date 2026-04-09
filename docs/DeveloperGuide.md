@@ -12,7 +12,7 @@
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Acknowledgements**
-* GitHub Copilot has been used to assist code writing, particularly in helping get unstuck
+* GitHub Copilot has been used to assist code writing, particularly in helping get unstuck and improving the User Guide's UI.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -339,23 +339,32 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 2a. The name contains invalid characters or is out of the allowed length range.
-  * 2a1. System shows: `Invalid doctor name. Must contain only alphabets and spaces.`
+* 2a. The name contains invalid characters.
+  * 2a1. System shows: `Names should only contain letters, and may include single spaces, apostrophes, or hyphens between words. Name should not be blank`
 
     Use case resumes at step 1.
 
 * 2b. The phone number is not exactly 8 digits.
-  * 2b1. System shows: `Invalid phone number. Must be exactly 8 digits.`
+  * 2b1. System shows: `Phone numbers should only contain numbers, and it should be 8 digits long`
 
     Use case resumes at step 1.
 
 * 2c. The email is not in a valid format.
-  * 2c1. System shows: `Invalid email format.`
+  * 2c1. System shows: 
+  ```
+    Emails should be of the format local-part@domain and adhere to the following constraints:
+    1. The local-part should only contain alphanumeric characters and these special characters, excluding the parentheses, (+_.-). The local-part may not start or end with any special characters.
+    2. This is followed by a '@' and then a domain name. The domain name is made up of domain labels separated by periods.
+       The domain name must:
+        - end with a domain label at least 2 characters long
+        - have each domain label start and end with alphanumeric characters
+        - have each domain label consist of alphanumeric characters, separated only by hyphens, if any.
+   ```
 
     Use case resumes at step 1.
 
-* 2d. A doctor with the same name (case-insensitive) already exists.
-  * 2d1. System shows: `This doctor already exists.`
+* 2d. A doctor with the same name (case-insensitive) and email/phone already exists.
+  * 2d1. System shows: `A doctor with these contact details already exists in the app`
 
     Use case ends.
 
@@ -373,23 +382,32 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 2a. The name contains invalid characters or is out of the allowed length range.
-  * 2a1. System shows: `Invalid patient name. Must contain only alphabets and spaces.`
+* 2a. The name contains invalid characters.
+  * 2a1. System shows: `Names should only contain letters, and may include single spaces, apostrophes, or hyphens between words. Name should not be blank`
 
     Use case resumes at step 1.
 
 * 2b. The phone number is not exactly 8 digits.
-  * 2b1. System shows: `Invalid phone number. Must be exactly 8 digits.`
+  * 2b1. System shows: `Phone numbers should only contain numbers, and it should be 8 digits long`
 
     Use case resumes at step 1.
 
 * 2c. The email is not in a valid format.
-  * 2c1. System shows: `Invalid email format.`
+  * 2c1. System shows: 
+  ```
+      Emails should be of the format local-part@domain and adhere to the following constraints:
+    1. The local-part should only contain alphanumeric characters and these special characters, excluding the parentheses, (+_.-). The local-part may not start or end with any special characters.
+    2. This is followed by a '@' and then a domain name. The domain name is made up of domain labels separated by periods.
+       The domain name must:
+        - end with a domain label at least 2 characters long
+        - have each domain label start and end with alphanumeric characters
+        - have each domain label consist of alphanumeric characters, separated only by hyphens, if any.
+  ```
 
     Use case resumes at step 1.
 
 * 2d. A patient with the same name (case-insensitive) and same phone number already exists.
-  * 2d1. System shows: `This patient already exists.`
+  * 2d1. System shows: `A patient with the same name and email already exists in the app`
 
     Use case ends.
 
@@ -550,22 +568,22 @@ testers are expected to do more *exploratory* testing.
 
 1. _{ more test cases …​ }_
 
-### Deleting a person
+### Deleting a doctor
 
 1. Deleting a person while all persons are being shown
 
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
+   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list. Doctor is first person in the list.
 
-   1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+   1. Test case: `deldoc 1`<br>
+      Expected: Doctor at index 1 is deleted from the list. Details of the deleted contact shown in the status message. 
 
-   1. Test case: `delete 0`<br>
-      Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
+   1. Test case: `deldoc 0`<br>
+      Expected: No person is deleted. Error details shown in the status message.
 
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+   1. Other incorrect delete commands to try: `deldoc`, `delpat x`, `...` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
-1. _{ more test cases …​ }_
+1. _{ more test cases …​ }_ 
 
 ### Saving data
 

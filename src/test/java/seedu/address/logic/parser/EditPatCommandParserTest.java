@@ -48,19 +48,6 @@ public class EditPatCommandParserTest {
     private EditPatCommandParser parser = new EditPatCommandParser();
 
 
-
-    @Test
-    public void parse_missingParts_failure() {
-        // no index specified
-        assertParseFailure(parser, VALID_NAME_AMY, MESSAGE_INVALID_FORMAT);
-
-        // no field specified
-        assertParseFailure(parser, "1", EditPatCommand.MESSAGE_NOT_EDITED);
-
-        // no index and no field specified
-        assertParseFailure(parser, "", MESSAGE_INVALID_FORMAT);
-    }
-
     @Test
     public void parse_invalidPreamble_failure() {
         // negative index

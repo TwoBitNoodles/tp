@@ -49,6 +49,7 @@ public class DeletePatCommand extends Command {
             throw new CommandException("The person at the specified index is not a patient.");
         }
         model.deletePatient((Patient) personToDelete);
+
         logger.info("Deleted patient: " + Messages.format(personToDelete));
         return new CommandResult(String.format(MESSAGE_DELETE_PATIENT_SUCCESS, Messages.format(personToDelete)));
     }

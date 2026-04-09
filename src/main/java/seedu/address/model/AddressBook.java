@@ -77,10 +77,16 @@ public class AddressBook implements ReadOnlyAddressBook {
         persons.add(p);
     }
 
+    /**
+     * Adds a patient to the address book.
+     */
     public void addPatient(Patient pat) {
         persons.add(pat);
     }
 
+    /**
+     * Adds a doctor to the address book.
+     */
     public void addDoctor(Doctor doc) {
         persons.add(doc);
     }
@@ -118,7 +124,7 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     /**
      * Removes {@code doc} from this {@code AddressBook}.
-     * {@code key} must exist in the address book.
+     * {@code doc} must exist in the address book.
      */
     public void removeDoctor(Doctor doc) {
         persons.remove(doc);
@@ -126,7 +132,7 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     /**
      * Removes {@code pat} from this {@code AddressBook}.
-     * {@code key} must exist in the address book.
+     * {@code pat} must exist in the address book.
      */
     public void removePatient(Patient pat) {
         persons.remove(pat);

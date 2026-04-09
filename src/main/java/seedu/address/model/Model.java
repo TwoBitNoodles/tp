@@ -126,29 +126,30 @@ public interface Model {
     void addPerson(Person person);
 
     /**
-     * Adds the given appointment
-     * @param appt
+     * Adds the given appointment.
+     *
+     * @param appt the appointment to add.
      */
     void addAppt(Appointment appt) throws IOException;
 
     /**
-     * deletes the given appointment
-     * @param appt
+     * Deletes the given appointment.
+     *
+     * @param appt the appointment to delete.
      */
     void delAppt(Appointment appt) throws IOException;
 
     /**
-     * edits the given appointment to alter the info
-     * @param oldDoc
-     * @param oldDate
-     * @param oldTime
-     * @param newPat
-     * @param newDoc
-     * @param newDate
-     * @param newTime
+     * Edits the given appointment with the new details provided.
+     *
+     * @param oldAppt The appointment to edit.
+     * @param newDoc The new doctor id as a String, or null to keep the existing one.
+     * @param newDate The new date, or null to keep the existing one.
+     * @param newTime The new time, or null to keep the existing one.
+     * @return The edited appointment.
+     * @throws IOException If the appointment cannot be edited.
      */
-    void editAppt(String oldDoc, String oldDate,
-                  String oldTime, String newPat, String newDoc, String newDate, String newTime) throws IOException;
+    Appointment editAppt(Appointment oldAppt, String newDoc, String newDate, String newTime) throws IOException;
 
     /**
      * Adds the given doctor.

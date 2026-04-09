@@ -77,6 +77,10 @@ public class EditPatCommand extends Command {
             throw new CommandException("The person at the specified index is not a patient.");
         }
 
+        if (!editPatDescriptor.isAnyFieldEdited()) {
+            throw new CommandException(EditPatCommand.MESSAGE_NOT_EDITED);
+        }
+
         Patient patientToEdit = (Patient) personToEdit;
         Patient editedPatient = createEditedPatient(patientToEdit, editPatDescriptor);
 

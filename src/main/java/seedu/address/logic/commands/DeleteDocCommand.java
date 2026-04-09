@@ -14,7 +14,7 @@ import seedu.address.model.person.Person;
 import seedu.address.storage.ScheduleManager;
 
 /**
- * Deletes a person identified using it's displayed index from the address book.
+ * Deletes a doctor identified using its displayed index from the app.
  */
 public class DeleteDocCommand extends Command {
 
@@ -29,6 +29,9 @@ public class DeleteDocCommand extends Command {
 
     private final Index targetIndex;
 
+    /**
+     * Creates a DeleteDocCommand to delete the doctor at the specified {@code targetIndex}.
+     */
     public DeleteDocCommand(Index targetIndex) {
         this.targetIndex = targetIndex;
     }
@@ -44,13 +47,13 @@ public class DeleteDocCommand extends Command {
 
         Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
         if (!(personToDelete instanceof Doctor)) {
-            throw new CommandException("The person at the specified index is not a doctor.");
+            throw new CommandException(Messages.MESSAGE_NOT_A_DOCTOR);
         }
         model.deleteDoctor((Doctor) personToDelete);
         try {
-            ScheduleManager.removeDoctorSchedule(personToDelete.getName().fullName);
+            ScheduleManager.removeDoctorSchedule((Doctor) personToDelete);
         } catch (java.io.IOException e) {
-            throw new CommandException("Failed to update schedule file.");
+            throw new CommandException(Messages.MESSAGE_SCHEDULE_UPDATE_FAILED);
         }
         return new CommandResult(String.format(MESSAGE_DELETE_DOCTOR_SUCCESS, Messages.format(personToDelete)));
     }

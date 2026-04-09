@@ -18,6 +18,8 @@ public class Messages {
     public static final String MESSAGE_INVALID_DOCTOR_DISPLAYED_INDEX = "The doctor index provided is invalid";
     public static final String MESSAGE_INVALID_PATIENT_DISPLAYED_INDEX = "The patient index provided is invalid";
     public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d persons listed!";
+    public static final String MESSAGE_NOT_A_DOCTOR = "The person at the specified index is not a doctor.";
+    public static final String MESSAGE_SCHEDULE_UPDATE_FAILED = "Failed to update schedule file.";
     public static final String MESSAGE_DUPLICATE_FIELDS =
                 "Multiple values specified for the following single-valued field(s): ";
 
