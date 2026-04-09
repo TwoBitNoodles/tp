@@ -73,7 +73,7 @@ public class ViewSchedCommand extends Command {
 
         return new CommandResult(
                 String.format(MESSAGE_SUCCESS, doctorName, doctorId, date),
-                schedule
+                schedule, doctorName, doctorId, date
         );
     }
 
@@ -92,7 +92,7 @@ public class ViewSchedCommand extends Command {
 
         return new CommandResult(
                 String.format(MESSAGE_WEEKLY_SUCCESS, doctorName, doctorId),
-                weeklySchedule, true
+                weeklySchedule, true, doctorName, doctorId
         );
     }
 
