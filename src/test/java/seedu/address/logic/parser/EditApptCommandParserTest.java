@@ -18,8 +18,8 @@ public class EditApptCommandParserTest {
 
     @Test
     public void parse_invalidDoctorId_throws() {
-        assertThrows(ParseException.class, () -> parser.parse(" apptid/3 nd/abc"));
-        assertThrows(ParseException.class, () -> parser.parse(" apptid/3 nd/0"));
+        assertThrows(ParseException.class, () -> parser.parse(" apptid/3 nid/abc"));
+        assertThrows(ParseException.class, () -> parser.parse(" apptid/3 nid/0"));
     }
 
     @Test
@@ -29,8 +29,12 @@ public class EditApptCommandParserTest {
     }
 
     @Test
+    public void parse_unknownField_throws() {
+        assertThrows(ParseException.class, () -> parser.parse(" apptid/3 ndoc/2"));
+    }
+
+    @Test
     public void parse_editNameBlocked_throws() {
         assertThrows(ParseException.class, () -> parser.parse(" apptid/3 newn/Alice"));
     }
 }
-

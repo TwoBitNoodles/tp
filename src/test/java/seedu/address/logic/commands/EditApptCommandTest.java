@@ -102,6 +102,23 @@ public class EditApptCommandTest {
     }
 
     @Test
+    public void execute_noChanges_returnsNoChangeMessage() throws Exception {
+        Model model = new ModelManager();
+        Doctor doctor = new DoctorBuilder().withName(DOCTOR_NAME).withDocId(DOCTOR_ID).build();
+        Patient patient = new PatientBuilder().withName(PATIENT_NAME).withPatId(PATIENT_ID).build();
+        model.addDoctor(doctor);
+        model.addPatient(patient);
+        patient.addAppt(new Appointment(DOCTOR_ID, DOCTOR_NAME, PATIENT_ID, PATIENT_NAME,
+                date.toString(), "09:30", APPT_ID));
+
+        EditApptCommand command = new EditApptCommand(APPT_ID, String.valueOf(DOCTOR_ID), date.toString(),
+                "09:30");
+        CommandResult result = command.execute(model);
+
+        assertEquals(EditApptCommand.MESSAGE_NO_CHANGES, result.getFeedbackToUser());
+    }
+
+    @Test
     public void execute_invalidTime_showsError() throws Exception {
         Model model = new ModelManager();
         Doctor doctor = new DoctorBuilder().withName(DOCTOR_NAME).withDocId(DOCTOR_ID).build();

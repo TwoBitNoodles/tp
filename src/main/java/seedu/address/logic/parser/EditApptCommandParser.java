@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import seedu.address.logic.commands.EditApptCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -18,6 +21,17 @@ import seedu.address.logic.parser.exceptions.ParseException;
  */
 public class EditApptCommandParser {
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm");
+    private static final Pattern PREFIX_PATTERN = Pattern.compile("(?<!\\S)([A-Za-z]+/)");
+    private static final Set<String> VALID_PREFIXES = Set.of(
+            PREFIX_APPT_ID.getPrefix(),
+            PREFIX_NEWDOC.getPrefix(),
+            PREFIX_NEWDATE.getPrefix(),
+            PREFIX_NEWTIME.getPrefix());
+
+    private static final String MESSAGE_UNSUPPORTED_PATIENT_EDIT =
+            "Editing patient name is not supported. Delete the appointment and add a new one instead.";
+    private static final String MESSAGE_INVALID_EDIT_FIELD =
+            "Unrecognized field for editappt. Use apptid/, nid/, ndate/, or ntime/.";
 
     /**
      * Parses the given string of arguments and returns an EditApptCommand object.
@@ -25,8 +39,12 @@ public class EditApptCommandParser {
      */
     public EditApptCommand parse(String args) throws ParseException {
         if (args.contains("newn/")) {
-            throw new ParseException("Editing patient name is not supported. "
-                    + "Delete the appointment and add a new one instead.");
+            throw new ParseException(MESSAGE_UNSUPPORTED_PATIENT_EDIT);
+        }
+
+        String unknownPrefix = findUnknownPrefix(args);
+        if (unknownPrefix != null) {
+            throw new ParseException(MESSAGE_INVALID_EDIT_FIELD);
         }
 
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args,
@@ -35,7 +53,7 @@ public class EditApptCommandParser {
 
         if (argMultimap.getValue(PREFIX_APPT_ID).isEmpty() || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException("Missing required fields to identify the appointment! "
-                    + "Need id/.");
+                    + "Need apptid/.");
         }
 
         String idValue = argMultimap.getValue(PREFIX_APPT_ID).get().trim();
@@ -93,5 +111,16 @@ public class EditApptCommandParser {
         }
 
         return new EditApptCommand(apptId, newDoc, newDate, newTime);
+    }
+
+    private String findUnknownPrefix(String args) {
+        Matcher matcher = PREFIX_PATTERN.matcher(args);
+        while (matcher.find()) {
+            String prefix = matcher.group(1);
+            if (!VALID_PREFIXES.contains(prefix)) {
+                return prefix;
+            }
+        }
+        return null;
     }
 }

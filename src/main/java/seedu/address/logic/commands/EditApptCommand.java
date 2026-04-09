@@ -7,6 +7,8 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWDOC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWTIME;
 
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -32,6 +34,10 @@ public class EditApptCommand extends Command {
             + PREFIX_NEWTIME + "11:30";
 
     public static final String MESSAGE_SUCCESS = "Edited appointment!";
+    public static final String MESSAGE_NO_CHANGES = "No changes made to the appointment.";
+
+    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm");
+    private static final DateTimeFormatter STORAGE_TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
     private final int apptId;
     private final String newDoc;
@@ -59,6 +65,10 @@ public class EditApptCommand extends Command {
                 throw new CommandException("Appointment id not found: " + apptId);
             }
 
+            if (hasNoChangesSafely(oldAppt)) {
+                return new CommandResult(MESSAGE_NO_CHANGES);
+            }
+
             Appointment editedAppt = model.editAppt(oldAppt, newDoc, newDate, newTime);
             AppointmentManager.updateAppointment(apptId, editedAppt);
             return new CommandResult(MESSAGE_SUCCESS);
@@ -67,6 +77,33 @@ public class EditApptCommand extends Command {
         } catch (DateTimeParseException | IllegalArgumentException e) {
             throw new CommandException("Could not edit appointment: " + e.getMessage());
         }
+    }
+
+    private boolean hasNoChangesSafely(Appointment oldAppt) {
+        try {
+            return hasNoChanges(oldAppt);
+        } catch (NumberFormatException | DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    private boolean hasNoChanges(Appointment oldAppt) {
+        int finalDocId = oldAppt.getDocId();
+        if (newDoc != null) {
+            finalDocId = Integer.parseInt(newDoc.trim());
+        }
+
+        String finalDate = (newDate != null) ? newDate : oldAppt.getDate();
+        String finalTime = (newTime != null) ? normalizeTime(newTime) : normalizeTime(oldAppt.getTime());
+
+        return finalDocId == oldAppt.getDocId()
+                && finalDate.equals(oldAppt.getDate())
+                && finalTime.equals(normalizeTime(oldAppt.getTime()));
+    }
+
+    private String normalizeTime(String time) {
+        LocalTime parsedTime = LocalTime.parse(time, TIME_FORMAT);
+        return parsedTime.format(STORAGE_TIME_FORMAT);
     }
 
 }
