@@ -32,22 +32,19 @@ public class ViewSchedCommandParser implements Parser<ViewSchedCommand> {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                             ViewSchedCommand.MESSAGE_USAGE));
         }
-        if (doctorIdOpt.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                            ViewSchedCommand.MESSAGE_USAGE));
-        }
 
         String doctorName = doctorOpt.get().trim();
-        int doctorId;
-        try {
-            Index parsedDoctorId = ParserUtil.parseIndex(doctorIdOpt.get().trim());
-            doctorId = parsedDoctorId.getOneBased();
-        } catch (ParseException e) {
+        int doctorId = -1;
+        if (doctorIdOpt.isPresent()) {
+            try {
+                Index parsedDoctorId = ParserUtil.parseIndex(doctorIdOpt.get().trim());
+                doctorId = parsedDoctorId.getOneBased();
+            } catch (ParseException e) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                             ViewSchedCommand.MESSAGE_USAGE));
         }
+    }
 
         Optional<String> dateOpt = argMultimap.getValue(CliSyntax.PREFIX_DATE);
         LocalDate date = null;

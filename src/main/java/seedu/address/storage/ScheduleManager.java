@@ -635,22 +635,6 @@ public class ScheduleManager {
         return doctorSchedule;
     }
 
-    private static Map<String, Object> normalizeDoctorSchedule(Object scheduleData, Doctor doctor) {
-        Map<String, Object> doctorSchedule = new LinkedHashMap<>();
-        doctorSchedule.put(DOC_ID_KEY, doctor.getDocId());
-        doctorSchedule.put(DOCTOR_NAME_KEY, doctor.getName().fullName);
-
-        if (scheduleData instanceof Map<?, ?> scheduleMap) {
-            for (Map.Entry<?, ?> entry : scheduleMap.entrySet()) {
-                if (entry.getKey() instanceof String && !isMetadataKey((String) entry.getKey())) {
-                    doctorSchedule.put((String) entry.getKey(), entry.getValue());
-                }
-            }
-        }
-
-        return doctorSchedule;
-    }
-
     private static void updateDoctorMetadata(Map<String, Object> data, String doctorKey, Doctor doctor) {
         Map<String, Object> doctorSchedule = new LinkedHashMap<>(getDoctorSchedule(data, doctorKey));
         doctorSchedule.put(DOC_ID_KEY, doctor.getDocId());

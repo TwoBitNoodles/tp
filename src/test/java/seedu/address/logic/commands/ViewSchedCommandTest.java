@@ -104,7 +104,7 @@ public class ViewSchedCommandTest {
 
         CommandResult result = command.execute(model);
 
-        String expected = "Schedule for john tan (ID: 1) on 2026-03-20\n\n";
+        String expected = "Schedule for John Tan (ID: 1) on 2026-03-20\n\n";
 
         assertEquals(expected, result.getFeedbackToUser());
     }
