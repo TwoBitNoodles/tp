@@ -5,7 +5,12 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -24,6 +29,8 @@ import seedu.address.storage.ScheduleManager;
  */
 public class ModelManager implements Model {
     private static final Logger logger = LogsCenter.getLogger(ModelManager.class);
+    private static final DateTimeFormatter INPUT_TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm");
+    private static final DateTimeFormatter STORAGE_TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
     private final AddressBook addressBook;
     private final AddressBook patients;
@@ -230,71 +237,293 @@ public class ModelManager implements Model {
                         && p.getName().fullName.equalsIgnoreCase(name));
     }
 
+    private Doctor findDoctorById(int docId) {
+        return doctors.getPersonList().stream()
+                .filter(p -> p instanceof Doctor)
+                .map(p -> (Doctor) p)
+                .filter(doctor -> doctor.getDocId() == docId)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private Patient findPatientById(int patientId) {
+        return patients.getPersonList().stream()
+                .filter(p -> p instanceof Patient)
+                .map(p -> (Patient) p)
+                .filter(patient -> patient.getPatientId() == patientId)
+                .findFirst()
+                .orElse(null);
+    }
+
     @Override
     public void addAppt(Appointment appt) throws IOException {
-        Patient patient = getFilteredPersonList().stream()
-                .filter(p -> p instanceof Patient && p.getName().fullName.equalsIgnoreCase(appt.getPatName()))
-                .map(p -> (Patient) p)
-                .findFirst()
-                .orElseThrow(() -> new IOException("Patient not found: " + appt.getPatName()));
+        Patient patient;
+        if (appt.getPatientId() != Appointment.UNASSIGNED_ID) {
+            patient = findPatientById(appt.getPatientId());
+            if (patient == null) {
+                throw new IOException("Patient not found: " + appt.getPatientId());
+            }
+        } else {
+            patient = patients.getPersonList().stream()
+                    .filter(p -> p instanceof Patient)
+                    .map(p -> (Patient) p)
+                    .filter(p -> p.getName().fullName.equalsIgnoreCase(appt.getPatName()))
+                    .findFirst()
+                    .orElseThrow(() -> new IOException("Patient not found: " + appt.getPatName()));
+        }
+        appt.setPatName(patient.getName().fullName);
 
-        patient.addAppt(appt);
+        Doctor doctor = findDoctorById(appt.getDocId());
+        if (doctor == null) {
+            throw new IOException("Doctor not found: " + appt.getDocId());
+        }
+        appt.setDocName(doctor.getName().fullName);
+
         ScheduleManager.addAppt(appt);
+        patient.addAppt(appt);
 
     }
 
     @Override
     public void delAppt(Appointment appt) throws IOException {
-        Patient patient = getFilteredPersonList().stream()
-                .filter(p -> p instanceof Patient && p.getName().fullName.equalsIgnoreCase(appt.getPatName()))
-                .map(p -> (Patient) p)
-                .findFirst()
-                .orElseThrow(() -> new IOException("Patient not found: " + appt.getPatName()));
-        patient.delAppt(appt);
-        ScheduleManager.delAppt(appt);
+        Appointment resolvedAppt =
+                resolvePatientIdForLegacyAppointment(resolveDoctorIdForLegacyAppointment(appt));
+
+        Patient patient;
+        if (resolvedAppt.getPatientId() != Appointment.UNASSIGNED_ID) {
+            patient = findPatientById(resolvedAppt.getPatientId());
+            if (patient == null) {
+                throw new IOException("Patient not found: " + resolvedAppt.getPatientId());
+            }
+        } else {
+            patient = patients.getPersonList().stream()
+                    .filter(p -> p instanceof Patient)
+                    .map(p -> (Patient) p)
+                    .filter(p -> p.getName().fullName.equalsIgnoreCase(resolvedAppt.getPatName()))
+                    .findFirst()
+                    .orElseThrow(() -> new IOException("Patient not found: " + resolvedAppt.getPatName()));
+        }
+        if (resolvedAppt.getPatName() == null) {
+            resolvedAppt.setPatName(patient.getName().fullName);
+        }
+        ScheduleManager.delAppt(resolvedAppt);
+        // Remove both the resolved appointment and the original (legacy) appointment to keep apptList consistent.
+        patient.delAppt(resolvedAppt);
+        if (appt != resolvedAppt) {
+            patient.delAppt(appt);
+        }
     }
 
     @Override
-    public void editAppt(String oldDoc, String oldDate, String oldTime,
-                         String newPat, String newDoc, String newDate, String newTime) throws IOException {
+    public Appointment editAppt(Appointment oldAppt, String newDoc, String newDate, String newTime) throws IOException {
+        Appointment resolvedOldAppt =
+                resolvePatientIdForLegacyAppointment(resolveDoctorIdForLegacyAppointment(oldAppt));
 
-        String oldPatName = ScheduleManager.getPatientAtSlot(oldDoc, oldDate, oldTime);
-        if (oldPatName == null) {
-            throw new IOException("No appointment exists at: " + oldDoc + " on " + oldDate + " at " + oldTime);
+        int oldDocId = resolvedOldAppt.getDocId();
+        String oldDocName = resolvedOldAppt.getDocName();
+        String oldDate = resolvedOldAppt.getDate();
+        String oldTime = resolvedOldAppt.getTime();
+        String oldPatName = resolvedOldAppt.getPatName();
+        int oldPatientId = resolvedOldAppt.getPatientId();
+
+        String standardizedOldTime;
+        try {
+            standardizedOldTime = LocalTime.parse(oldTime, INPUT_TIME_FORMAT).format(STORAGE_TIME_FORMAT);
+        } catch (DateTimeParseException e) {
+            throw new IOException("Stored appointment has an invalid time: " + oldTime);
         }
 
-        Appointment oldAppt = new Appointment(oldDoc, oldPatName, oldDate, oldTime);
+        String scheduledPatName = ScheduleManager.getPatientAtSlotByDocId(oldDocId, oldDate, standardizedOldTime);
+        if (scheduledPatName == null) {
+            throw new IOException("No appointment exists at: " + oldDocName + " on " + oldDate + " at " + oldTime);
+        }
 
-        String finalPat = (newPat != null) ? newPat : oldPatName;
-        String finalDoc = (newDoc != null) ? newDoc : oldDoc;
+        if (!scheduledPatName.equalsIgnoreCase(oldPatName)) {
+            throw new IOException("Appointment details do not match the schedule.");
+        }
+
+        int finalDocId = oldDocId;
+        if (newDoc != null) {
+            try {
+                finalDocId = Integer.parseInt(newDoc.trim());
+            } catch (NumberFormatException e) {
+                throw new IOException("Doctor id must be a positive integer.");
+            }
+            if (finalDocId <= 0) {
+                throw new IOException("Doctor id must be a positive integer.");
+            }
+        }
+
+        Doctor finalDoctor = findDoctorById(finalDocId);
+        if (finalDoctor == null) {
+            throw new IOException("Doctor not found: " + finalDocId);
+        }
+        String finalDocName = finalDoctor.getName().fullName;
+
         String finalDate = (newDate != null) ? newDate : oldDate;
         String finalTime = (newTime != null) ? newTime : oldTime;
 
-        Appointment editedAppt = new Appointment(finalDoc, finalPat, finalDate, finalTime);
+        LocalDate parsedFinalDate;
+        try {
+            parsedFinalDate = LocalDate.parse(finalDate);
+        } catch (DateTimeParseException e) {
+            throw new IOException("Please input a valid date. The date must be formatted as YYYY-MM-DD");
+        }
 
-        if (LocalTime.parse(finalTime).getMinute() % 30 != 0) {
+        LocalDate today = LocalDate.now();
+        LocalDate sevenDaysLater = today.plusDays(7);
+        if (parsedFinalDate.isBefore(today) || parsedFinalDate.isAfter(sevenDaysLater)) {
+            throw new IOException("Appointment date must be within 7 days from today!");
+        }
+
+        LocalTime parsedFinalTime;
+        try {
+            parsedFinalTime = LocalTime.parse(finalTime, INPUT_TIME_FORMAT);
+        } catch (DateTimeParseException e) {
+            throw new IOException("Please input a valid time. Time must be formatted as H:MM (e.g. 9:00 or 09:00)");
+        }
+
+        if (parsedFinalTime.getMinute() % 30 != 0) {
             throw new IOException("Please choose a valid timeslot.");
         }
 
-        if (newPat != null && !hasPatientWithName(newPat)) {
-            throw new IOException("The new patient '" + newPat + "' does not exist in the Address Book.");
+        String standardizedFinalTime = parsedFinalTime.format(STORAGE_TIME_FORMAT);
+
+        Appointment editedAppt = new Appointment(finalDocId, finalDocName, oldPatientId, oldPatName, finalDate,
+                standardizedFinalTime, oldAppt.getApptID());
+
+        // Pre-validate the target slot before deleting the old appointment, to avoid partial edits.
+        Map<String, String> targetDaySchedule;
+        try {
+            targetDaySchedule = ScheduleManager.getScheduleByDocId(finalDocId, finalDate);
+        } catch (IllegalArgumentException e) {
+            throw new IOException("Date not found! Please choose a date within 7 days of today.");
         }
 
-        deleteApptFromPatient(oldPatName, oldAppt);
-        ScheduleManager.delAppt(oldAppt);
+        if (targetDaySchedule == null) {
+            throw new IOException("Doctor not registered");
+        }
 
-        this.addAppt(editedAppt);
+        if (!targetDaySchedule.containsKey(standardizedFinalTime)) {
+            throw new IOException("There is no such time slot.");
+        }
+
+        boolean isSameSlot = oldDocId == finalDocId
+                && oldDate.equals(finalDate)
+                && standardizedOldTime.equals(standardizedFinalTime);
+        String targetOccupant = targetDaySchedule.get(standardizedFinalTime);
+        if (!isSameSlot && targetOccupant != null) {
+            throw new IOException("This slot is already booked. Please edit the appointment if you wish to change it");
+        }
+
+        // Also validate that the target time lies within the day's operating hours window.
+        TreeMap<String, String> sortedSlots = new TreeMap<>(targetDaySchedule);
+        LocalTime first = LocalTime.parse(sortedSlots.firstKey(), STORAGE_TIME_FORMAT);
+        LocalTime last = LocalTime.parse(sortedSlots.lastKey(), STORAGE_TIME_FORMAT);
+        LocalTime target = LocalTime.parse(standardizedFinalTime, STORAGE_TIME_FORMAT);
+        if (target.isBefore(first) || target.isAfter(last)) {
+            throw new IOException("Please choose a time within operating hours");
+        }
+
+        // Remove both the legacy appointment (if any) and the resolved one.
+        deleteApptFromPatient(oldPatientId, oldPatName, oldAppt);
+        deleteApptFromPatient(oldPatientId, oldPatName, resolvedOldAppt);
+        ScheduleManager.delAppt(resolvedOldAppt);
+
+        try {
+            this.addAppt(editedAppt);
+        } catch (IOException e) {
+            // Best-effort rollback to the old appointment to avoid leaving the schedule inconsistent.
+            try {
+                this.addAppt(resolvedOldAppt);
+            } catch (IOException ignored) {
+                // Ignore rollback failure.
+            }
+            throw e;
+        }
+
+        return editedAppt;
+    }
+
+    /**
+     * For backward-compatibility with older appointments.json entries that did not store a doctor id,
+     * attempt to resolve the doctor's id from the stored doctor name.
+     */
+    private Appointment resolveDoctorIdForLegacyAppointment(Appointment appt) throws IOException {
+        if (appt.getDocId() != Appointment.UNASSIGNED_ID) {
+            return appt;
+        }
+
+        String doctorName = appt.getDocName();
+        if (doctorName == null) {
+            throw new IOException("Stored appointment is missing doctor id.");
+        }
+
+        Doctor doctor = doctors.getPersonList().stream()
+                .filter(p -> p instanceof Doctor)
+                .map(p -> (Doctor) p)
+                .filter(d -> d.getName().fullName.equalsIgnoreCase(doctorName))
+                .findFirst()
+                .orElse(null);
+
+        if (doctor == null) {
+            throw new IOException("Doctor not found: " + doctorName);
+        }
+
+        return new Appointment(doctor.getDocId(), doctor.getName().fullName, appt.getPatientId(), appt.getPatName(),
+                appt.getDate(), appt.getTime(), appt.getApptID());
+    }
+
+    /**
+     * For backward-compatibility with older appointments.json entries that did not store a patient id,
+     * attempt to resolve the patient's id from the stored patient name.
+     */
+    private Appointment resolvePatientIdForLegacyAppointment(Appointment appt) throws IOException {
+        if (appt.getPatientId() != Appointment.UNASSIGNED_ID) {
+            return appt;
+        }
+
+        String patientName = appt.getPatName();
+        if (patientName == null) {
+            throw new IOException("Stored appointment is missing patient id.");
+        }
+
+        Patient patient = patients.getPersonList().stream()
+                .filter(p -> p instanceof Patient)
+                .map(p -> (Patient) p)
+                .filter(p -> p.getName().fullName.equalsIgnoreCase(patientName))
+                .findFirst()
+                .orElse(null);
+
+        if (patient == null) {
+            throw new IOException("Patient not found: " + patientName);
+        }
+
+        String nameForSchedule = (appt.getPatName() != null) ? appt.getPatName() : patient.getName().fullName;
+        return new Appointment(appt.getDocId(), appt.getDocName(), patient.getPatientId(), nameForSchedule,
+                appt.getDate(), appt.getTime(), appt.getApptID());
     }
 
     /**
      * Helper to find a patient and remove an appointment from their internal list.
      */
-    private void deleteApptFromPatient(String name, Appointment appt) {
-        addressBook.getPersonList().stream()
-                .filter(p -> p instanceof Patient && p.getName().fullName.equalsIgnoreCase(name))
-                .map(p -> (Patient) p)
-                .findFirst()
-                .ifPresent(patient -> patient.getApptList().remove(appt));
+    private void deleteApptFromPatient(int patientId, String patientName, Appointment appt) {
+        Patient patient = null;
+        if (patientId != Appointment.UNASSIGNED_ID) {
+            patient = findPatientById(patientId);
+        }
+        if (patient == null && patientName != null) {
+            final String targetName = patientName;
+            patient = patients.getPersonList().stream()
+                    .filter(p -> p instanceof Patient)
+                    .map(p -> (Patient) p)
+                    .filter(p -> p.getName().fullName.equalsIgnoreCase(targetName))
+                    .findFirst()
+                    .orElse(null);
+        }
+        if (patient != null) {
+            patient.getApptList().remove(appt);
+        }
     }
 
     /**

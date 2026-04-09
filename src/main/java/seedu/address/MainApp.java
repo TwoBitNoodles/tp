@@ -23,6 +23,7 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Doctor;
+import seedu.address.model.person.Patient;
 import seedu.address.model.person.Person;
 import seedu.address.storage.AddressBookStorage;
 import seedu.address.storage.JsonAddressBookStorage;
@@ -89,6 +90,7 @@ public class MainApp extends Application {
         ReadOnlyAddressBook patientData = loadPatientData(storage);
         ReadOnlyAddressBook doctorData = loadDoctorData(storage);
 
+        initializePatientIdTracker(patientData);
         initializeDoctorIdTracker(doctorData);
 
         return new ModelManager(initialData, patientData, doctorData, userPrefs);
@@ -137,6 +139,19 @@ public class MainApp extends Application {
             }
         }
         Doctor.setIdTracker(maxId + 1);
+    }
+
+    /**
+     * Sets the Patient ID tracker to one past the highest existing patient ID.
+     */
+    private void initializePatientIdTracker(ReadOnlyAddressBook patientData) {
+        int maxId = 0;
+        for (Person p : patientData.getPersonList()) {
+            if (p instanceof Patient && ((Patient) p).getPatientId() > maxId) {
+                maxId = ((Patient) p).getPatientId();
+            }
+        }
+        Patient.setIdTracker(maxId + 1);
     }
 
     private void initLogging(Config config) {

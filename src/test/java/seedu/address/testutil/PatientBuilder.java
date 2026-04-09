@@ -21,6 +21,7 @@ public class PatientBuilder {
     private Phone phone;
     private Email email;
     private Address address;
+    private Integer patientId;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -30,6 +31,7 @@ public class PatientBuilder {
         phone = new Phone(DEFAULT_PHONE);
         email = new Email(DEFAULT_EMAIL);
         address = new Address(DEFAULT_ADDRESS);
+        patientId = null;
     }
 
     /**
@@ -40,6 +42,7 @@ public class PatientBuilder {
         phone = patientToCopy.getPhone();
         email = patientToCopy.getEmail();
         address = patientToCopy.getAddress();
+        patientId = patientToCopy.getPatientId();
     }
 
     /**
@@ -74,7 +77,21 @@ public class PatientBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code patientId} of the {@code Patient} that we are building.
+     */
+    public PatientBuilder withPatId(int patientId) {
+        this.patientId = patientId;
+        return this;
+    }
+
+    /**
+     * Creates and returns the {@code Patient} based on id availability.
+     */
     public Patient build() {
+        if (patientId != null) {
+            return new Patient(name, phone, email, address, patientId);
+        }
         return new Patient(name, phone, email, address);
     }
 

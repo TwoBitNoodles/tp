@@ -139,20 +139,17 @@ public interface Model {
      */
     void delAppt(Appointment appt) throws IOException;
 
-    // Comment phrased by Copilot
     /**
      * Edits the given appointment with the new details provided.
      *
-     * @param oldDoc the current doctor name of the appointment.
-     * @param oldDate the current date of the appointment.
-     * @param oldTime the current time of the appointment.
-     * @param newPat the new patient name, or null to keep the existing one.
-     * @param newDoc the new doctor name, or null to keep the existing one.
-     * @param newDate the new date, or null to keep the existing one.
-     * @param newTime the new time, or null to keep the existing one.
+     * @param oldAppt The appointment to edit.
+     * @param newDoc The new doctor id as a String, or null to keep the existing one.
+     * @param newDate The new date, or null to keep the existing one.
+     * @param newTime The new time, or null to keep the existing one.
+     * @return The edited appointment.
+     * @throws IOException If the appointment cannot be edited.
      */
-    void editAppt(String oldDoc, String oldDate,
-                  String oldTime, String newPat, String newDoc, String newDate, String newTime) throws IOException;
+    Appointment editAppt(Appointment oldAppt, String newDoc, String newDate, String newTime) throws IOException;
 
     /**
      * Adds the given doctor.

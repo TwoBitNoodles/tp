@@ -197,7 +197,7 @@ public class ScheduleManager {
      * @param appt the appointment to add.
      */
     public static void addAppt(Appointment appt) throws IOException {
-        String doctorName = appt.getDocName();
+        int doctorId = appt.getDocId();
         String patName = appt.getPatName();
         String date = appt.getDate();
         String time = appt.getTime();
@@ -216,14 +216,14 @@ public class ScheduleManager {
         }
 
         if (!isValidTime(time)) {
-            throw new IOException("Please input a valid time. Time must be formatted as HH:MM");
+            throw new IOException("Please input a valid time. Time must be formatted as H:MM (e.g. 9:00 or 09:00)");
         }
 
         ObjectMapper mapper = new ObjectMapper();
         File file = new File(FILE_PATH);
         Map<String, Object> data = readScheduleFile();
 
-        String matchedDoctor = findDoctorKey(data, doctorName);
+        String matchedDoctor = findDoctorKeyByDocId(data, doctorId);
         if (matchedDoctor != null) {
             Map<String, Object> doctorSchedule = getDoctorSchedule(data, matchedDoctor);
             if (!doctorSchedule.containsKey(date)) {
@@ -233,18 +233,19 @@ public class ScheduleManager {
             Map<String, String> slots = getDateSlots(doctorSchedule, date);
             TreeMap<String, Object> sortedSlots = new TreeMap<>(slots);
 
-            LocalTime apptTime = LocalTime.parse(time);
-            LocalTime firstTime = LocalTime.parse(sortedSlots.firstKey());
-            LocalTime lastTime = LocalTime.parse(sortedSlots.lastKey());
+            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("H:mm");
+            DateTimeFormatter storageFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+            LocalTime apptTime = LocalTime.parse(time, inputFormatter);
+            LocalTime firstTime = LocalTime.parse(sortedSlots.firstKey(), storageFormatter);
+            LocalTime lastTime = LocalTime.parse(sortedSlots.lastKey(), storageFormatter);
 
             if (apptTime.isBefore(firstTime) || apptTime.isAfter(lastTime)) {
                 throw new IOException("Please choose a time within operating hours");
             }
 
-            //Formats the input into the ormat of json keys, to prevent dummy entries/overwrites
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            LocalTime parsedTime = LocalTime.parse(time, formatter);
-            String standardizedTime = parsedTime.format(formatter);
+            // Formats input into JSON key format, to prevent dummy entries/overwrites.
+            String standardizedTime = apptTime.format(storageFormatter);
 
             if (!slots.containsKey(standardizedTime)) {
                 throw new IOException("The time " + time + " is not a valid 30-minute slot for this doctor.");
@@ -289,7 +290,7 @@ public class ScheduleManager {
      */
     private static boolean isValidTime(String time) {
         try {
-            LocalTime formattedDate = LocalTime.parse(time);
+            LocalTime formattedDate = LocalTime.parse(time, DateTimeFormatter.ofPattern("H:mm"));
             return true;
         } catch (DateTimeParseException e) {
             return false;
@@ -302,13 +303,17 @@ public class ScheduleManager {
      * @param appt the appointment to delete.
      */
     public static void delAppt(Appointment appt) throws IOException {
-        String doctorName = appt.getDocName();
+        int doctorId = appt.getDocId();
         String pat = appt.getPatName();
         String date = appt.getDate();
         String time = appt.getTime();
 
+        if (!isValidTime(time)) {
+            throw new IOException("Please input a valid time. Time must be formatted as H:MM (e.g. 9:00 or 09:00)");
+        }
+
         Map<String, Object> data = readScheduleFile();
-        String matchedDoctor = findDoctorKey(data, doctorName);
+        String matchedDoctor = findDoctorKeyByDocId(data, doctorId);
 
         if (matchedDoctor == null) {
             throw new IOException("Doctor not registered");
@@ -321,8 +326,14 @@ public class ScheduleManager {
 
         Map<String, String> slots = getDateSlots(doctorSchedule, date);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        String standardizedTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("H:mm")).format(formatter);
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("H:mm");
+        DateTimeFormatter storageFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        String standardizedTime;
+        try {
+            standardizedTime = LocalTime.parse(time, inputFormatter).format(storageFormatter);
+        } catch (DateTimeParseException e) {
+            throw new IOException("Please input a valid time. Time must be formatted as H:MM (e.g. 9:00 or 09:00)");
+        }
 
         TreeMap<String, String> sortedSlots = new TreeMap<>(slots);
         LocalTime apptTime = LocalTime.parse(standardizedTime);
@@ -407,6 +418,29 @@ public class ScheduleManager {
         }
         Map<String, Object> data = readScheduleFile();
         String matchedDoctor = findDoctorKey(data, doctorName);
+
+        if (matchedDoctor == null) {
+            return null;
+        }
+
+        Map<String, Object> doctorSchedule = getDoctorSchedule(data, matchedDoctor);
+        if (!doctorSchedule.containsKey(date)) {
+            return null;
+        }
+
+        return getDateSlots(doctorSchedule, date).get(time);
+    }
+
+    /**
+     * Reads the schedule.json file to find the patient currently booked at a specific slot by doctor id.
+     */
+    public static String getPatientAtSlotByDocId(int docId, String date, String time) throws IOException {
+        File file = new File(FILE_PATH);
+        if (!file.exists() || file.length() == 0) {
+            return null;
+        }
+        Map<String, Object> data = readScheduleFile();
+        String matchedDoctor = findDoctorKeyByDocId(data, docId);
 
         if (matchedDoctor == null) {
             return null;
