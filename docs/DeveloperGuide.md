@@ -127,14 +127,6 @@ The `Model` component,
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
-<box type="info" seamless>
-
-**Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
-
-<puml src="diagrams/BetterModelClassDiagram.puml" width="450" />
-
-</box>
-
 
 ### Storage component
 
@@ -406,7 +398,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     Use case resumes at step 1.
 
-* 2d. A patient with the same name (case-insensitive) and same phone number already exists.
+* 2d. A patient with the same name (case-insensitive) and same email already exists.
   * 2d1. System shows: `A patient with the same name and email already exists in the app`
 
     Use case ends.
@@ -537,6 +529,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Slot**: A time slot (30-minute intervals from 09:00 to 17:00, with the last slot at 16:30) in a doctor's schedule
+* **Schedule**: A calendar of available and booked time slots for a doctor
+* **Patient ID**: A unique auto-generated identifier for each patient (e.g., 1, 2, 3, ...)
+* **Doctor ID**: A unique auto-generated identifier for each doctor (e.g., 1, 2, 3, ...)
+* **Index**: A one-based number used to identify a person's position in the displayed list (e.g., 1st person, 2nd person)
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -557,8 +554,11 @@ testers are expected to do more *exploratory* testing.
 
    1. Download the jar file and copy into an empty folder
 
-   1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
-
+   1. Open a terminal and run `cd PATH_TO_FOLDER` to change directory to the location of the jar file. 
+   
+   1. Run the command `java -jar clinicdesk.jar` to launch the app.<br>
+       Expected: App launches successfully without any error.
+   
 1. Saving window preferences
 
    1. Resize the window to an optimum size. Move the window to a different location. Close the window.
@@ -566,7 +566,6 @@ testers are expected to do more *exploratory* testing.
    1. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
-1. _{ more test cases …​ }_
 
 ### Deleting a doctor
 
@@ -583,12 +582,21 @@ testers are expected to do more *exploratory* testing.
    1. Other incorrect delete commands to try: `deldoc`, `delpat x`, `...` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
-1. _{ more test cases …​ }_ 
 
 ### Saving data
 
-1. Dealing with missing/corrupted data files
+1. Dealing with missing data files
+   1. When a data file (patients.json, doctors.json, schedule.json) is missing, the app starts with an empty data container for that file. 
+   2. The app will continue to function normally, but no data will be loaded for that file. 
+   3. Example: If patients.json is missing, the app starts with no patients but continues to function normally.
 
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+2. Dealing with corrupted data files 
+   1. If a data file exists but contains invalid JSON format or illegal values, the app throws a `DataLoadingException`. 
+   2. To solve this, the user can either fix the corrupted file (e.g., by correcting the JSON format or values) or delete the corrupted file to start with an empty data container for that file.
+   3. Example: If patients.json contains malformed JSON, the app will discard it and start with no patients.
 
-1. _{ more test cases …​ }_
+**Data loss prevention:**
+- Make regular backups of the `data/` folder
+- Only edit JSON files if you understand the structure
+- Corrupted files are not repaired automatically; deleted data cannot be recovered
+
