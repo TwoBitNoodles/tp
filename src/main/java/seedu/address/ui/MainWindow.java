@@ -26,10 +26,10 @@ import seedu.address.logic.parser.exceptions.ParseException;
 public class MainWindow extends UiPart<Stage> {
 
     private static final String FXML = "MainWindow.fxml";
-    private static final double SINGLE_SCHEDULE_MIN_WIDTH = 400;
-    private static final double SINGLE_SCHEDULE_MIN_HEIGHT = 400;
-    private static final double WEEKLY_SCHEDULE_MIN_WIDTH = 800;
-    private static final double WEEKLY_SCHEDULE_MIN_HEIGHT = 400;
+    private static final double SINGLE_SCHEDULE_MIN_WIDTH = 520;
+    private static final double SINGLE_SCHEDULE_MIN_HEIGHT = 420;
+    private static final double WEEKLY_SCHEDULE_MIN_WIDTH = 900;
+    private static final double WEEKLY_SCHEDULE_MIN_HEIGHT = 450;
 
     private final Logger logger = LogsCenter.getLogger(getClass());
 
@@ -176,13 +176,14 @@ public class MainWindow extends UiPart<Stage> {
     /**
      * Shows the schedule in a popup window.
      */
-    private void showSchedulePopup(Map<String, String> schedule) {
+    private void showSchedulePopup(Map<String, String> schedule, String doctorName, int doctorId,
+                                   java.time.LocalDate date) {
         try {
             SchedulePanel panel = new SchedulePanel();
-            panel.displaySchedule(schedule);
+            panel.displaySchedule(schedule, doctorName, doctorId, date);
 
             Stage stage = new Stage();
-            stage.setTitle("Doctor Schedule for the Day");
+            stage.setTitle("Doctor Schedule for " + doctorName + " on " + date.toString());
 
             panel.getRoot().setMinWidth(SINGLE_SCHEDULE_MIN_WIDTH);
             panel.getRoot().setMinHeight(SINGLE_SCHEDULE_MIN_HEIGHT);
@@ -195,8 +196,8 @@ public class MainWindow extends UiPart<Stage> {
 
             stage.setScene(scene);
 
-            stage.setWidth(400);
-            stage.setHeight(300);
+            stage.setWidth(SINGLE_SCHEDULE_MIN_WIDTH);
+            stage.setHeight(SINGLE_SCHEDULE_MIN_HEIGHT);
             stage.setMinWidth(SINGLE_SCHEDULE_MIN_WIDTH);
             stage.setMinHeight(SINGLE_SCHEDULE_MIN_HEIGHT);
 
@@ -207,13 +208,14 @@ public class MainWindow extends UiPart<Stage> {
         }
     }
 
-    private void showWeeklySchedulePopup(Map<String, Map<String, String>> weeklySchedule) {
+    private void showWeeklySchedulePopup(Map<String, Map<String, String>> weeklySchedule, String doctorName,
+                                         int doctorId) {
         try {
             SchedulePanel panel = new SchedulePanel();
-            panel.displayWeeklySchedule(weeklySchedule);
+            panel.displayWeeklySchedule(weeklySchedule, doctorName, doctorId);
 
             Stage stage = new Stage();
-            stage.setTitle("Weekly Doctor Schedule");
+            stage.setTitle("Weekly Doctor Schedule for " + doctorName);
 
             panel.getRoot().setMinWidth(WEEKLY_SCHEDULE_MIN_WIDTH);
             panel.getRoot().setMinHeight(WEEKLY_SCHEDULE_MIN_HEIGHT);
@@ -222,8 +224,8 @@ public class MainWindow extends UiPart<Stage> {
             scene.getStylesheets().add(getClass().getResource("/view/DarkTheme.css").toExternalForm());
 
             stage.setScene(scene);
-            stage.setWidth(800); // wider for weekly view
-            stage.setHeight(400);
+            stage.setWidth(WEEKLY_SCHEDULE_MIN_WIDTH); // wider for weekly view
+            stage.setHeight(WEEKLY_SCHEDULE_MIN_HEIGHT);
             stage.setMinWidth(WEEKLY_SCHEDULE_MIN_WIDTH);
             stage.setMinHeight(WEEKLY_SCHEDULE_MIN_HEIGHT);
 
@@ -246,9 +248,12 @@ public class MainWindow extends UiPart<Stage> {
             resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
 
             if (commandResult.isWeekly() && commandResult.getWeeklySchedule() != null) {
-                showWeeklySchedulePopup(commandResult.getWeeklySchedule());
+                showWeeklySchedulePopup(commandResult.getWeeklySchedule(),
+                        commandResult.getScheduleDoctorName(), commandResult.getScheduleDoctorId());
             } else if (commandResult.getSchedule() != null) {
-                showSchedulePopup(commandResult.getSchedule());
+                showSchedulePopup(commandResult.getSchedule(),
+                        commandResult.getScheduleDoctorName(), commandResult.getScheduleDoctorId(),
+                        commandResult.getScheduleDate());
             }
 
             if (commandResult.isShowHelp()) {

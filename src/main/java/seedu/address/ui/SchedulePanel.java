@@ -1,5 +1,7 @@
 package seedu.address.ui;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Map;
 
 import javafx.fxml.FXML;
@@ -9,6 +11,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import seedu.address.storage.AppointmentManager;
 
 /**
  * A panel containing the schedule of a doctor.
@@ -38,7 +41,7 @@ public class SchedulePanel extends UiPart<Region> {
      *
      * @param schedule A map of time slots to patient names (or null if available).
      */
-    public void displaySchedule(Map<String, String> schedule) {
+    public void displaySchedule(Map<String, String> schedule, String doctorName, int doctorId, LocalDate date) {
         scheduleGrid.getChildren().clear();
         scheduleGrid.getColumnConstraints().clear();
 
@@ -56,7 +59,7 @@ public class SchedulePanel extends UiPart<Region> {
             timeLabel.getStyleClass().add("time-label");
             scheduleGrid.add(timeLabel, 0, row);
 
-            Label slot = createSlotLabel(entry.getValue());
+            Label slot = createSlotLabel(formatSlotText(entry.getValue(), doctorId, date, entry.getKey()));
             scheduleGrid.add(slot, 1, row);
             row++;
         }
@@ -66,7 +69,8 @@ public class SchedulePanel extends UiPart<Region> {
      * Displays weekly schedule
      * @param weeklySchedule
      */
-    public void displayWeeklySchedule(Map<String, Map<String, String>> weeklySchedule) {
+    public void displayWeeklySchedule(Map<String, Map<String, String>> weeklySchedule, String doctorName,
+                                      int doctorId) {
         scheduleGrid.getChildren().clear();
         scheduleGrid.getColumnConstraints().clear();
 
@@ -108,26 +112,48 @@ public class SchedulePanel extends UiPart<Region> {
             colIndex = 1;
             for (String date : weeklySchedule.keySet()) {
                 Map<String, String> day = weeklySchedule.get(date);
-                Label slot = createSlotLabel(day.get(times[row]));
+                Label slot = createSlotLabel(formatSlotText(day.get(times[row]), doctorId, LocalDate.parse(date),
+                        times[row]));
                 scheduleGrid.add(slot, colIndex++, row + 1);
             }
         }
     }
 
-    private Label createSlotLabel(String patient) {
-        Label slot = new Label(patient == null ? "" : patient);
+    private Label createSlotLabel(String slotText) {
+        Label slot = new Label(slotText == null ? "" : slotText);
         slot.getStyleClass().add("schedule-slot");
         slot.setAlignment(Pos.CENTER);
         slot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         slot.setPrefHeight(34);
-        slot.setWrapText(true);
+        slot.setWrapText(false);
 
-        if (patient == null) {
+        if (slotText == null || slotText.isBlank()) {
             slot.getStyleClass().add("slot-available");
         } else {
             slot.getStyleClass().add("slot-booked");
         }
 
         return slot;
+    }
+
+    private String formatSlotText(String patientName, int doctorId, LocalDate date, String time) {
+        if (patientName == null) {
+            return "";
+        }
+
+        Integer apptId = findAppointmentId(doctorId, date, time);
+        if (apptId == null) {
+            return patientName;
+        }
+
+        return patientName + ", Appt ID: " + apptId;
+    }
+
+    private Integer findAppointmentId(int doctorId, LocalDate date, String time) {
+        try {
+            return AppointmentManager.findAppointmentIdBySlot(doctorId, date.toString(), time);
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

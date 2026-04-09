@@ -27,6 +27,16 @@ public class ViewSchedCommandParserTest {
         assertParseSuccess(parser, userInput, expectedCommand);
     }
 
+    // test written by codex
+    @Test
+    public void parse_optionalDateOmitted_success() {
+        String userInput = " d/John Tan id/1";
+
+        ViewSchedCommand expectedCommand = new ViewSchedCommand("John Tan", 1, null);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
     @Test
     public void parse_extraWhitespace_success() {
         String userInput = "   d/   John   Tan   id/  1   date/2026-03-20   ";

@@ -332,12 +332,13 @@
 
 /* Time labels */
 .time-label {
-    -fx-text-fill: #49225b;
+    -fx-text-fill: #193b68;
     -fx-font-size: 13px;
+    -fx-font-weight: bold;
 }
 
 .date-label {
-    -fx-text-fill: #49225b;
+    -fx-text-fill: #193b68;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
 }
@@ -355,13 +356,13 @@
 }
 
 .slot-available {
-    -fx-background-color: #e7dbef; /* green */
+    -fx-background-color: #d5e6ff;
     -fx-text-fill: transparent;
 }
 
 /* Booked slot */
 .slot-booked {
-    -fx-background-color: #49225b; /* red */
+    -fx-background-color:#6f85a4;
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }

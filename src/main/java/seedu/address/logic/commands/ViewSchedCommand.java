@@ -28,7 +28,9 @@ public class ViewSchedCommand extends Command {
 
     public static final String MESSAGE_DOCTOR_NOT_FOUND = "Doctor not found.";
     public static final String MESSAGE_DATE_NOT_AVAILABLE = "No schedule available for this date.";
+    public static final String MESSAGE_WEEKLY_SUCCESS = "Weekly schedule for %1$s (ID: %2$d)";
 
+    private static final int SCHEDULE_WINDOW_DAYS = 7;
     private final String doctorName;
     private final int doctorId;
     private final LocalDate date;
@@ -53,37 +55,45 @@ public class ViewSchedCommand extends Command {
 
         try {
             if (date != null) {
-                Map<String, String> schedule =
-                        ScheduleManager.getScheduleByDocId(doctorId, date.toString());
-
-                if (schedule == null) {
-                    return new CommandResult(MESSAGE_DOCTOR_NOT_FOUND);
-                }
-
-                return new CommandResult(
-                        String.format(MESSAGE_SUCCESS, doctorName, doctorId, date),
-                        schedule
-                );
+                return executeSingleDay();
             }
 
-            Map<String, Map<String, String>> weeklySchedule = new LinkedHashMap<>();
-            LocalDate today = LocalDate.now();
-            for (int i = 0; i < 7; i++) {
-                LocalDate d = today.plusDays(i);
-                Map<String, String> schedule = ScheduleManager.getScheduleByDocId(doctorId, d.toString());
-                if (schedule == null) {
-                    return new CommandResult(MESSAGE_DATE_NOT_AVAILABLE);
-                }
-                weeklySchedule.put(d.toString(), schedule);
-            }
-
-            return new CommandResult(
-                    "Weekly schedule for " + doctorName + " (ID: " + doctorId + ")",
-                    weeklySchedule, true
-            );
+            return executeWeekly();
         } catch (IllegalArgumentException e) {
             return new CommandResult(MESSAGE_DATE_NOT_AVAILABLE);
         }
+    }
+
+    private CommandResult executeSingleDay() {
+        Map<String, String> schedule = ScheduleManager.getScheduleByDocId(doctorId, date.toString());
+
+        if (schedule == null) {
+            return new CommandResult(MESSAGE_DOCTOR_NOT_FOUND);
+        }
+
+        return new CommandResult(
+                String.format(MESSAGE_SUCCESS, doctorName, doctorId, date),
+                schedule, doctorName, doctorId, date
+        );
+    }
+
+    private CommandResult executeWeekly() {
+        Map<String, Map<String, String>> weeklySchedule = new LinkedHashMap<>();
+        LocalDate today = LocalDate.now();
+
+        for (int i = 0; i < SCHEDULE_WINDOW_DAYS; i++) {
+            LocalDate d = today.plusDays(i);
+            Map<String, String> schedule = ScheduleManager.getScheduleByDocId(doctorId, d.toString());
+            if (schedule == null) {
+                return new CommandResult(MESSAGE_DATE_NOT_AVAILABLE);
+            }
+            weeklySchedule.put(d.toString(), schedule);
+        }
+
+        return new CommandResult(
+                String.format(MESSAGE_WEEKLY_SUCCESS, doctorName, doctorId),
+                weeklySchedule, true, doctorName, doctorId
+        );
     }
 
     /**

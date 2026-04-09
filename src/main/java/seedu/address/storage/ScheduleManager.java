@@ -28,6 +28,11 @@ public class ScheduleManager {
     private static final String DOCTOR_NAME_KEY = "doctorName";
     private static final String DOC_ID_KEY = "docId";
     private static final String DOC_KEY_PREFIX = "doc_";
+    private static final int SCHEDULE_WINDOW_DAYS = 7;
+    private static final int SLOT_START_HOUR = 9;
+    private static final int SLOT_END_HOUR = 17;
+    private static final int SLOT_INTERVAL_MINUTES = 30;
+
 
     /**
      * Retrieves the schedule for a given doctor and date, ignoring case sensitivity of the doctor's name.
@@ -622,7 +627,7 @@ public class ScheduleManager {
         doctorSchedule.put(DOC_ID_KEY, doctor.getDocId());
         doctorSchedule.put(DOCTOR_NAME_KEY, doctor.getName().fullName);
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < SCHEDULE_WINDOW_DAYS; i++) {
             LocalDate date = startDate.plusDays(i);
             doctorSchedule.put(date.toString(), createEmptySlots());
         }
@@ -660,12 +665,12 @@ public class ScheduleManager {
     private static Map<String, String> createEmptySlots() {
         Map<String, String> slots = new LinkedHashMap<>();
 
-        LocalTime time = LocalTime.of(9, 0);
-        LocalTime end = LocalTime.of(17, 0);
+        LocalTime time = LocalTime.of(SLOT_START_HOUR, 0);
+        LocalTime end = LocalTime.of(SLOT_END_HOUR, 0);
 
-        while (!time.isAfter(end.minusMinutes(30))) {
+        while (!time.isAfter(end.minusMinutes(SLOT_INTERVAL_MINUTES))) {
             slots.put(time.toString(), null);
-            time = time.plusMinutes(30);
+            time = time.plusMinutes(SLOT_INTERVAL_MINUTES);
         }
 
         return slots;

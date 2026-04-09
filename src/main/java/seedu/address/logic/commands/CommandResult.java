@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
 
@@ -23,6 +24,9 @@ public class CommandResult {
     private final Map<String, Map<String, String>> weeklySchedule;
     private final boolean isWeekly;
     private final Map<String, String> schedule;
+    private final String scheduleDoctorName;
+    private final Integer scheduleDoctorId;
+    private final LocalDate scheduleDate;
 
 
     /**
@@ -30,12 +34,24 @@ public class CommandResult {
      */
     public CommandResult(String feedbackToUser, boolean showHelp, boolean exit, Map<String, String> schedule,
                         Map<String, Map<String, String>> weeklySchedule, boolean isWeekly) {
+        this(feedbackToUser, showHelp, exit, schedule, weeklySchedule, isWeekly, null, null, null);
+    }
+
+    /**
+     * Constructs a {@code CommandResult} with the specified fields and schedule metadata.
+     */
+    public CommandResult(String feedbackToUser, boolean showHelp, boolean exit, Map<String, String> schedule,
+                         Map<String, Map<String, String>> weeklySchedule, boolean isWeekly,
+                         String scheduleDoctorName, Integer scheduleDoctorId, LocalDate scheduleDate) {
         this.feedbackToUser = requireNonNull(feedbackToUser);
         this.showHelp = showHelp;
         this.exit = exit;
         this.schedule = schedule;
         this.weeklySchedule = weeklySchedule;
         this.isWeekly = isWeekly;
+        this.scheduleDoctorName = scheduleDoctorName;
+        this.scheduleDoctorId = scheduleDoctorId;
+        this.scheduleDate = scheduleDate;
     }
 
     /**
@@ -57,10 +73,29 @@ public class CommandResult {
     }
 
     /**
+     * Constructs a {@code CommandResult} with the specified {@code feedbackToUser}, {@code schedule},
+     * and schedule metadata.
+     */
+    public CommandResult(String feedbackToUser, Map<String, String> schedule,
+                         String scheduleDoctorName, int scheduleDoctorId, LocalDate scheduleDate) {
+        this(feedbackToUser, false, false, schedule, null, false, scheduleDoctorName, scheduleDoctorId,
+                scheduleDate);
+    }
+
+    /**
      * Weekly schedule constructor
      */
     public CommandResult(String feedbackToUser, Map<String, Map<String, String>> weeklySchedule, boolean isWeekly) {
         this(feedbackToUser, false, false, null, weeklySchedule, isWeekly);
+    }
+
+    /**
+     * Weekly schedule constructor with schedule metadata.
+     */
+    public CommandResult(String feedbackToUser, Map<String, Map<String, String>> weeklySchedule, boolean isWeekly,
+                         String scheduleDoctorName, int scheduleDoctorId) {
+        this(feedbackToUser, false, false, null, weeklySchedule, isWeekly, scheduleDoctorName,
+                scheduleDoctorId, null);
     }
 
     /**
@@ -80,6 +115,18 @@ public class CommandResult {
 
     public Map<String, Map<String, String>> getWeeklySchedule() {
         return weeklySchedule;
+    }
+
+    public String getScheduleDoctorName() {
+        return scheduleDoctorName;
+    }
+
+    public Integer getScheduleDoctorId() {
+        return scheduleDoctorId;
+    }
+
+    public LocalDate getScheduleDate() {
+        return scheduleDate;
     }
 
     public String getFeedbackToUser() {
