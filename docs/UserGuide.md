@@ -409,6 +409,7 @@ If your changes to a data file make its format invalid, CLInicDesk will discard 
 Furthermore, certain edits can cause CLInicDesk to behave in unexpected ways (e.g. if a value entered is outside the acceptable range). Therefore, edit the data files only if you are confident that you can update them correctly.
 
 </box>
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
