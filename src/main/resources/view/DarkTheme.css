@@ -7,6 +7,8 @@
     -dark-text:     #193b68;
     -normal-text:   #6f85a4;
     -light-text:    #dde8f8;
+    -patient-tag:   #3e7b91;
+    -doctor-tag:    #daa520;
 }
 
 .background {
@@ -205,7 +207,6 @@
 
 .menu-bar {
     -fx-background-color: -menu-bar;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 10);
 }
 
 .menu-bar .label {
@@ -410,3 +411,12 @@
     -fx-background-radius: 2;
     -fx-font-size: 11;
 }
+
+#tags .patient-tag {
+    -fx-background-color: -patient-tag;
+}
+
+#tags .doctor-tag {
+    -fx-background-color: -doctor-tag;
+}
+

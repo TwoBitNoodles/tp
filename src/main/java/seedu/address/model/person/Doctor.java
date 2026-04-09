@@ -32,6 +32,11 @@ public class Doctor extends Person {
         return docId;
     }
 
+    @Override
+    public String getRoleTag() {
+        return "Doctor";
+    }
+
     /**
      * Sets the starting value for the doctor ID counter.
      */

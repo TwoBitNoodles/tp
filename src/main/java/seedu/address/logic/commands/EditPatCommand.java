@@ -106,7 +106,7 @@ public class EditPatCommand extends Command {
         Email updatedEmail = editPatDescriptor.getEmail().orElse(patientToEdit.getEmail());
         Address updatedAddress = editPatDescriptor.getAddress().orElse(patientToEdit.getAddress());
 
-        return new Patient(updatedName, updatedPhone, updatedEmail, updatedAddress);
+        return new Patient(updatedName, updatedPhone, updatedEmail, updatedAddress, patientToEdit.getPatientId());
     }
 
     @Override

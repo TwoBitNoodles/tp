@@ -73,10 +73,10 @@ The table below summarises the rules and constraints for all input fields used a
 
 <table class="constraints-table">
 <tr><th>Field</th><th>Constraints</th></tr>
-<tr><td><strong>NAME</strong></td><td>Alphanumeric characters and spaces only. Case-insensitive for matching (e.g. <code>john doe</code> matches <code>John Doe</code>). Must not be blank.</td></tr>
-<tr><td><strong>PHONE_NUMBER</strong></td><td>Numeric digits only. Must be at least 3 digits long.</td></tr>
+<tr><td><strong>NAME</strong></td><td>Alphabets, hyphens, apostrophe and/or spaces only. Case-insensitive for matching (e.g. <code>john doe</code> matches <code>John Doe</code>). Must not be blank.</td></tr>
+<tr><td><strong>PHONE_NUMBER</strong></td><td>Numeric digits only. Must be 8 digits long.</td></tr>
 <tr><td><strong>EMAIL</strong></td><td>Must follow the standard <code>local-part@domain</code> format (e.g. <code>name@example.com</code>).</td></tr>
-<tr><td><strong>ADDRESS</strong></td><td>Any non-blank string.</td></tr>
+<tr><td><strong>ADDRESS</strong></td><td>Any non-blank string, minimum 3 characters.</td></tr>
 <tr><td><strong>INDEX</strong></td><td>A positive integer (1, 2, 3, …) referring to the position in the currently displayed list.</td></tr>
 <tr><td><strong>DATE</strong> (<code>YYYY-MM-DD</code>)</td><td>Must be in strict ISO 8601 format (e.g. <code>2026-04-10</code>). Must be today or within the next 7 days.</td></tr>
 <tr><td><strong>TIME</strong> (<code>HH:MM</code>)</td><td>Must be one of the half-hourly slots from <code>09:00</code> to <code>16:30</code> (i.e. <code>09:00</code>, <code>09:30</code>, <code>10:00</code>, … <code>16:30</code>).</td></tr>
@@ -90,6 +90,8 @@ The table below summarises the rules and constraints for all input fields used a
 * **Doctor duplicate detection:** Two doctors are considered duplicates if they share the same name (case-insensitive) **and** either the same phone number or the same email.
 * **Schedule window:** Doctor schedules are displayed and bookable for a rolling 7-day window from today.
 * **Doctor IDs:** Each doctor is automatically assigned a unique, persistent ID that is preserved across edits. IDs are not user-editable.
+* **Patient IDs:** Each patient is automatically assigned a unique, persistent ID that is preserved across edits. IDs are not user-editable.
+* **Patient duplicate detection:** Two patients are considered duplicates if they share the same name (case-insensitive) **and** the same email.
 
 </box>
 
@@ -106,13 +108,13 @@ Adds a doctor to the app.
 Format: `adddoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS`
 
 **Notes:**
-* `NAME` is the name of the doctor. It should not be blank. Only alphabets and spaces are allowed.
-* `PHONE_NUMBER` should only contain numbers and be at least 3 digits.
+* `NAME` is the name of the doctor. It should not be blank. Only alphabets, followed by hyphens, apostrophe and/or spaces are allowed.
+* `PHONE_NUMBER` should only contain numbers and be 8 digits.
 * `EMAIL` must match the standard email format (e.g. `name@example.com`).
 
 Examples:
 * `adddoc n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01`
-* `adddoc n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/1234567`
+* `adddoc n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/12345678`
 
 Expected output:
 ```
@@ -172,13 +174,13 @@ Adds a patient to the app.
 Format: `addpat n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS`
 
 **Notes:**
-* `NAME` is the name of the patient. It should not be blank. Only alphabets and spaces are allowed.
-* `PHONE_NUMBER` should only contain numbers and be at least 3 digits.
+* `NAME` is the name of the patient. It should not be blank. Only alphabets, followed by hyphens, apostrophe and/or spaces are allowed.
+* `PHONE_NUMBER` should only contain numbers and be 8 digits.
 * `EMAIL` must match the standard email format (e.g. `name@example.com`).
 
 Examples:
 * `addpat n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `addpat n/Betsy Crowe e/betsycrowe@example.com a/Newgate Hospital p/1234567`
+* `addpat n/Betsy Crowe e/betsycrowe@example.com a/Newgate Hospital p/12345678`
 
 Expected output:
 ```
