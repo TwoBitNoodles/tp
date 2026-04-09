@@ -106,7 +106,13 @@ public class EditPatCommand extends Command {
         Email updatedEmail = editPatDescriptor.getEmail().orElse(patientToEdit.getEmail());
         Address updatedAddress = editPatDescriptor.getAddress().orElse(patientToEdit.getAddress());
 
-        return new Patient(updatedName, updatedPhone, updatedEmail, updatedAddress, patientToEdit.getPatientId());
+        Patient editedPatient = new Patient(updatedName, updatedPhone, updatedEmail, updatedAddress,
+                patientToEdit.getPatientId());
+        // Preserve the appointment list from the original patient
+        for (var appt : patientToEdit.getApptList()) {
+            editedPatient.addAppt(appt);
+        }
+        return editedPatient;
     }
 
     @Override

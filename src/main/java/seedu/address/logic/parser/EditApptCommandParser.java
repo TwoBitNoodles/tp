@@ -35,7 +35,7 @@ public class EditApptCommandParser {
 
         if (argMultimap.getValue(PREFIX_APPT_ID).isEmpty() || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException("Missing required fields to identify the appointment! "
-                    + "Need id/.");
+                    + "Need apptid/.");
         }
 
         String idValue = argMultimap.getValue(PREFIX_APPT_ID).get().trim();

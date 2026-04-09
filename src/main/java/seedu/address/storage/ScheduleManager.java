@@ -364,7 +364,9 @@ public class ScheduleManager {
         try {
             Map<String, Object> data = readScheduleFile();
 
-            String matchedDoctor = findDoctorKey(data, appt.getDocName());
+            String matchedDoctor = appt.getDocId() != Appointment.UNASSIGNED_ID
+                    ? findDoctorKeyByDocId(data, appt.getDocId())
+                    : findDoctorKey(data, appt.getDocName());
             if (matchedDoctor == null) {
                 return;
             }

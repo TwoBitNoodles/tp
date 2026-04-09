@@ -566,6 +566,23 @@ public class ModelManager implements Model {
         }
     }
 
+    /**
+     * Updates appointment names in the patient's internal appointment list when name changes.
+     * This ensures consistency when later deleting the patient.
+     */
+    private void updatePatientNameInAppointmentList(Patient oldPatient, Patient newPatient) {
+        String oldName = oldPatient.getName().fullName;
+        String newName = newPatient.getName().fullName;
+
+        if (!oldName.equals(newName)) {
+            for (Appointment appt : newPatient.getApptList()) {
+                if (appt.getPatName() != null && appt.getPatName().equalsIgnoreCase(oldName)) {
+                    appt.setPatName(newName);
+                }
+            }
+        }
+    }
+
     @Override
     public void setPerson(Person target, Person editedPerson) {
         requireAllNonNull(target, editedPerson);
@@ -597,6 +614,7 @@ public class ModelManager implements Model {
         try {
             updatePatientAppointmentsInStorage(target, editedPatient);
             updatePatientInSchedule(target, editedPatient);
+            updatePatientNameInAppointmentList(target, editedPatient);
         } catch (IOException e) {
             logger.warning("Failed to update patient in storage: " + e.getMessage());
         }
