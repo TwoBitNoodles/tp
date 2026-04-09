@@ -70,7 +70,8 @@ The **API** of this component is specified in [`Ui.java`](https://github.com/se-
 
 <puml src="diagrams/UiClassDiagram.puml" alt="Structure of the UI Component"/>
 
-The UI consists of a `MainWindow` that is made up of parts e.g.`CommandBox`, `ResultDisplay`, `PersonListPanel`, `StatusBarFooter` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class which captures the commonalities between classes that represent parts of the visible GUI.
+The UI consists of a `MainWindow` that is made up of parts e.g. `CommandBox`, `ResultDisplay`, `PersonListPanel`, `StatusBarFooter` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class which captures the commonalities between classes that represent parts of the visible GUI.
+
 
 The `UI` component uses the JavaFx UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/resources/view/MainWindow.fxml)
 
@@ -417,9 +418,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. Receptionist enters the view schedule command with a doctor name and optionally a date.
-2. System validates the doctor name (and, if exists, the date).
-3. System displays all half-hourly slots for that doctor for next 7 days or on a specific date, each marked as Available or Booked.
+1. Receptionist enters the view schedule command with a doctor name, doctor ID, and optionally a date.
+2. System validates the doctor name and ID, and parses the date if present.
+3. System displays the schedule in a popup `SchedulePanel` for the next 7 days or on a specific date, with each slot marked as Available or Booked.
 
    Use case ends.
 
@@ -430,13 +431,13 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     Use case ends.
 
-* 2b. The date is in an invalid format.
-  * 2b1. System shows: `Invalid date format. Use YYYY-MM-DD.`
+* 2b. The command format is invalid, or the date cannot be parsed.
+  * 2b1. System shows the command usage message for `viewsched`.
 
     Use case resumes at step 1.
 
-* 2c. The date is in the past.
-  * 2c1. System shows: `Cannot view schedule for past dates.`
+* 2c. The requested date does not exist in the schedule data.
+  * 2c1. System shows: `No schedule available for this date.`
 
     Use case resumes at step 1.
 
