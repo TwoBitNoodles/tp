@@ -101,7 +101,7 @@ public class ScheduleManagerTest {
         LocalDate today = LocalDate.now();
         writeScheduleFile(createDoctor(1, "John Tan"), today, null);
 
-        Appointment appt = new Appointment("John Tan", "Jane Lim", today.toString(), "09:00");
+        Appointment appt = new Appointment(1, "John Tan", 2, "Jane Lim", today.toString(), "09:00", -1);
         ScheduleManager.addAppt(appt);
 
         Map<String, String> schedule = ScheduleManager.getScheduleByDocId(1, today.toString());
@@ -111,8 +111,8 @@ public class ScheduleManagerTest {
 
     @Test
     public void addAppt_invalidDate_throwsIoException() {
-        Appointment appt = new Appointment("John Tan", "Jane Lim", LocalDate.now().minusDays(1).toString(),
-                "09:00");
+        Appointment appt = new Appointment(1, "John Tan", 2, "Jane Lim", LocalDate.now().minusDays(1).toString(),
+                "09:00", -1);
 
         IOException thrown = assertThrows(IOException.class, () -> ScheduleManager.addAppt(appt));
         assertEquals("Appointment date must be within 7 days from today!", thrown.getMessage());
@@ -124,7 +124,7 @@ public class ScheduleManagerTest {
         LocalDate today = LocalDate.now();
         writeScheduleFile(createDoctor(1, "John Tan"), today, "Jane Lim");
 
-        Appointment appt = new Appointment("John Tan", "Jane Lim", today.toString(), "09:00");
+        Appointment appt = new Appointment(1, "John Tan", 2, "Jane Lim", today.toString(), "09:00", -1);
         ScheduleManager.delAppt(appt);
 
         Map<String, String> schedule = ScheduleManager.getScheduleByDocId(1, today.toString());
@@ -136,7 +136,7 @@ public class ScheduleManagerTest {
         LocalDate today = LocalDate.now();
         writeScheduleFile(createDoctor(1, "John Tan"), today, "Alice Lim");
 
-        Appointment appt = new Appointment("John Tan", "Jane Lim", today.toString(), "09:00");
+        Appointment appt = new Appointment(1, "John Tan", 2, "Jane Lim", today.toString(), "09:00", -1);
         IOException thrown = assertThrows(IOException.class, () -> ScheduleManager.delAppt(appt));
         assertEquals("No such appointment exists.", thrown.getMessage());
     }
@@ -147,7 +147,7 @@ public class ScheduleManagerTest {
         LocalDate today = LocalDate.now();
         writeScheduleFile(createDoctor(1, "John Tan"), today, "Alice Lim");
 
-        Appointment appt = new Appointment("Unknown Doctor", "Jane Lim", today.toString(), "09:00");
+        Appointment appt = new Appointment(999, "Unknown Doctor", 2, "Jane Lim", today.toString(), "09:00", -1);
         assertDoesNotThrow(() -> ScheduleManager.removeApptIfExists(appt));
 
         Map<String, String> schedule = ScheduleManager.getScheduleByDocId(1, today.toString());
