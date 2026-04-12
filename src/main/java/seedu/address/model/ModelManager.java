@@ -22,6 +22,7 @@ import seedu.address.model.appointment.Appointment;
 import seedu.address.model.person.Doctor;
 import seedu.address.model.person.Patient;
 import seedu.address.model.person.Person;
+import seedu.address.storage.AppointmentManager;
 import seedu.address.storage.ScheduleManager;
 
 /**
@@ -212,6 +213,7 @@ public class ModelManager implements Model {
         for (Appointment appt : patient.getApptList()) {
             ScheduleManager.removeApptIfExists(appt);
         }
+        AppointmentManager.deleteAppointmentsByPatientId(patient.getPatientId());
     }
 
     @Override

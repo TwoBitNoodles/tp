@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -186,6 +187,31 @@ public class AppointmentManager {
         Map<String, AppointmentData> data = readAppointments();
         data.values().removeIf(record -> record.doctorId != null && record.doctorId == doctorId);
         writeAppointments(data);
+    }
+
+    /**
+     * Deletes all appointments associated with the given patient ID.
+     * @param patientId the patient's ID
+     * @throws IOException if file cannot be accessed
+     */
+    public static void deleteAppointmentsByPatientId(int patientId) {
+        try {
+            Map<String, AppointmentData> data = readAppointments();
+            List<AppointmentData> lst = data.values().stream()
+                .filter(record -> record.patientId != null && record.patientId.equals(patientId))
+                .toList();
+
+            for (AppointmentData record : lst) {
+                ScheduleManager.removeApptIfExists(new Appointment(record.doctorName, record.patientName,
+                    record.date, record.time));
+            }
+
+            data.values().removeIf(record -> record.patientId != null && record.patientId == patientId);
+            writeAppointments(data);
+        } catch (IOException e) {
+            System.err.println("Error deleting appointments for patient ID " + patientId + ": " + e.getMessage());
+        }
+
     }
 
     private static Map<String, AppointmentData> readAppointments() throws IOException {
