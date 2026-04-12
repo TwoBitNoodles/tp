@@ -19,6 +19,9 @@ import seedu.address.storage.AppointmentManager;
 public class SchedulePanel extends UiPart<Region> {
 
     private static final String FXML = "SchedulePanel.fxml";
+    private static final int MAX_PATIENT_NAME_LENGTH = 24;
+    private static final double SLOT_MIN_WIDTH = 180;
+    private static final double SLOT_MIN_HEIGHT = 48;
 
     @FXML
     private GridPane scheduleGrid;
@@ -50,6 +53,7 @@ public class SchedulePanel extends UiPart<Region> {
         timeCol.setPrefWidth(80);
         ColumnConstraints slotCol = new ColumnConstraints();
         slotCol.setHgrow(Priority.ALWAYS);
+        slotCol.setPrefWidth(SLOT_MIN_WIDTH);
         scheduleGrid.getColumnConstraints().addAll(timeCol, slotCol);
 
         int row = 0;
@@ -87,6 +91,7 @@ public class SchedulePanel extends UiPart<Region> {
         for (int i = 0; i < weeklySchedule.size(); i++) {
             ColumnConstraints col = new ColumnConstraints();
             col.setHgrow(Priority.ALWAYS);
+            col.setPrefWidth(SLOT_MIN_WIDTH);
             scheduleGrid.getColumnConstraints().add(col);
         }
 
@@ -124,8 +129,9 @@ public class SchedulePanel extends UiPart<Region> {
         slot.getStyleClass().add("schedule-slot");
         slot.setAlignment(Pos.CENTER);
         slot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        slot.setPrefHeight(34);
-        slot.setWrapText(false);
+        slot.setPrefWidth(SLOT_MIN_WIDTH);
+        slot.setPrefHeight(SLOT_MIN_HEIGHT);
+        slot.setWrapText(true);
 
         if (slotText == null || slotText.isBlank()) {
             slot.getStyleClass().add("slot-available");
@@ -141,12 +147,25 @@ public class SchedulePanel extends UiPart<Region> {
             return "";
         }
 
+        String displayName = abbreviate(patientName);
+        Integer patientId = findPatientId(doctorId, date, time);
         Integer apptId = findAppointmentId(doctorId, date, time);
-        if (apptId == null) {
-            return patientName;
+        if (patientId == null && apptId == null) {
+            return displayName;
         }
 
-        return patientName + ", Appt ID: " + apptId;
+        StringBuilder text = new StringBuilder(displayName).append("\n(");
+        if (patientId != null) {
+            text.append("Patient ID: ").append(patientId);
+        }
+        if (patientId != null && apptId != null) {
+            text.append(", ");
+        }
+        if (apptId != null) {
+            text.append("Appt ID: ").append(apptId);
+        }
+        text.append(")");
+        return text.toString();
     }
 
     private Integer findAppointmentId(int doctorId, LocalDate date, String time) {
@@ -155,5 +174,21 @@ public class SchedulePanel extends UiPart<Region> {
         } catch (IOException e) {
             return null;
         }
+    }
+
+    private Integer findPatientId(int doctorId, LocalDate date, String time) {
+        try {
+            return AppointmentManager.findPatientIdBySlot(doctorId, date.toString(), time);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private String abbreviate(String text) {
+        if (text.length() <= MAX_PATIENT_NAME_LENGTH) {
+            return text;
+        }
+
+        return text.substring(0, MAX_PATIENT_NAME_LENGTH - 3) + "...";
     }
 }

@@ -119,6 +119,30 @@ public class AppointmentManager {
     }
 
     /**
+     * Finds the patient ID for a given doctor's time slot.
+     * @param doctorId the doctor's ID
+     * @param date the appointment date
+     * @param time the appointment time
+     * @return the patient ID, or null if not found
+     * @throws IOException if file cannot be accessed
+     */
+    public static Integer findPatientIdBySlot(int doctorId, String date, String time) throws IOException {
+        String normalizedTime = normalizeTime(time);
+        Map<String, AppointmentData> data = readAppointments();
+        for (AppointmentData record : data.values()) {
+            if (record == null || record.doctorId == null || record.patientId == null) {
+                continue;
+            }
+            if (record.doctorId == doctorId
+                    && Objects.equals(record.date, date)
+                    && Objects.equals(record.time, normalizedTime)) {
+                return record.patientId;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Updates an existing appointment with new details.
      * @param apptId the ID of the appointment to update
      * @param appt the new appointment details
