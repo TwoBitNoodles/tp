@@ -16,19 +16,6 @@ public class Patient extends Person {
     private final int patientId;
     private ArrayList<Appointment> apptList;
 
-    //    /**
-    //     * Creates a Patient with an auto-generated ID.
-    //     * @param name
-    //     * @param phone
-    //     * @param email
-    //     * @param address
-    //     */
-    //    public Patient(Name name, Phone phone, Email email, Address address) {
-    //        super(name, phone, email, address);
-    //        this.patientId = nextId;
-    //        this.apptList = new ArrayList<>();
-    //    }
-
     /**
      * Creates a Patient with a specific ID.
      * @param name
