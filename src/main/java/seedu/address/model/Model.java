@@ -103,6 +103,11 @@ public interface Model {
     boolean hasDoctor(Doctor doctor);
 
     /**
+     * Returns true if a {@code doctor} with the same ID != {@code excludeId} exists in the doctors list.
+     */
+    boolean hasDoctorExcluding(Doctor doctor, int excludeId);
+
+    /**
      * Returns true if a patient with the same identity as {@code patient} exists in the patients list.
      */
     boolean hasPatient(Patient patient);

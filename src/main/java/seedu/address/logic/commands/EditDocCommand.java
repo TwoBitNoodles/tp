@@ -81,7 +81,7 @@ public class EditDocCommand extends Command {
         Doctor doctorToEdit = (Doctor) personToEdit;
         Doctor editedDoctor = createEditedDoctor(doctorToEdit, editDoctorDescriptor);
 
-        if (!doctorToEdit.isSamePerson(editedDoctor) && model.hasDoctor(editedDoctor)) {
+        if (model.hasDoctorExcluding(editedDoctor, doctorToEdit.getDocId())) {
             throw new CommandException(MESSAGE_DUPLICATE_DOCTOR);
         }
 

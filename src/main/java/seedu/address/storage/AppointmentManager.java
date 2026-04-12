@@ -153,6 +153,17 @@ public class AppointmentManager {
         writeAppointments(data);
     }
 
+    /**
+     * Deletes all appointments associated with the given doctor ID.
+     * @param doctorId the doctor's ID
+     * @throws IOException if file cannot be accessed
+     */
+    public static void deleteAppointmentsByDoctorId(int doctorId) throws IOException {
+        Map<String, AppointmentData> data = readAppointments();
+        data.values().removeIf(record -> record.doctorId != null && record.doctorId == doctorId);
+        writeAppointments(data);
+    }
+
     private static Map<String, AppointmentData> readAppointments() throws IOException {
         File file = new File(FILE_PATH);
         if (!file.exists() || file.length() == 0) {

@@ -11,6 +11,7 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Doctor;
 import seedu.address.model.person.Person;
+import seedu.address.storage.AppointmentManager;
 import seedu.address.storage.ScheduleManager;
 
 /**
@@ -25,7 +26,7 @@ public class DeleteDocCommand extends Command {
             + "Parameters: INDEX (must be a positive integer)\n"
             + "Example: " + COMMAND_WORD + " 1";
 
-    public static final String MESSAGE_DELETE_DOCTOR_SUCCESS = "Deleted Doctor: %1$s";
+    public static final String MESSAGE_DELETE_DOCTOR_SUCCESS = "Deleted Doctor: %1$s\n & any linked appointments";
 
     private final Index targetIndex;
 
@@ -51,6 +52,7 @@ public class DeleteDocCommand extends Command {
         }
         model.deleteDoctor((Doctor) personToDelete);
         try {
+            AppointmentManager.deleteAppointmentsByDoctorId(((Doctor) personToDelete).getDocId());
             ScheduleManager.removeDoctorSchedule((Doctor) personToDelete);
         } catch (java.io.IOException e) {
             throw new CommandException(Messages.MESSAGE_SCHEDULE_UPDATE_FAILED);

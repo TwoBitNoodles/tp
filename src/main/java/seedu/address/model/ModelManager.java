@@ -177,6 +177,16 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean hasDoctorExcluding(Doctor doctor, int excludeId) {
+        requireNonNull(doctor);
+        return doctors.getPersonList().stream()
+                .filter(p -> p instanceof Doctor)
+                .map(p -> (Doctor) p)
+                .filter(d -> d.getDocId() != excludeId)
+                .anyMatch(d -> d.isSamePerson(doctor));
+    }
+
+    @Override
     public boolean hasPatient(Patient patient) {
         requireNonNull(patient);
         return patients.hasPerson(patient);
