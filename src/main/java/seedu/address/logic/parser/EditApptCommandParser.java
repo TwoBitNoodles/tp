@@ -55,7 +55,6 @@ public class EditApptCommandParser {
             throw new ParseException("Missing required fields to identify the appointment! "
                     + "Need apptid/.");
         }
-        
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NEWDOC, PREFIX_NEWDATE, PREFIX_NEWTIME);
 
         String idValue = argMultimap.getValue(PREFIX_APPT_ID).get().trim();
