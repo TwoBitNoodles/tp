@@ -13,8 +13,18 @@
     -fx-border-color: white;
     -fx-border-radius: 3;
     -fx-background-radius: 3;
+    -fx-text-fill: white;
 }
 
 .tooltip-text {
     -fx-text-fill: white;
 }
+
+.list-cell:filled:selected .cell_big_label {
+    -fx-text-fill: white;
+}
+
+.list-cell:filled:selected .cell_small_label {
+    -fx-text-fill: white;
+}
+
