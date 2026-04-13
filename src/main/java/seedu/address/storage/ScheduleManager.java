@@ -246,7 +246,7 @@ public class ScheduleManager {
             }
             if (apptTime.isBefore(now) && apptDate.isEqual(today)) {
                 throw new IOException("This slot has passed, "
-                                        + "Please choose a time after" + now.format(storageFormatter));
+                                        + "Please choose a time after " + now.format(storageFormatter));
 
             }
 
@@ -257,9 +257,12 @@ public class ScheduleManager {
                 throw new IOException("The time " + time + " is not a valid 30-minute slot for this doctor.");
             }
 
-            if (slots.get(standardizedTime) == null) {
+            String occupant = slots.get(standardizedTime);
+            if (occupant == null) {
                 slots.put(standardizedTime, patName);
                 mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
+            } else if (occupant.equalsIgnoreCase(patName)) {
+                throw new IOException("This appointment already exists");
             } else {
                 throw new IOException("This slot is already booked. "
                         + "Please edit the appointment if you wish to change it");
