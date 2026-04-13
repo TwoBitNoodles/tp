@@ -28,7 +28,7 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
 1. Copy the file to the folder you want to use as the _home folder_ for your CLInicDesk.
 
 1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar clinicdesk.jar` command to run the application.<br>
-   A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
+   A GUI similar to the below should appear in a few seconds.<br>
    <div class="image-container">
 
    ![Ui](images/Ui.png)
@@ -56,6 +56,7 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
 
 <table class="convention-table">
 <tr><th>Convention</th><th>Meaning</th><th>Example</th></tr>
+<tr><td><code>lower_case</code></td><td>A command</td><td><code>list</code></td></tr>
 <tr><td><code>UPPER_CASE</code></td><td>A parameter you supply</td><td><code>adddoc n/NAME</code> → <code>adddoc n/John Doe</code></td></tr>
 <tr><td><code>[square brackets]</code></td><td>Optional field</td><td><code>viewsched d/DOCTOR_NAME id/DOCTOR_ID [date/YYYY-MM-DD]</code></td></tr>
 <tr><td>Any parameter order</td><td>Parameters can appear in any order</td><td><code>n/NAME p/PHONE</code> or <code>p/PHONE n/NAME</code></td></tr>
@@ -91,8 +92,11 @@ The table below summarises the rules and constraints for all input fields used a
 * **Doctor duplicate detection:** Two doctors are considered duplicates if they share the same name (case-insensitive) **and** either the same phone number or the same email.
 * **Patient duplicate detection:** Two patients are considered duplicates if they share the same name (case-insensitive) **and** the same email.
 * **Schedule window:** Doctor schedules are displayed and bookable for a rolling 7-day window from today.
+* **Schedule slots:** Schedule uses 30-minute slots from 09:00 to 16:30. Appointments can only be booked within these slots.
 * **Doctor IDs:** Each doctor is automatically assigned a unique, persistent ID that is preserved across edits. IDs are not user-editable.
 * **Patient IDs:** Each patient is automatically assigned a unique, persistent ID that is preserved across edits. IDs are not user-editable.
+* **Appointment IDs:** Each appointment is automatically assigned a unique ID that is returned to the user when the appointment is created. IDs are not user-editable.
+* **IDs do not exceed `Integer.MAX_VALUE`:** The system assumes the ID counter never overflows.
 
 </box>
 
@@ -119,7 +123,7 @@ Examples:
 
 Expected output:
 ```
-New doctor added: John Doe; Phone: 98765432; Email: johnd@doctor.com; Address: John street, block 123, #01-01
+New doctor added: John Doe; Phone: 98765432; Email: johnd@doctor.com; Address: John street, block 123, #01-01; Tags: Doctor
 ```
 
 #### Editing a doctor : `editdoc`
@@ -140,7 +144,7 @@ Examples:
 
 Expected output:
 ```
-Edited Doctor: John Doe; Phone: 91234567; Email: johnd@doctor.com; Address: 21 Bencoolen
+Edited Doctor: John Doe; Phone: 91234567; Email: johnd@doctor.com; Address: 21 Bencoolen; Tags: Doctor
 ```
 
 #### Deleting a doctor : `deldoc`
@@ -159,7 +163,7 @@ Examples:
 
 Expected output:
 ```
-Deleted Doctor: John Doe; Phone: 98765432; Email: johnd@doctor.com; Address: John street, block 123, #01-01
+Deleted Doctor: John Doe; Phone: 98765432; Email: johnd@doctor.com; Address: John street, block 123, #01-01; Tags: Doctor
 ```
 
 --------------------------------------------------------------------------------------------------------------------
@@ -185,7 +189,7 @@ Examples:
 
 Expected output:
 ```
-New patient added: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01
+New patient added: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags: Patient
 ```
 
 #### Editing a patient : `editpat`
@@ -205,7 +209,7 @@ Examples:
 
 Expected output:
 ```
-Edited Patient: John Doe; Phone: 91234567; Email: johndoe@example.com; Address: 123456
+Edited Patient: John Doe; Phone: 91234567; Email: johndoe@example.com; Address: 123456; Tags: Patient
 ```
 
 #### Deleting a patient : `delpat`
@@ -224,7 +228,7 @@ Examples:
 
 Expected output:
 ```
-Deleted Patient: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01
+Deleted Patient: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags: Patient
 ```
 
 --------------------------------------------------------------------------------------------------------------------
@@ -280,7 +284,7 @@ Schedule for John Tan (ID: 1) on 2026-04-10
 
 Books an appointment with a doctor for a patient on a specified date and time.
 
-Format: `addappt id/DOCTOR_ID pid/PATIENT_ID date/YYYY-MM-DD time/H:MM`
+Format: `addappt id/DOCTOR_ID pid/PATIENT_ID date/YYYY-MM-DD time/HH:MM`
 
 **Notes:**
 * Books an appointment for the patient with the doctor at the specified date and time.
@@ -306,7 +310,7 @@ Format: `editappt apptid/APPOINTMENT_ID [nid/NEW_DOCTOR_ID] [ndate/NEW_DATE] [nt
 * The new fields in square brackets are optional, but at least one new field must be provided.
 * `nid/` is used to change the doctor (provide the doctor ID).
 * `ndate/` is used to change the appointment date (format: YYYY-MM-DD).
-* `ntime/` is used to change the appointment time (format: H:MM, e.g. 09:00 or 9:00).
+* `ntime/` is used to change the appointment time (format: HH:MM, e.g. 09:00 or 9:00).
 
 Examples:
 * `editappt apptid/3 ntime/10:00` changes the appointment with ID 3 to 10:00.
@@ -318,7 +322,7 @@ Edited appointment!
 ```
 <box type="warning" seamless>
 
-**Warning:** Changing a patient name for an appointment is not possible. Users will need to delete the appointment and make a new one.
+**Warning:** Changing a patient for an appointment is not supported. Users will need to delete the appointment and make a new one.
 
 </box>
 
@@ -399,7 +403,8 @@ CLInicDesk data is saved to the hard disk automatically after any command that c
 
 * Doctor data is saved automatically to `[JAR file location]/data/doctors.json`.
 * Patient data is saved automatically to `[JAR file location]/data/patients.json`.
-* Appointment data is saved automatically to `[JAR file location]/data/schedule.json`.
+* Appointment data is saved automatically to `[JAR file location]/data/appointments.json`.
+* Schedule data is saved automatically to `[JAR file location]/data/schedule.json`.
 
 Advanced users are welcome to update data directly by editing these files.
 
@@ -468,7 +473,7 @@ Furthermore, certain edits can cause CLInicDesk to behave in unexpected ways (e.
 </tr>
 <tr>
   <td><strong>Add Appointment</strong></td>
-  <td><code>addappt id/DOCTOR_ID pid/PATIENT_ID date/YYYY-MM-DD time/H:MM</code><br>e.g., <code>addappt id/1 pid/3 date/2026-04-10 time/09:00</code></td>
+  <td><code>addappt id/DOCTOR_ID pid/PATIENT_ID date/YYYY-MM-DD time/HH:MM</code><br>e.g., <code>addappt id/1 pid/3 date/2026-04-10 time/09:00</code></td>
 </tr>
 <tr>
   <td><strong>Edit Appointment</strong></td>
