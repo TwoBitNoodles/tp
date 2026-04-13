@@ -1,3 +1,4 @@
+// Used copilot to generate some of the test cases, and modified them to fit our codebase
 package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -186,6 +187,150 @@ public class AppointmentManagerTest {
 
         Appointment stored = AppointmentManager.getAppointmentById(id);
         assertEquals("Dr Bob", stored.getDocName());
+    }
+
+    @Test
+    public void deleteAppointmentsByPatientId_removesMatchingAppointments() throws Exception {
+        Appointment appt1 = new Appointment(1, PATIENT_ID, date, "9:00");
+        appt1.setDocName("Dr Bob");
+        appt1.setPatName(PATIENT_NAME);
+        int id1 = AppointmentManager.addAppointment(appt1);
+
+        Appointment appt2 = new Appointment(1, PATIENT_ID, date, "10:00");
+        appt2.setDocName("Dr Bob");
+        appt2.setPatName(PATIENT_NAME);
+        int id2 = AppointmentManager.addAppointment(appt2);
+
+        Appointment appt3 = new Appointment(2, 5, date, "11:00");
+        appt3.setDocName("Dr Charlie");
+        appt3.setPatName("Bob Patient");
+        int id3 = AppointmentManager.addAppointment(appt3);
+
+        AppointmentManager.deleteAppointmentsByPatientId(PATIENT_ID);
+
+        assertNull(AppointmentManager.getAppointmentById(id1));
+        assertNull(AppointmentManager.getAppointmentById(id2));
+        assertNotNull(AppointmentManager.getAppointmentById(id3));
+    }
+
+    @Test
+    public void deleteAppointmentsByPatientId_noMatches_noChange() throws Exception {
+        Appointment appt = new Appointment(1, PATIENT_ID, date, "9:00");
+        appt.setDocName("Dr Bob");
+        appt.setPatName(PATIENT_NAME);
+        int id = AppointmentManager.addAppointment(appt);
+
+        AppointmentManager.deleteAppointmentsByPatientId(999);
+
+        assertNotNull(AppointmentManager.getAppointmentById(id));
+    }
+
+    @Test
+    public void updatePatientNameInAppointments_updatesMatchingRecords() throws Exception {
+        Appointment appt1 = new Appointment(1, PATIENT_ID, date, "9:00");
+        appt1.setDocName("Dr Bob");
+        appt1.setPatName(PATIENT_NAME);
+        int id1 = AppointmentManager.addAppointment(appt1);
+
+        Appointment appt2 = new Appointment(2, 5, date, "10:00");
+        appt2.setDocName("Dr Charlie");
+        appt2.setPatName("Bob Patient");
+        int id2 = AppointmentManager.addAppointment(appt2);
+
+        AppointmentManager.updatePatientNameInAppointments(PATIENT_NAME, "New Alice");
+
+        Appointment stored1 = AppointmentManager.getAppointmentById(id1);
+        assertEquals("New Alice", stored1.getPatName());
+
+        Appointment stored2 = AppointmentManager.getAppointmentById(id2);
+        assertEquals("Bob Patient", stored2.getPatName());
+    }
+
+    @Test
+    public void updatePatientNameInAppointments_noMatches_noChange() throws Exception {
+        Appointment appt = new Appointment(1, PATIENT_ID, date, "9:00");
+        appt.setDocName("Dr Bob");
+        appt.setPatName(PATIENT_NAME);
+        int id = AppointmentManager.addAppointment(appt);
+
+        AppointmentManager.updatePatientNameInAppointments("Nonexistent", "New Name");
+
+        Appointment stored = AppointmentManager.getAppointmentById(id);
+        assertEquals(PATIENT_NAME, stored.getPatName());
+    }
+
+    @Test
+    public void findAppointmentIdBySlot_noMatch_returnsNull() throws Exception {
+        assertNull(AppointmentManager.findAppointmentIdBySlot(999, date, "09:00"));
+    }
+
+    @Test
+    public void updateAppointment_invalidId_throws() throws Exception {
+        Appointment updated = new Appointment(2,
+            "Dr Charlie", PATIENT_ID, PATIENT_NAME, date, "10:00", 999);
+        assertThrows(IOException.class, () -> AppointmentManager.updateAppointment(999, updated));
+    }
+
+    @Test
+    public void getAppointmentById_nonExistent_returnsNull() throws Exception {
+        assertNull(AppointmentManager.getAppointmentById(9999));
+    }
+
+    @Test
+    public void deleteAppointment_validId_succeeds() throws Exception {
+        Appointment appt = new Appointment(1, PATIENT_ID, date, "9:00");
+        appt.setDocName("Dr Bob");
+        appt.setPatName(PATIENT_NAME);
+        int id = AppointmentManager.addAppointment(appt);
+
+        AppointmentManager.deleteAppointment(id);
+
+        assertNull(AppointmentManager.getAppointmentById(id));
+    }
+
+    @Test
+    public void addAppointment_withoutDoctorId_createsAppointment() throws Exception {
+        Appointment appt = new Appointment(Appointment.UNASSIGNED_ID,
+            "Dr Bob", PATIENT_ID, PATIENT_NAME, date, "9:00", Appointment.UNASSIGNED_ID);
+
+        int id = AppointmentManager.addAppointment(appt);
+
+        Appointment stored = AppointmentManager.getAppointmentById(id);
+        assertNotNull(stored);
+        assertEquals(Appointment.UNASSIGNED_ID, stored.getDocId());
+        assertEquals("Dr Bob", stored.getDocName());
+        assertEquals(PATIENT_ID, stored.getPatientId());
+    }
+
+    @Test
+    public void addAppointment_withoutPatientId_createsAppointment() throws Exception {
+        Appointment appt = new Appointment(1, "Dr Bob",
+            Appointment.UNASSIGNED_ID, PATIENT_NAME, date, "9:00", Appointment.UNASSIGNED_ID);
+
+        int id = AppointmentManager.addAppointment(appt);
+
+        Appointment stored = AppointmentManager.getAppointmentById(id);
+        assertNotNull(stored);
+        assertEquals(1, stored.getDocId());
+        assertEquals("Dr Bob", stored.getDocName());
+        assertEquals(Appointment.UNASSIGNED_ID, stored.getPatientId());
+    }
+
+    @Test
+    public void findPatientIdBySlot_withoutDoctorId_returnsNull() throws Exception {
+        Appointment appt = new Appointment(Appointment.UNASSIGNED_ID, "Dr Bob",
+            PATIENT_ID, PATIENT_NAME, date, "9:00", Appointment.UNASSIGNED_ID);
+        AppointmentManager.addAppointment(appt);
+
+        assertNull(AppointmentManager.findPatientIdBySlot(7, date, "9:00"));
+    }
+
+    @Test
+    public void findAppointmentIdBySlot_withoutDoctorId_returnsNull() throws Exception {
+        Appointment appt = new Appointment("Dr Bob", PATIENT_NAME, date, "9:00");
+        AppointmentManager.addAppointment(appt);
+
+        assertNull(AppointmentManager.findAppointmentIdBySlot(999, date, "9:00"));
     }
 
     private void writeEmptyAppointments() throws Exception {

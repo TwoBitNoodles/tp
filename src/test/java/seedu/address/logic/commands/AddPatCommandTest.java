@@ -1,3 +1,4 @@
+//Use copilot and initial add tests to create and generate unit tests for AddPatCommandTest.java
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

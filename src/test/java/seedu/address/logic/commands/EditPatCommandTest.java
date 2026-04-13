@@ -1,3 +1,4 @@
+//Use copilot and initial edit command tests to create and generate unit tests for EditPatCommandTest.java
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
