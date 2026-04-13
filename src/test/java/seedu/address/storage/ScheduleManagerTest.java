@@ -122,24 +122,24 @@ public class ScheduleManagerTest {
 
     @Test
     public void getPatientAtSlotByDocId_existingAppointment_returnsPatient() throws Exception {
-        LocalDate today = LocalDate.now();
-        writeScheduleFile(createDoctor(1, "John Tan"), today, null);
+        LocalDate futureDate = LocalDate.now().plusDays(1);
+        writeScheduleFile(createDoctor(1, "John Tan"), futureDate, null);
 
-        Appointment appt = new Appointment(1, "John Tan", 2, "Jane Lim", today.toString(), "09:00", -1);
+        Appointment appt = new Appointment(1, "John Tan", 2, "Jane Lim", futureDate.toString(), "09:00", -1);
         ScheduleManager.addAppt(appt);
 
-        assertEquals("Jane Lim", ScheduleManager.getPatientAtSlotByDocId(1, today.toString(), "09:00"));
+        assertEquals("Jane Lim", ScheduleManager.getPatientAtSlotByDocId(1, futureDate.toString(), "09:00"));
     }
 
     @Test
     public void getPatientAtSlot_existingAppointment_returnsPatient() throws Exception {
-        LocalDate today = LocalDate.now();
-        writeScheduleFile(createDoctor(1, "John Tan"), today, null);
+        LocalDate futureDate = LocalDate.now().plusDays(1);
+        writeScheduleFile(createDoctor(1, "John Tan"), futureDate, null);
 
-        Appointment appt = new Appointment(1, "John Tan", 7, "Jane Lim", today.toString(), "09:00", -1);
+        Appointment appt = new Appointment(1, "John Tan", 7, "Jane Lim", futureDate.toString(), "09:00", -1);
         ScheduleManager.addAppt(appt);
 
-        assertEquals("Jane Lim", ScheduleManager.getPatientAtSlot("John Tan", today.toString(), "09:00"));
+        assertEquals("Jane Lim", ScheduleManager.getPatientAtSlot("John Tan", futureDate.toString(), "09:00"));
     }
 
     @Test
