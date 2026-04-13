@@ -92,8 +92,11 @@ The table below summarises the rules and constraints for all input fields used a
 * **Doctor duplicate detection:** Two doctors are considered duplicates if they share the same name (case-insensitive) **and** either the same phone number or the same email.
 * **Patient duplicate detection:** Two patients are considered duplicates if they share the same name (case-insensitive) **and** the same email.
 * **Schedule window:** Doctor schedules are displayed and bookable for a rolling 7-day window from today.
+* **Schedule slots:** Schedule uses 30-minute slots from 09:00 to 16:30. Appointments can only be booked within these slots.
 * **Doctor IDs:** Each doctor is automatically assigned a unique, persistent ID that is preserved across edits. IDs are not user-editable.
 * **Patient IDs:** Each patient is automatically assigned a unique, persistent ID that is preserved across edits. IDs are not user-editable.
+* **Appointment IDs:** Each appointment is automatically assigned a unique ID that is returned to the user when the appointment is created. IDs are not user-editable.
+* **IDs do not exceed `Integer.MAX_VALUE`:** The system assumes the ID counter never overflows.
 
 </box>
 
