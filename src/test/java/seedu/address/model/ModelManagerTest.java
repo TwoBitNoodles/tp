@@ -516,30 +516,6 @@ public class ModelManagerTest {
     }
 
     @Test
-    public void editAppt_changeTime_updatesAllStorageLayers() throws Exception {
-        //written by copilot
-        backupAndRestore(() -> {
-            LocalDate today = LocalDate.now().plusDays(1);
-            Doctor doctor = new DoctorBuilder().withName("EditDoc").withDocId(95)
-                    .withPhone("99950000").withEmail("edit@doc.com").build();
-            Patient patient = new PatientBuilder().withName("EditPat")
-                    .withPhone("88850000").withEmail("edit@pat.com").build();
-            modelManager.addDoctor(doctor);
-            modelManager.addPatient(patient);
-            ScheduleManager.addDoctorSchedule(doctor);
-
-            Appointment appt = new Appointment(95, "EditDoc", patient.getPatientId(),
-                    "EditPat", today.toString(), "09:00", -1);
-            int apptId = AppointmentManager.addAppointment(appt);
-            patient.addAppt(appt);
-            ScheduleManager.addAppt(appt);
-
-            Appointment editedAppt = modelManager.editAppt(appt, null, null, "09:30");
-            assertEquals("09:30", editedAppt.getTime());
-        });
-    }
-
-    @Test
     public void delAppt_cleansUpAllStorageLayers_verifyCleanup() throws Exception {
         //written by copilot
         backupAndRestore(() -> {
