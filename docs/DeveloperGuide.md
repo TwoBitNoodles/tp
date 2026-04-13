@@ -12,7 +12,7 @@
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Acknowledgements**
-* GitHub Copilot has been used to assist code writing, particularly in helping get unstuck and improving the User Guide's UI.
+* GitHub Copilot/Codex has been used to assist code writing, particularly in helping get unstuck, improving the User Guide's UI, and writing tests.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -338,7 +338,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case resumes at step 1.
 
 * 2c. The email is not in a valid format.
-  * 2c1. System shows: 
+  * 2c1. System shows:
   ```
     Emails should be of the format local-part@domain and adhere to the following constraints:
     1. The local-part should only contain alphanumeric characters and these special characters, excluding the parentheses, (+_.-). The local-part may not start or end with any special characters.
@@ -381,7 +381,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case resumes at step 1.
 
 * 2c. The email is not in a valid format.
-  * 2c1. System shows: 
+  * 2c1. System shows:
   ```
       Emails should be of the format local-part@domain and adhere to the following constraints:
     1. The local-part should only contain alphanumeric characters and these special characters, excluding the parentheses, (+_.-). The local-part may not start or end with any special characters.
@@ -419,7 +419,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case ends.
 
 * 2b. The date is in an invalid format.
-  * 2b1. System shows: 
+  * 2b1. System shows:
   ```
   Invalid command format!
   viewsched: Views the schedule of a doctor (optionally for a specific date).
@@ -500,7 +500,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   Use case ends.
 
 * 3a. A name is entered instead of an index.
-  * 3a1. System shows: 
+  * 3a1. System shows:
   ```
   Invalid command format!
   deldoc: Deletes the doctor identified by the index number used in the displayed doctor list.
@@ -558,11 +558,11 @@ testers are expected to do more *exploratory* testing.
 
    1. Download the jar file and copy into an empty folder
 
-   2. Open a terminal and run `cd PATH_TO_FOLDER` to change directory to the location of the jar file. 
-   
+   2. Open a terminal and run `cd PATH_TO_FOLDER` to change directory to the location of the jar file.
+
    3. Run the command `java -jar clinicdesk.jar` to launch the app.<br>
        Expected: App launches successfully without any error.
-   
+
 1. Saving window preferences
 
    1. Resize the window to an optimum size. Move the window to a different location. Close the window.
@@ -578,7 +578,7 @@ testers are expected to do more *exploratory* testing.
    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list. Doctor is first person in the list.
 
    2. Test case: `deldoc 1`<br>
-      Expected: Doctor at index 1 is deleted from the list. Details of the deleted contact shown in the status message. 
+      Expected: Doctor at index 1 is deleted from the list. Details of the deleted contact shown in the status message.
 
    3. Test case: `deldoc 0`<br>
       Expected: No person is deleted. Error details shown in the status message.
@@ -590,17 +590,17 @@ testers are expected to do more *exploratory* testing.
 ### Saving data
 
 1. Dealing with missing data files
-   1. When a data file (patients.json, doctors.json, schedule.json) is missing, the app starts with an empty data container for that file. 
-   
-   2. The app will continue to function normally, but there is no data loaded for that file. 
-   
+   1. When a data file (patients.json, doctors.json, schedule.json) is missing, the app starts with an empty data container for that file.
+
+   2. The app will continue to function normally, but there is no data loaded for that file.
+
    3. Example: If patients.json is missing, the app starts with no patients but continues to function normally.
 
-2. Dealing with corrupted data files 
-   1. If a data file exists but contains invalid JSON format or illegal values, no data will be loaded. 
-   
+2. Dealing with corrupted data files
+   1. If a data file exists but contains invalid JSON format or illegal values, no data will be loaded.
+
    2. To solve this, the user can either fix the corrupted file (e.g., by correcting the JSON format or values) or delete the corrupted file to start with an empty data container for that file before relaunching the app.
-   
+
    3. Example: If patients.json contains malformed JSON, the app will discard it and start with no data entry.
 
 **Data loss prevention:**

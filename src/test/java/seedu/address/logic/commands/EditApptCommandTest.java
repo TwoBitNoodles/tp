@@ -160,6 +160,13 @@ public class EditApptCommandTest {
         assertThrows(Exception.class, () -> command.execute(model));
     }
 
+    @Test
+    public void execute_apptIdNotFound_throwsCommandException() throws Exception {
+        Model model = new ModelManager();
+        EditApptCommand command = new EditApptCommand(9999, null, null, "10:00");
+        assertThrows(Exception.class, () -> command.execute(model));
+    }
+
     private void writeScheduleWithSlots(int doctorId, String doctorName, String dateValue, Map<String, String> slots)
             throws Exception {
         Map<String, Object> data = new LinkedHashMap<>();

@@ -32,4 +32,14 @@ public class AddApptCommandParserTest {
         assertThrows(ParseException.class, () -> parser.parse(" id/1 pid/abc date/2026-04-09 time/9:00"));
         assertThrows(ParseException.class, () -> parser.parse(" id/1 pid/0 date/2026-04-09 time/9:00"));
     }
+
+    @Test
+    public void parse_missingPrefix_throws() {
+        assertThrows(ParseException.class, () -> parser.parse(" id/1 date/2026-04-09 time/9:00"));
+    }
+
+    @Test
+    public void parse_preamblePresent_throws() {
+        assertThrows(ParseException.class, () -> parser.parse("garbage id/1 pid/2 date/2026-04-09 time/9:00"));
+    }
 }

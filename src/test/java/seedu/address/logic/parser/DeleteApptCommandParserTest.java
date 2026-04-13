@@ -21,5 +21,15 @@ public class DeleteApptCommandParserTest {
         assertThrows(ParseException.class, () -> parser.parse(" apptid/-1"));
         assertThrows(ParseException.class, () -> parser.parse(" apptid/abc"));
     }
+
+    @Test
+    public void parse_missingApptId_throws() {
+        assertThrows(ParseException.class, () -> parser.parse(" "));
+    }
+
+    @Test
+    public void parse_preamblePresent_throws() {
+        assertThrows(ParseException.class, () -> parser.parse("garbage apptid/0"));
+    }
 }
 

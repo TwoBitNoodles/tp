@@ -105,6 +105,13 @@ public class DeletePatCommandTest {
     }
 
     @Test
+    public void toStringMethod() {
+        DeletePatCommand command = new DeletePatCommand(INDEX_FIRST_PERSON);
+        String result = command.toString();
+        assertTrue(result.contains("targetIndex"));
+    }
+
+    @Test
     public void execute_nonPatientIndex_throwsCommandException() {
         Model model = new ModelManager(getTypicalAddressBook(), getTypicalAddressBook(),
                 getTypicalAddressBook(), new UserPrefs());

@@ -140,6 +140,17 @@ public class DeleteApptCommandTest {
         assertEquals(null, AppointmentManager.getAppointmentById(APPT_ID));
     }
 
+    @Test
+    public void execute_corruptApptFile_throwsCommandException() throws Exception {
+        // Corrupt the appointments file so AppointmentManager.getAppointmentById throws IOException
+        File apptFile = new File(APPT_FILE_PATH);
+        Files.write(apptFile.toPath(), "CORRUPT".getBytes());
+
+        Model model = new ModelManager();
+        DeleteApptCommand command = new DeleteApptCommand(APPT_ID);
+        assertThrows(CommandException.class, () -> command.execute(model));
+    }
+
     private void writeScheduleWithSlots(int doctorId, String doctorName, String dateValue, Map<String, String> slots)
             throws Exception {
         Map<String, Object> data = new LinkedHashMap<>();

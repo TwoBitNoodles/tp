@@ -8,26 +8,39 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BENSON;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.appointment.Appointment;
 import seedu.address.model.person.Doctor;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Patient;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.exceptions.PersonNotFoundException;
+import seedu.address.storage.AppointmentManager;
+import seedu.address.storage.ScheduleManager;
 import seedu.address.testutil.AddressBookBuilder;
 import seedu.address.testutil.DoctorBuilder;
 import seedu.address.testutil.PatientBuilder;
 import seedu.address.testutil.PersonBuilder;
 
 public class ModelManagerTest {
+    private static final String SCHEDULE_FILE = "data/schedule.json";
+    private static final String APPT_FILE = "data/appointments.json";
 
     private ModelManager modelManager = new ModelManager();
+    private byte[] scheduleBackup;
+    private byte[] apptBackup;
+    private boolean scheduleExisted;
+    private boolean apptExisted;
 
     @Test
     public void constructor() {
@@ -330,6 +343,101 @@ public class ModelManagerTest {
         Patient patient = new PatientBuilder().withName("Patient Data").build();
         modelManager.addPatient(patient);
         assertEquals(patient, modelManager.getPatientData().getPersonList().get(0));
+    }
+
+    private void backupAndRestore(TestAction action) throws Exception {
+        File sf = new File(SCHEDULE_FILE);
+        File af = new File(APPT_FILE);
+        scheduleExisted = sf.exists();
+        apptExisted = af.exists();
+        scheduleBackup = scheduleExisted ? Files.readAllBytes(sf.toPath()) : null;
+        apptBackup = apptExisted ? Files.readAllBytes(af.toPath()) : null;
+        try {
+            action.run();
+        } finally {
+            if (scheduleExisted) {
+                Files.write(sf.toPath(), scheduleBackup);
+            } else if (sf.exists()) {
+                sf.delete();
+            }
+            if (apptExisted) {
+                Files.write(af.toPath(), apptBackup);
+            } else if (af.exists()) {
+                af.delete();
+            }
+        }
+    }
+
+    @FunctionalInterface
+    private interface TestAction {
+        void run() throws Exception;
+    }
+
+    @Test
+    public void delAppt_legacyApptNullDoctorName_throwsIoException() throws Exception {
+        backupAndRestore(() -> {
+            Appointment appt = new Appointment(-1, null, 1, "Alice",
+                    LocalDate.now().toString(), "09:00", 0);
+            assertThrows(IOException.class, () -> modelManager.delAppt(appt));
+        });
+    }
+
+    @Test
+    public void delAppt_legacyApptDoctorNotFound_throwsIoException() throws Exception {
+        backupAndRestore(() -> {
+            Appointment appt = new Appointment("NonexistentDoc", "Alice",
+                    LocalDate.now().toString(), "09:00");
+            assertThrows(IOException.class, () -> modelManager.delAppt(appt));
+        });
+    }
+
+    @Test
+    public void delAppt_legacyApptResolvesDoctor_success() throws Exception {
+        backupAndRestore(() -> {
+            LocalDate today = LocalDate.now();
+            Doctor doctor = new DoctorBuilder().withName("LegacyDoc").withDocId(50)
+                    .withPhone("99990000").withEmail("legacy@doc.com").build();
+            Patient patient = new PatientBuilder().withName("LegacyPat")
+                    .withPhone("88880000").withEmail("legacy@pat.com").build();
+            modelManager.addDoctor(doctor);
+            modelManager.addPatient(patient);
+            ScheduleManager.addDoctorSchedule(doctor);
+
+            Appointment fullAppt = new Appointment(50, "LegacyDoc", patient.getPatientId(),
+                    "LegacyPat", today.toString(), "09:00", -1);
+            modelManager.addAppt(fullAppt);
+
+            // Delete using legacy appointment (no docId, only name)
+            Appointment legacyDel = new Appointment("LegacyDoc", "LegacyPat",
+                    today.toString(), "09:00");
+            modelManager.delAppt(legacyDel);
+        });
+    }
+
+    @Test
+    public void setDoctor_nameChange_updatesAppointments() throws Exception {
+        backupAndRestore(() -> {
+            LocalDate today = LocalDate.now();
+            Doctor doctor = new DoctorBuilder().withName("OldDocName").withDocId(60)
+                    .withPhone("77770000").withEmail("old@doc.com").build();
+            Patient patient = new PatientBuilder().withName("SetDocPat")
+                    .withPhone("66660000").withEmail("setdoc@pat.com").build();
+            modelManager.addDoctor(doctor);
+            modelManager.addPatient(patient);
+            ScheduleManager.addDoctorSchedule(doctor);
+
+            Appointment appt = new Appointment(60, "OldDocName", patient.getPatientId(),
+                    "SetDocPat", today.toString(), "09:00", -1);
+            int apptId = AppointmentManager.addAppointment(appt);
+            modelManager.addAppt(appt);
+
+            Doctor edited = new DoctorBuilder().withName("NewDocName").withDocId(60)
+                    .withPhone("77770000").withEmail("old@doc.com").build();
+            modelManager.setDoctor(doctor, edited);
+
+            Appointment stored = AppointmentManager.getAppointmentById(apptId);
+            assertEquals("NewDocName", stored.getDocName());
+        });
     }
 
 }

@@ -7,6 +7,7 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.DeleteDocCommand;
 
 /**
@@ -28,5 +29,10 @@ public class DeleteDocCommandParserTest {
     @Test
     public void parse_invalidArgs_throwsParseException() {
         assertParseFailure(parser, "a", String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteDocCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_numericInvalidIndex_throwsParseException() {
+        assertParseFailure(parser, "0", Messages.MESSAGE_INVALID_DOCTOR_DISPLAYED_INDEX);
     }
 }

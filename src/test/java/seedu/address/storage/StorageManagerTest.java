@@ -1,8 +1,9 @@
 package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-// import static org.junit.jupiter.api.Assertions.assertNotNull;
-// import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.testutil.TypicalDoctors.getTypicalAddressBook;
 
 import java.nio.file.Path;
 
@@ -11,8 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import seedu.address.commons.core.GuiSettings;
-// import seedu.address.model.AddressBook;
-// import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.AddressBook;
+import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
 
 public class StorageManagerTest {
@@ -71,4 +72,23 @@ public class StorageManagerTest {
     }
 
     */
+
+    @Test
+    public void getDoctorsFilePath_returnsCorrectPath() {
+        assertNotNull(storageManager.getDoctorsFilePath());
+        assertTrue(storageManager.getDoctorsFilePath().toString().contains("dt"));
+    }
+
+    @Test
+    public void doctorsFileReadSave_orginalVersusRetrieved_checksConsistency() throws Exception {
+        AddressBook original = getTypicalAddressBook();
+        storageManager.saveDoctorData(original);
+        ReadOnlyAddressBook retrieved = storageManager.readDoctorData().get();
+        assertEquals(original, new AddressBook(retrieved));
+    }
+
+    @Test
+    public void readDoctorData_noExistingFile_returnsEmpty() throws Exception {
+        assertTrue(storageManager.readDoctorData().isEmpty());
+    }
 }

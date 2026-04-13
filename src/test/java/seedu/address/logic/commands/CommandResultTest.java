@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 public class CommandResultTest {
@@ -59,5 +61,34 @@ public class CommandResultTest {
                 + commandResult.getFeedbackToUser() + ", showHelp=" + commandResult.isShowHelp()
                 + ", exit=" + commandResult.isExit() + "}";
         assertEquals(expected, commandResult.toString());
+    }
+
+    @Test
+    public void constructor_withScheduleMap() {
+        Map<String, String> schedule = new java.util.LinkedHashMap<>();
+        schedule.put("09:00", "Alice");
+        CommandResult result = new CommandResult("feedback", schedule);
+        assertEquals("feedback", result.getFeedbackToUser());
+        assertEquals(schedule, result.getSchedule());
+    }
+
+    @Test
+    public void constructor_withWeeklySchedule() {
+        Map<String, Map<String, String>> weekly = new java.util.LinkedHashMap<>();
+        weekly.put("Monday", new java.util.LinkedHashMap<>());
+        CommandResult result = new CommandResult("feedback", weekly, true);
+        assertTrue(result.isWeekly());
+        assertEquals(weekly, result.getWeeklySchedule());
+    }
+
+    @Test
+    public void getScheduleMetadata() {
+        Map<String, String> schedule = new java.util.LinkedHashMap<>();
+        schedule.put("09:00", "Alice");
+        CommandResult result = new CommandResult("feedback", schedule,
+                "Dr Smith", 5, java.time.LocalDate.of(2026, 4, 10));
+        assertEquals("Dr Smith", result.getScheduleDoctorName());
+        assertEquals(5, result.getScheduleDoctorId());
+        assertEquals(java.time.LocalDate.of(2026, 4, 10), result.getScheduleDate());
     }
 }
