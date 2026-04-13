@@ -319,7 +319,7 @@ Edited appointment!
 ```
 <box type="warning" seamless>
 
-**Warning:** Changing a patient name for an appointment is not possible. Users will need to delete the appointment and make a new one.
+**Warning:** Changing a patient for an appointment is not supported. Users will need to delete the appointment and make a new one.
 
 </box>
 
