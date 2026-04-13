@@ -409,6 +409,49 @@ public class ScheduleManagerTest {
         assertEquals("This appointment already exists", thrown.getMessage());
     }
 
+    @Test
+    public void addAppt_differentPatientSameSlot_throws() throws Exception {
+        //written by copilot
+        LocalDate today = LocalDate.now().plusDays(1);
+        writeScheduleFile(createDoctor(1, "John Tan"), today, null);
+
+        Appointment appt1 = new Appointment(1, "John Tan", 2, "Jane Lim", today.toString(), "09:00", -1);
+        ScheduleManager.addAppt(appt1);
+
+        Appointment appt2 = new Appointment(1, "John Tan", 3, "Bob Smith", today.toString(), "09:00", -1);
+        IOException thrown = assertThrows(IOException.class, () -> ScheduleManager.addAppt(appt2));
+        assertTrue(thrown.getMessage().contains("already booked"));
+    }
+
+    @Test
+    public void getPatientAtSlotByDocId_afterAddingAppointment_returnsCorrectPatient() throws Exception {
+        //written by copilot
+        LocalDate today = LocalDate.now().plusDays(1);
+        writeScheduleFile(createDoctor(1, "John Tan"), today, null);
+
+        Appointment appt = new Appointment(1, "John Tan", 2, "Jane Lim", today.toString(), "09:00", -1);
+        ScheduleManager.addAppt(appt);
+
+        String patient = ScheduleManager.getPatientAtSlotByDocId(1, today.toString(), "09:00");
+        assertEquals("Jane Lim", patient);
+    }
+
+    @Test
+    public void getScheduleByDocId_afterAddingMultipleAppointments_maintainsConsistency() throws Exception {
+        //written by copilot
+        LocalDate today = LocalDate.now().plusDays(1);
+        writeScheduleFile(createDoctor(1, "John Tan"), today, null);
+
+        Appointment appt1 = new Appointment(1, "John Tan", 2, "Jane Lim", today.toString(), "09:00", -1);
+        ScheduleManager.addAppt(appt1);
+        Appointment appt2 = new Appointment(1, "John Tan", 3, "Bob Smith", today.toString(), "09:30", -1);
+        ScheduleManager.addAppt(appt2);
+
+        Map<String, String> schedule = ScheduleManager.getScheduleByDocId(1, today.toString());
+        assertEquals("Jane Lim", schedule.get("09:00"));
+        assertEquals("Bob Smith", schedule.get("09:30"));
+    }
+
     private void writeScheduleFile(Doctor doctor, LocalDate date, String bookedPatient) throws Exception {
         File file = new File(SCHEDULE_FILE_PATH);
         file.getParentFile().mkdirs();

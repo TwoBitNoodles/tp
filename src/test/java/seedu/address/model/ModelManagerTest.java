@@ -490,4 +490,79 @@ public class ModelManagerTest {
         });
     }
 
+    @Test
+    public void addAppt_patientWithNoConflicts_succeeds() throws Exception {
+        //written by copilot
+        backupAndRestore(() -> {
+            LocalDate today = LocalDate.now().plusDays(1);
+            Doctor doctor = new DoctorBuilder().withName("MultiDocName").withDocId(90)
+                    .withPhone("99990000").withEmail("multi@doc.com").build();
+            Patient patient = new PatientBuilder().withName("MultiSlotPat")
+                    .withPhone("88880000").withEmail("multi@pat.com").build();
+            modelManager.addDoctor(doctor);
+            modelManager.addPatient(patient);
+            ScheduleManager.addDoctorSchedule(doctor);
+
+            Appointment appt1 = new Appointment(90, "MultiDocName", patient.getPatientId(),
+                    "MultiSlotPat", today.toString(), "09:00", -1);
+            modelManager.addAppt(appt1);
+
+            Appointment appt2 = new Appointment(90, "MultiDocName", patient.getPatientId(),
+                    "MultiSlotPat", today.toString(), "10:00", -1);
+            modelManager.addAppt(appt2);
+
+            assertEquals(2, patient.getApptList().size());
+        });
+    }
+
+    @Test
+    public void editAppt_changeTime_updatesAllStorageLayers() throws Exception {
+        //written by copilot
+        backupAndRestore(() -> {
+            LocalDate today = LocalDate.now().plusDays(1);
+            Doctor doctor = new DoctorBuilder().withName("EditDoc").withDocId(95)
+                    .withPhone("99950000").withEmail("edit@doc.com").build();
+            Patient patient = new PatientBuilder().withName("EditPat")
+                    .withPhone("88850000").withEmail("edit@pat.com").build();
+            modelManager.addDoctor(doctor);
+            modelManager.addPatient(patient);
+            ScheduleManager.addDoctorSchedule(doctor);
+
+            Appointment appt = new Appointment(95, "EditDoc", patient.getPatientId(),
+                    "EditPat", today.toString(), "09:00", -1);
+            int apptId = AppointmentManager.addAppointment(appt);
+            patient.addAppt(appt);
+            ScheduleManager.addAppt(appt);
+
+            Appointment editedAppt = modelManager.editAppt(appt, null, null, "09:30");
+            assertEquals("09:30", editedAppt.getTime());
+        });
+    }
+
+    @Test
+    public void delAppt_cleansUpAllStorageLayers_verifyCleanup() throws Exception {
+        //written by copilot
+        backupAndRestore(() -> {
+            LocalDate today = LocalDate.now().plusDays(1);
+            Doctor doctor = new DoctorBuilder().withName("DelDocName").withDocId(110)
+                    .withPhone("99990000").withEmail("del@doc.com").build();
+            Patient patient = new PatientBuilder().withName("DelPat")
+                    .withPhone("88880000").withEmail("del@pat.com").build();
+            modelManager.addDoctor(doctor);
+            modelManager.addPatient(patient);
+            ScheduleManager.addDoctorSchedule(doctor);
+
+            Appointment appt = new Appointment(110, "DelDocName", patient.getPatientId(),
+                    "DelPat", today.toString(), "09:00", -1);
+            int apptId = AppointmentManager.addAppointment(appt);
+            patient.addAppt(appt);
+            ScheduleManager.addAppt(appt);
+
+            assertEquals(1, patient.getApptList().size());
+            modelManager.delAppt(appt);
+
+            assertEquals(0, patient.getApptList().size());
+        });
+    }
+
 }
