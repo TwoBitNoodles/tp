@@ -624,11 +624,9 @@ public class ModelManager implements Model {
         patients.setPatient(target, editedPatient);
         addressBook.setPerson(target, editedPatient);
 
-        try {
-            updatePatientNameInAppointmentList(target, editedPatient);
-        } catch (IOException e) {
-            logger.warning("Failed to update patient in storage: " + e.getMessage());
-        }
+
+        updatePatientNameInAppointmentList(target, editedPatient);
+
     }
     //=========== Filtered Person List Accessors =============================================================
 

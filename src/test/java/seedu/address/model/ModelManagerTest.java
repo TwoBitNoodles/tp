@@ -404,12 +404,13 @@ public class ModelManagerTest {
             ScheduleManager.addDoctorSchedule(doctor);
 
             Appointment fullAppt = new Appointment(50, "LegacyDoc", patient.getPatientId(),
-                    "LegacyPat", today.toString(), "09:00", -1);
+                    "LegacyPat", today.plusDays(1).toString(), "09:00", -1);
+            AppointmentManager.addAppointment(fullAppt);
             modelManager.addAppt(fullAppt);
 
             // Delete using legacy appointment (no docId, only name)
             Appointment legacyDel = new Appointment("LegacyDoc", "LegacyPat",
-                    today.toString(), "09:00");
+                    today.plusDays(1).toString(), "09:00");
             modelManager.delAppt(legacyDel);
         });
     }
@@ -429,7 +430,6 @@ public class ModelManagerTest {
             Appointment appt = new Appointment(60, "OldDocName", patient.getPatientId(),
                     "SetDocPat", today.toString(), "09:00", -1);
             int apptId = AppointmentManager.addAppointment(appt);
-            modelManager.addAppt(appt);
 
             Doctor edited = new DoctorBuilder().withName("NewDocName").withDocId(60)
                     .withPhone("77770000").withEmail("old@doc.com").build();
