@@ -440,4 +440,54 @@ public class ModelManagerTest {
         });
     }
 
+    @Test
+    public void addAppt_patientMultipleDoctorsSameTime_throws() throws Exception {
+        //written by copilot
+        backupAndRestore(() -> {
+            LocalDate today = LocalDate.now();
+            Doctor doctor1 = new DoctorBuilder().withName("DocOne").withDocId(70)
+                    .withPhone("99990000").withEmail("doc1@test.com").build();
+            Doctor doctor2 = new DoctorBuilder().withName("DocTwo").withDocId(71)
+                    .withPhone("99990001").withEmail("doc2@test.com").build();
+            Patient patient = new PatientBuilder().withName("MultiDocPat")
+                    .withPhone("88880000").withEmail("multi@pat.com").build();
+            modelManager.addDoctor(doctor1);
+            modelManager.addDoctor(doctor2);
+            modelManager.addPatient(patient);
+            ScheduleManager.addDoctorSchedule(doctor1);
+            ScheduleManager.addDoctorSchedule(doctor2);
+
+            Appointment appt1 = new Appointment(70, patient.getPatientId(), today.toString(), "10:00");
+            modelManager.addAppt(appt1);
+
+            Appointment appt2 = new Appointment(71, patient.getPatientId(), today.toString(), "10:00");
+            assertThrows(IOException.class, () -> modelManager.addAppt(appt2));
+        });
+    }
+
+    @Test
+    public void editAppt_incompleteScheduleData_healsAndSucceeds() throws Exception {
+        //written by copilot
+        backupAndRestore(() -> {
+            LocalDate today = LocalDate.now();
+            Doctor doctor = new DoctorBuilder().withName("HealDocName").withDocId(80)
+                    .withPhone("99990000").withEmail("heal@doc.com").build();
+            Patient patient = new PatientBuilder().withName("HealPat")
+                    .withPhone("88880000").withEmail("heal@pat.com").build();
+            modelManager.addDoctor(doctor);
+            modelManager.addPatient(patient);
+            ScheduleManager.addDoctorSchedule(doctor);
+
+            Appointment appt = new Appointment(80, "HealDocName", patient.getPatientId(),
+                    "HealPat", today.toString(), "10:00", -1);
+            int apptId = AppointmentManager.addAppointment(appt);
+            patient.addAppt(appt);
+            ScheduleManager.addAppt(appt);
+
+            Appointment editedAppt = modelManager.editAppt(appt, null, null, "10:30");
+            assertEquals("10:30", editedAppt.getTime());
+            assertEquals(apptId, editedAppt.getApptID());
+        });
+    }
+
 }

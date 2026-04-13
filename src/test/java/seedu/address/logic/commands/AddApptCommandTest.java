@@ -225,6 +225,49 @@ public class AddApptCommandTest {
         assertThrows(CommandException.class, () -> command.execute(model));
     }
 
+    @Test
+    public void execute_patientMultipleDoctorsSameSlot_throws() throws Exception {
+        //written by copilot
+        Model model = new ModelManager();
+        Doctor doctor1 = new DoctorBuilder().withName("Doctor One").withDocId(DOCTOR_ID).build();
+        Doctor doctor2 = new DoctorBuilder().withName("Doctor Two").withDocId(2).build();
+        Patient patient = new PatientBuilder().withName(PATIENT_NAME).withPatId(PATIENT_ID).build();
+        model.addDoctor(doctor1);
+        model.addDoctor(doctor2);
+        model.addPatient(patient);
+
+        ScheduleManager.addDoctorSchedule(doctor1);
+        ScheduleManager.addDoctorSchedule(doctor2);
+
+        Appointment appt1 = new Appointment(DOCTOR_ID, PATIENT_ID, date.format(DATE_FORMAT), "10:00");
+        AddApptCommand command1 = new AddApptCommand(appt1);
+        command1.execute(model);
+
+        Appointment appt2 = new Appointment(2, PATIENT_ID, date.format(DATE_FORMAT), "10:00");
+        AddApptCommand command2 = new AddApptCommand(appt2);
+
+        assertThrows(CommandException.class, () -> command2.execute(model));
+    }
+
+    @Test
+    public void execute_duplicateAppointment_throws() throws Exception {
+        //written by copilot
+        Model model = new ModelManager();
+        Doctor doctor = new DoctorBuilder().withName(DOCTOR_NAME).withDocId(DOCTOR_ID).build();
+        Patient patient = new PatientBuilder().withName(PATIENT_NAME).withPatId(PATIENT_ID).build();
+        model.addDoctor(doctor);
+        model.addPatient(patient);
+
+        Appointment appt = new Appointment(DOCTOR_ID, PATIENT_ID, date.format(DATE_FORMAT), "10:00");
+        AddApptCommand command1 = new AddApptCommand(appt);
+        command1.execute(model);
+
+        Appointment appt2 = new Appointment(DOCTOR_ID, PATIENT_ID, date.format(DATE_FORMAT), "10:00");
+        AddApptCommand command2 = new AddApptCommand(appt2);
+
+        assertThrows(CommandException.class, () -> command2.execute(model));
+    }
+
     private void writeScheduleWithSlots(int doctorId, String doctorName, String dateValue, Map<String, String> slots)
             throws Exception {
         Map<String, Object> data = new LinkedHashMap<>();

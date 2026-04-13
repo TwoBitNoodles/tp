@@ -203,4 +203,52 @@ public class EditApptCommandTest {
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
         AppointmentManager.initialise();
     }
+
+    @Test
+    public void execute_editApptToNewDoctor_success() throws Exception {
+        //written by copilot
+        Model model = new ModelManager();
+        Doctor doctor1 = new DoctorBuilder().withName("Doctor One").withDocId(DOCTOR_ID).build();
+        Doctor doctor2 = new DoctorBuilder().withName("Doctor Two").withDocId(2).build();
+        Patient patient = new PatientBuilder().withName(PATIENT_NAME).withPatId(PATIENT_ID).build();
+        model.addDoctor(doctor1);
+        model.addDoctor(doctor2);
+        model.addPatient(patient);
+        ScheduleManager.addDoctorSchedule(doctor1);
+        ScheduleManager.addDoctorSchedule(doctor2);
+
+        Appointment appt = new Appointment(DOCTOR_ID, PATIENT_ID, date.format(DATE_FORMAT), "10:00");
+        AppointmentManager.addAppointment(appt);
+        patient.addAppt(appt);
+        ScheduleManager.addAppt(appt);
+
+        String newDocId = "2";
+        EditApptCommand command = new EditApptCommand(appt.getApptID(), newDocId, null, null);
+        command.execute(model);
+
+        Appointment edited = AppointmentManager.getAppointmentById(appt.getApptID());
+        assertEquals(2, edited.getDocId());
+    }
+
+    @Test
+    public void execute_editApptToNewTime_success() throws Exception {
+        //written by copilot
+        Model model = new ModelManager();
+        Doctor doctor = new DoctorBuilder().withName(DOCTOR_NAME).withDocId(DOCTOR_ID).build();
+        Patient patient = new PatientBuilder().withName(PATIENT_NAME).withPatId(PATIENT_ID).build();
+        model.addDoctor(doctor);
+        model.addPatient(patient);
+        ScheduleManager.addDoctorSchedule(doctor);
+
+        Appointment appt = new Appointment(DOCTOR_ID, PATIENT_ID, date.format(DATE_FORMAT), "10:00");
+        AppointmentManager.addAppointment(appt);
+        patient.addAppt(appt);
+        ScheduleManager.addAppt(appt);
+
+        EditApptCommand command = new EditApptCommand(appt.getApptID(), null, null, "10:30");
+        command.execute(model);
+
+        Appointment edited = AppointmentManager.getAppointmentById(appt.getApptID());
+        assertEquals("10:30", edited.getTime());
+    }
 }

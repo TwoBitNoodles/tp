@@ -395,6 +395,20 @@ public class ScheduleManagerTest {
         assertNull(ScheduleManager.getScheduleByDocId(1, LocalDate.now().toString()));
     }
 
+    @Test
+    public void addAppt_duplicateAppointmentSamePatient_throwsIOException() throws Exception {
+        //written by copilot
+        LocalDate today = LocalDate.now();
+        writeScheduleFile(createDoctor(1, "John Tan"), today, null);
+
+        Appointment appt = new Appointment(1, "John Tan", 2, "Jane Lim", today.toString(), "09:00", -1);
+        ScheduleManager.addAppt(appt);
+
+        Appointment duplicateAppt = new Appointment(1, "John Tan", 2, "Jane Lim", today.toString(), "09:00", -1);
+        IOException thrown = assertThrows(IOException.class, () -> ScheduleManager.addAppt(duplicateAppt));
+        assertEquals("This appointment already exists", thrown.getMessage());
+    }
+
     private void writeScheduleFile(Doctor doctor, LocalDate date, String bookedPatient) throws Exception {
         File file = new File(SCHEDULE_FILE_PATH);
         file.getParentFile().mkdirs();
