@@ -2,7 +2,6 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_BOB;
@@ -25,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditDocCommand.EditDoctorDescriptor;
-import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -199,9 +197,9 @@ public class EditDocCommandTest {
         assertCommandFailure(editDocCommand, noDoctorModel, "The person at the specified index is not a doctor.");
     }
 
-    // test added by Copilot
+    // Storage update failures are handled inside ModelManager.setDoctor to match setPatient.
     @Test
-    public void execute_scheduleIoError_throwsCommandException() throws Exception {
+    public void execute_scheduleIoError_commandStillSucceeds() throws Exception {
         File scheduleFile = new File("data/schedule.json");
         boolean created = false;
         byte[] backup = null;
@@ -218,7 +216,19 @@ public class EditDocCommandTest {
             EditDoctorDescriptor descriptor = new EditDoctorDescriptorBuilder()
                     .withName("Completely Different Name").build();
             EditDocCommand editDocCommand = new EditDocCommand(INDEX_FIRST_PERSON, descriptor);
-            assertThrows(CommandException.class, () -> editDocCommand.execute(model));
+            Doctor originalDoctor = (Doctor) model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+            Doctor editedDoctor = new DoctorBuilder(originalDoctor).withName("Completely Different Name").build();
+
+            String expectedMessage = String.format(EditDocCommand.MESSAGE_EDIT_DOCTOR_SUCCESS,
+                    Messages.format(editedDoctor));
+
+            Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), model.getPatientData(),
+                    model.getDoctorData(), new UserPrefs());
+            Doctor expectedDoctor = (Doctor) expectedModel.getFilteredPersonList()
+                    .get(INDEX_FIRST_PERSON.getZeroBased());
+            expectedModel.setDoctor(expectedDoctor, editedDoctor);
+
+            assertCommandSuccess(editDocCommand, model, expectedMessage, expectedModel);
         } finally {
             if (created) {
                 scheduleFile.delete();

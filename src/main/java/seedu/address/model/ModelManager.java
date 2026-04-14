@@ -555,6 +555,7 @@ public class ModelManager implements Model {
         if (!oldName.equals(newName)) {
             seedu.address.storage.AppointmentManager.updateDoctorNameInAppointments(
                     newDoctor.getDocId(), newName);
+            ScheduleManager.renameDoctorSchedule(newDoctor);
         }
     }
 

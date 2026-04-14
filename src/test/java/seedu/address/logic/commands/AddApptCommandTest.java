@@ -231,7 +231,8 @@ public class AddApptCommandTest {
         //written by copilot
         Model model = new ModelManager();
         Doctor doctor1 = new DoctorBuilder().withName("Doctor One").withDocId(DOCTOR_ID).build();
-        Doctor doctor2 = new DoctorBuilder().withName("Doctor Two").withDocId(2).build();
+        Doctor doctor2 = new DoctorBuilder().withName("Doctor Two").withDocId(2)
+                .withPhone("99999999").withEmail("doctortwo@example.com").build();
         Patient patient = new PatientBuilder().withName(PATIENT_NAME).withPatId(PATIENT_ID).build();
         model.addDoctor(doctor1);
         model.addDoctor(doctor2);

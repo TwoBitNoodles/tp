@@ -7,7 +7,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,7 +23,6 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
-import seedu.address.storage.ScheduleManager;
 
 /**
  * Edits the details of an existing doctor in the app.
@@ -85,18 +83,7 @@ public class EditDocCommand extends Command {
             throw new CommandException(MESSAGE_DUPLICATE_DOCTOR);
         }
 
-        String currDoctorName = doctorToEdit.getName().fullName;
-        String newDoctorName = editedDoctor.getName().fullName;
-
         model.setDoctor(doctorToEdit, editedDoctor);
-
-        if (!currDoctorName.equalsIgnoreCase(newDoctorName)) {
-            try {
-                ScheduleManager.renameDoctorSchedule(editedDoctor);
-            } catch (IOException e) {
-                throw new CommandException(Messages.MESSAGE_SCHEDULE_UPDATE_FAILED);
-            }
-        }
 
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_EDIT_DOCTOR_SUCCESS, Messages.format(editedDoctor)));

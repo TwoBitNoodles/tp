@@ -40,7 +40,7 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
 
    * `list` : Lists all patients and doctors.
    * `adddoc n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01` : Adds a doctor named `John Doe`.
-   * `deldoc 3` : Deletes the 3rd doctor shown in the current list.
+   * `deldoc 3` : Deletes the 3rd entry shown in the current list, provided that it represents a doctor.
    * `clear` : Clears all entries from the display.
    * `exit` : Exits the app.
 
@@ -74,8 +74,8 @@ The table below summarises the rules and constraints for all input fields used a
 
 <table class="constraints-table">
 <tr><th>Field</th><th>Constraints</th></tr>
-<tr><td><strong>NAME</strong></td><td>Alphabets, hyphens, apostrophe and/or spaces only. Case-insensitive for matching (e.g. <code>john doe</code> matches <code>John Doe</code>). Must not be blank.</td></tr>
-<tr><td><strong>PHONE_NUMBER</strong></td><td>Numeric digits only. Must be 8 digits long.</td></tr>
+<tr><td><strong>NAME</strong></td><td>Alphabets, hyphens, apostrophe, forward slashes, and/or spaces only. Case-insensitive for matching (e.g. <code>john doe</code> matches <code>John Doe</code>). Must not be blank.</td></tr>
+<tr><td><strong>PHONE_NUMBER</strong></td><td>Numeric digits only. Must be at least 3 digits long.</td></tr>
 <tr><td><strong>EMAIL</strong></td><td>Must follow the standard <code>local-part@domain</code> format (e.g. <code>name@example.com</code>).</td></tr>
 <tr><td><strong>ADDRESS</strong></td><td>Any non-blank string, minimum 3 characters.</td></tr>
 <tr><td><strong>INDEX</strong></td><td>A positive integer (1, 2, 3, …) referring to the position in the currently displayed list.</td></tr>
@@ -113,8 +113,8 @@ Adds a doctor to the app.
 Format: `adddoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS`
 
 **Notes:**
-* `NAME` is the name of the doctor. It should not be blank. Only alphabets, followed by hyphens, apostrophe and/or spaces are allowed.
-* `PHONE_NUMBER` should only contain numbers and be 8 digits.
+* `NAME` is the name of the doctor. It should not be blank. Only alphabets, followed by hyphens, apostrophe, forward slash, and/or spaces are allowed.
+* `PHONE_NUMBER` should only contain numbers and be at least 3 digits long.
 * `EMAIL` must match the standard email format (e.g. `name@example.com`).
 
 Examples:
@@ -159,11 +159,12 @@ Format: `deldoc INDEX`
 * The index **must be a positive integer** 1, 2, 3, …​
 
 Examples:
-* If the list shows (1) Patient, (2) Doctor, (3) Patient — type `deldoc 2` to delete the doctor.
+* `deldoc 2` deletes the 2nd entry in the displayed list, provided it is a doctor.
 
 Expected output:
 ```
 Deleted Doctor: John Doe; Phone: 98765432; Email: johnd@doctor.com; Address: John street, block 123, #01-01; Tags: Doctor
+ & any linked appointments
 ```
 
 --------------------------------------------------------------------------------------------------------------------
@@ -179,8 +180,8 @@ Adds a patient to the app.
 Format: `addpat n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS`
 
 **Notes:**
-* `NAME` is the name of the patient. It should not be blank. Only alphabets, followed by hyphens, apostrophe and/or spaces are allowed.
-* `PHONE_NUMBER` should only contain numbers and be 8 digits.
+* `NAME` is the name of the patient. It should not be blank. Only alphabets, followed by hyphens, apostrophe, forward slash, and/or spaces are allowed.
+* `PHONE_NUMBER` should only contain numbers and be at least 3 digits long.
 * `EMAIL` must match the standard email format (e.g. `name@example.com`).
 
 Examples:
@@ -259,7 +260,7 @@ Format: `viewsched d/DOCTOR_NAME id/DOCTOR_ID [date/YYYY-MM-DD]`
 * The schedule panel uses light blocks for available slots and darker blocks for booked slots.
 
 **Caution**
-In case, the schedule panel does not show the full slot details with appt id and patient id in your OS, please drag and resize using the double-headed arrow when you hover near the corner of the window.
+If the schedule panel does not show the full slot details with appointment ID and patient ID on your OS, please drag and resize it using the double-headed arrow when you hover near the corner of the window.
 
 Examples:
 * `viewsched d/John Tan id/1 date/2026-04-10` displays John Tan's schedule on 10 Apr 2026.
