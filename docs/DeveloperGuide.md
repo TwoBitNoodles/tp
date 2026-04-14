@@ -12,7 +12,7 @@
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Acknowledgements**
-* GitHub Copilot and Codex have been used by the team to assist code writing, particularly in helping get unstuck, improving the User Guide's UI, and updating some sections of the Developer Guide.
+* GitHub Copilot has been used by the team to assist code writing, particularly in helping get unstuck, improving the User Guide's UI, and updating some sections of the Developer Guide.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ Given below is a quick overview of main components and how they interact with ea
 
 **Main components of the architecture**
 
-**`Main`** (consisting of classes [`Main`](https://github.com/AY2526S2-CS2103T-W12-1/tp/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/AY2526S2-CS2103T-W12-1/tp/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
+**`Main`** (consisting of classes [`Main`](https://github.com/AY2526S2-CS2103T-W12-1/tp/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
 * At app launch, it initializes the other components in the correct sequence, and connects them up with each other.
 * At shut down, it shuts down the other components and invokes cleanup methods where necessary.
 
@@ -56,9 +56,9 @@ The *Sequence Diagram* below shows how the components interact with each other f
 Each of the four main components (also shown in the diagram above),
 
 * defines its *API* in an `interface` with the same name as the Component.
-* implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point).
+* implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point.
 
-For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside components from being coupled to a component's implementation), as illustrated in the (partial) class diagram below.
+For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside component's being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
 
 <puml src="diagrams/ComponentManagers.puml" width="300" />
 
@@ -73,7 +73,7 @@ The **API** of this component is specified in [`Ui.java`](https://github.com/AY2
 The UI consists of a `MainWindow` that is made up of parts e.g. `CommandBox`, `ResultDisplay`, `PersonListPanel`, `StatusBarFooter` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class which captures the commonalities between classes that represent parts of the visible GUI.
 
 
-The `UI` component uses the JavaFX UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/AY2526S2-CS2103T-W12-1/tp/tree/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/AY2526S2-CS2103T-W12-1/tp/tree/master/src/main/resources/view/MainWindow.fxml)
+The `UI` component uses the JavaFx UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/AY2526S2-CS2103T-W12-1/tp/tree/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/resources/view/MainWindow.fxml)
 
 The `UI` component,
 
@@ -125,7 +125,7 @@ The `Model` component,
 
 * stores the address book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
 * stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
-* stores a `UserPrefs` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPrefs` object.
+* stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
 
@@ -137,8 +137,8 @@ The `Model` component,
 
 The `Storage` component,
 * can save both address book data and user preference data in JSON format, and read them back into corresponding objects.
-* inherits from both `AddressBookStorage` and `UserPrefsStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
-* depends on some classes in the `Model` component (because the `Storage` component's job is to save and retrieve objects that belong to the `Model`).
+* inherits from both `AddressBookStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
+* depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
 
 ### Common classes
 
@@ -146,13 +146,13 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Planned Enhancements**
+## **Implementation**
 
-This section describes some noteworthy details on how certain features are to be implemented. These are in planning.
+This section describes some noteworthy details on how certain features are implemented.
 
 ### \[Planned\] Command History Retention
 
-#### Enhancement
+#### Planned Enhancement
 
 The proposed command history retention feature allows users to navigate through previously executed commands using arrow keys, similar to how a standard CLI (Command Line Interface) works. This feature is facilitated by a `CommandHistory` component that maintains a chronological record of all executed commands.
 
@@ -171,13 +171,13 @@ Step 1. The user launches the application. The `CommandHistory` is initialized a
 
 Step 2. The user executes the command `addpat n/John Doe p/81234567 e/john@example.com a/123 Main St`. This command is recorded in the command history.
 
-Step 3. The user executes the command `viewsched d/John Smith id/1`. This command is also recorded in the history.
+Step 3. The user executes the command `viewsched d/Dr. Smith id/1`. This command is also recorded in the history.
 
-Step 4. The user presses the **Up Arrow** key while the command box is focused. The previous command `viewsched d/John Smith id/1` is retrieved from history and displayed in the command box.
+Step 4. The user presses the **Up Arrow** key while the command box is focused. The previous command `viewsched d/Dr. Smith id/1` is retrieved from history and displayed in the command box.
 
 Step 5. The user presses the **Up Arrow** key again. The command `addpat n/John Doe p/81234567 e/john@example.com a/123 Main St` is now displayed, moving further back in history.
 
-Step 6. The user presses the **Down Arrow** key. The command `viewsched d/John Smith id/1` is displayed again, moving forward in the command history.
+Step 6. The user presses the **Down Arrow** key. The command `viewsched d/Dr. Smith id/1` is displayed again, moving forward in the command history.
 
 Step 7. When the user presses the **Down Arrow** key and reaches the most recent command, subsequent presses will clear the command box, allowing the user to type a new command.
 
@@ -217,9 +217,9 @@ _{more aspects and alternatives to be added}_
 
 --------------------------------------------------------------------------------------------------------------------
 
-### \[Planned\] Patient Appointment Viewing
+#### \[Planned\] Patient Appointment Viewing
 
-#### Enhancement
+#### Planned Enhancement
 
 The proposed patient appointment viewing feature allows receptionists to view a patient's upcoming appointments directly, complementing the existing doctor schedule viewing functionality. This addresses the need for quick access to patient-specific appointment information during clinic operations, such as when patients call to confirm or reschedule their appointments.
 
@@ -283,11 +283,13 @@ Step 5. The receptionist informs the patient of their next appointment and can p
   * Pros: Better organization for multiple appointments, easier to scan for specific dates.
   * Cons: More complex implementation, potential inconsistency with other views.
 
+_{more aspects and alternatives to be added}_
+
 --------------------------------------------------------------------------------------------------------------------
 
 ### \[Planned\] App Reset Feature
 
-#### Planned Enhancements
+#### Planned Enhancement
 
 The proposed app reset feature allows users to clear all stored data in the application, providing a clean slate for testing purposes or starting fresh after a period of use. This feature introduces a new command, such as `reset`, that removes all patients, doctors, appointments, and any other stored information, resetting the app to its initial state with no data loaded.
 
@@ -437,8 +439,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     Use case resumes at step 1.
 
-* 2b. The phone number contains non-numeric characters or is fewer than 3 digits.
-  * 2b1. System shows: `Phone numbers should only contain numbers, and it should be at least 3 digits long`
+* 2b. The phone number is not exactly 8 digits.
+  * 2b1. System shows: `Phone numbers should only contain numbers, and it should be 8 digits long`
 
     Use case resumes at step 1.
 
@@ -456,8 +458,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     Use case resumes at step 1.
 
-* 2d. A doctor with the same phone number or the same email already exists.
-  * 2d1. System shows: `A doctor with these contact details already exists in the app`
+* 2d. A doctor with the same name (case-insensitive) and email/phone already exists.
+  * 2d1. System shows: `This doctor already exists in the app`
 
     Use case ends.
 
@@ -507,8 +509,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 3.
 
-* 4b. The phone number contains non-numeric characters or is fewer than 3 digits.
-    * 4b1. System shows: `Phone numbers should only contain numbers, and it should be at least 3 digits long`
+* 4b. The phone number is not exactly 8 digits.
+    * 4b1. System shows: `Phone numbers should only contain numbers, and it should be 8 digits long`
 
       Use case resumes at step 3.
 
@@ -581,8 +583,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     Use case resumes at step 1.
 
-* 2b. The phone number contains non-numeric characters or is fewer than 3 digits.
-  * 2b1. System shows: `Phone numbers should only contain numbers, and it should be at least 3 digits long`
+* 2b. The phone number is not exactly 8 digits.
+  * 2b1. System shows: `Phone numbers should only contain numbers, and it should be 8 digits long`
 
     Use case resumes at step 1.
 
@@ -651,8 +653,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 3.
 
-* 4b. The phone number contains non-numeric characters or is fewer than 3 digits.
-    * 4b1. System shows: `Phone numbers should only contain numbers, and it should be at least 3 digits long`
+* 4b. The phone number is not exactly 8 digits.
+    * 4b1. System shows: `Phone numbers should only contain numbers, and it should be 8 digits long`
 
       Use case resumes at step 3.
 
@@ -795,7 +797,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 1. Receptionist views a doctor's schedule (see Use case: View a doctor's schedule).
 2. Receptionist identifies an appointment to edit.
-3. Receptionist enters the `editappt` command with the appointment ID and the fields to update (doctor ID, date, and/or time).
+3. Receptionist enters the `editappt` command with the appointment ID and the fields to update (patient ID, doctor ID, date, and/or time).
 4. System validates all provided fields and checks slot availability.
 5. System updates the appointment entry and confirms with the updated record's details.
 
@@ -808,28 +810,33 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     Use case ends.
 
-* 4a. The doctor ID does not match any existing doctor.
-  * 4a1. System shows: `Doctor not found: <ID>`
+* 4a. The patient ID does not match any existing patient.
+  * 4a1. System shows: `Patient not found: <ID>`
 
     Use case resumes at step 3.
 
-* 4b. The date is invalid or in the past.
-  * 4b1. System shows the appropriate date validation error message.
+* 4b. The doctor ID does not match any existing doctor.
+  * 4b1. System shows: `Doctor not found: <ID>`
 
     Use case resumes at step 3.
 
-* 4c. The time is not one of the valid half-hourly slots (09:00–16:30).
-  * 4c1. System shows: `Could not edit appointment: There is no such time slot.`
+* 4c. The date is invalid or in the past.
+  * 4c1. System shows the appropriate date validation error message.
 
     Use case resumes at step 3.
 
-* 4d. The selected slot is already booked with the doctor.
-  * 4d1. System shows: `Could not edit appointment: This slot is already booked. Please edit the appointment if you wish to change it`
+* 4d. The time is not one of the valid half-hourly slots (09:00–16:30).
+  * 4d1. System shows: `The time <HH:MM> is not a valid 30-minute slot for this doctor.`
 
     Use case resumes at step 3.
 
-* 4e. The patient already has an appointment at the new date and time.
-  * 4e1. System shows: `Could not edit appointment: Patient already has an appointment at this time`
+* 4e. The selected slot is already booked with the doctor.
+  * 4e1. System shows: `Could not edit appointment: This slot is already booked. Please edit the appointment if you wish to change it`
+
+    Use case resumes at step 3.
+
+* 4f. The patient already has an appointment at the new date and time.
+  * 4f1. System shows: `Patient already has an appointment at this time.`
 
     Use case resumes at step 3.
 
@@ -853,13 +860,13 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     Use case ends.
 
-* 3b. The appointment ID format is invalid (e.g. id input: `abc`).
-  * 3b1. System shows:
+* 3b. The appointment ID format is invalid.
+  * 3b1. System shows: 
   ```
   Invalid command format!
   delappt: Deletes the appointment identified by the appointment ID.
-  Parameters: apptid/APPOINTMENT_ID
-  Example: delappt apptid/1
+  Parameters: ID (must be a valid appointment ID)
+  Example: delappt 1
   ```
 
     Use case ends.
@@ -879,7 +886,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 1a. The search keywords are empty.
-  * 1a1. System shows:
+  * 1a1. System shows: 
   ```
   Invalid command format!
   find: Finds all persons whose names contain any of the specified keywords (case-insensitive) and displays them as a list with index numbers.
@@ -993,3 +1000,4 @@ testers are expected to do more *exploratory* testing.
 - Make regular backups of the `data/` folder
 - Only edit JSON files if you understand the structure
 - Corrupted files are not repaired automatically; deleted data cannot be recovered
+
