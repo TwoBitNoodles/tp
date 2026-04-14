@@ -167,7 +167,7 @@ public class AppointmentManagerTest {
         appt2.setPatName(PATIENT_NAME);
         int id2 = AppointmentManager.addAppointment(appt2);
 
-        AppointmentManager.updateDoctorNameInAppointments("Dr Bob", "Dr Stark");
+        AppointmentManager.updateDoctorNameInAppointments(1, "Dr Stark");
 
         Appointment stored1 = AppointmentManager.getAppointmentById(id1);
         assertEquals("Dr Stark", stored1.getDocName());
@@ -183,7 +183,7 @@ public class AppointmentManagerTest {
         appt.setPatName(PATIENT_NAME);
         int id = AppointmentManager.addAppointment(appt);
 
-        AppointmentManager.updateDoctorNameInAppointments("Dr Nonexistent", "Dr New");
+        AppointmentManager.updateDoctorNameInAppointments(999, "Dr New");
 
         Appointment stored = AppointmentManager.getAppointmentById(id);
         assertEquals("Dr Bob", stored.getDocName());
@@ -237,7 +237,7 @@ public class AppointmentManagerTest {
         appt2.setPatName("Bob Patient");
         int id2 = AppointmentManager.addAppointment(appt2);
 
-        AppointmentManager.updatePatientNameInAppointments(PATIENT_NAME, "New Alice");
+        AppointmentManager.updatePatientNameInAppointments(PATIENT_ID, "New Alice");
 
         Appointment stored1 = AppointmentManager.getAppointmentById(id1);
         assertEquals("New Alice", stored1.getPatName());
@@ -253,7 +253,7 @@ public class AppointmentManagerTest {
         appt.setPatName(PATIENT_NAME);
         int id = AppointmentManager.addAppointment(appt);
 
-        AppointmentManager.updatePatientNameInAppointments("Nonexistent", "New Name");
+        AppointmentManager.updatePatientNameInAppointments(999, "New Name");
 
         Appointment stored = AppointmentManager.getAppointmentById(id);
         assertEquals(PATIENT_NAME, stored.getPatName());

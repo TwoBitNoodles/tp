@@ -553,7 +553,8 @@ public class ModelManager implements Model {
         String newName = newDoctor.getName().fullName;
 
         if (!oldName.equals(newName)) {
-            seedu.address.storage.AppointmentManager.updateDoctorNameInAppointments(oldName, newName);
+            seedu.address.storage.AppointmentManager.updateDoctorNameInAppointments(
+                    newDoctor.getDocId(), newName);
         }
     }
 
@@ -565,7 +566,8 @@ public class ModelManager implements Model {
         String newName = newPatient.getName().fullName;
 
         if (!oldName.equals(newName)) {
-            seedu.address.storage.AppointmentManager.updatePatientNameInAppointments(oldName, newName);
+            seedu.address.storage.AppointmentManager.updatePatientNameInAppointments(
+                    newPatient.getPatientId(), newName);
         }
     }
 
