@@ -59,8 +59,7 @@ public class Doctor extends Person {
     }
 
     /**
-     * Returns true if both doctors have the same name (case-insensitive)
-     * and share the same phone number or email.
+     * Returns true if both doctors share the same phone number or the same email.
      */
     @Override
     public boolean isSamePerson(Person otherPerson) {
@@ -72,8 +71,7 @@ public class Doctor extends Person {
             return false;
         }
 
-        return otherPerson.getName().fullName.equalsIgnoreCase(getName().fullName)
-                && (otherPerson.getPhone().equals(getPhone())
-                    || otherPerson.getEmail().equals(getEmail()));
+        return otherPerson.getPhone().equals(getPhone())
+                || otherPerson.getEmail().equals(getEmail());
     }
 }

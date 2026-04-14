@@ -51,6 +51,7 @@ public class AddDocCommand extends Command {
         requireNonNull(model);
 
         if (model.hasDoctor(toAdd)) {
+            Doctor.setIdTracker(toAdd.getDocId());
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 

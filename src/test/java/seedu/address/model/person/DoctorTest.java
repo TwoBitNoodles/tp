@@ -152,11 +152,20 @@ public class DoctorTest {
     }
 
     @Test
-    public void isSamePerson_differentName_returnsFalse() {
+    public void isSamePerson_differentNameSamePhoneAndEmail_returnsTrue() {
         Doctor alice = new DoctorBuilder().withName("Alice").withPhone("12121212")
                 .withEmail("alice@wonderland.com").build();
         Doctor other = new DoctorBuilder().withName("Bob").withPhone("12121212")
                 .withEmail("alice@wonderland.com").build();
+        assertTrue(alice.isSamePerson(other));
+    }
+
+    @Test
+    public void isSamePerson_differentNameDifferentPhoneEmail_returnsFalse() {
+        Doctor alice = new DoctorBuilder().withName("Alice").withPhone("12121212")
+                .withEmail("alice@wonderland.com").build();
+        Doctor other = new DoctorBuilder().withName("Bob").withPhone("99999999")
+                .withEmail("bob@wonderland.com").build();
         assertFalse(alice.isSamePerson(other));
     }
 

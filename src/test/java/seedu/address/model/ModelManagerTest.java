@@ -192,8 +192,8 @@ public class ModelManagerTest {
                 .withEmail("mcd@doc.com").withAddress("Old Road").build();
         modelManager.addDoctor(oldDoc);
 
-        Doctor newDoc = new DoctorBuilder().withName("Kentucky").withPhone("44445555")
-                .withEmail("mcd@doc.com").withAddress("Chicken Road").build();
+        Doctor newDoc = new DoctorBuilder().withName("Kentucky").withPhone("66667777")
+                .withEmail("kfc@doc.com").withAddress("Chicken Road").build();
         modelManager.setDoctor(oldDoc, newDoc);
 
         assertFalse(modelManager.hasDoctor(oldDoc));
@@ -316,11 +316,13 @@ public class ModelManagerTest {
 
     @Test
     public void setDoctor_doctorExists_doctorUpdatedSuccessfully() {
-        Doctor doctor = new DoctorBuilder().withName("Doc One").build();
+        Doctor doctor = new DoctorBuilder().withName("Doc One").withPhone("11112222")
+                .withEmail("docone@doc.com").build();
         modelManager.addDoctor(doctor);
         assertTrue(modelManager.hasPerson(doctor));
 
-        Doctor updatedDoctor = new DoctorBuilder().withName("Doc One Updated").build();
+        Doctor updatedDoctor = new DoctorBuilder().withName("Doc One Updated").withPhone("33334444")
+                .withEmail("doconeupdated@doc.com").build();
         modelManager.setDoctor(doctor, updatedDoctor);
         assertFalse(modelManager.hasPerson(doctor));
         assertTrue(modelManager.hasPerson(updatedDoctor));

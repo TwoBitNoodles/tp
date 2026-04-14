@@ -203,7 +203,16 @@ public class EditDocCommandTest {
     @Test
     public void execute_scheduleIoError_throwsCommandException() throws Exception {
         File scheduleFile = new File("data/schedule.json");
-        byte[] backup = Files.readAllBytes(scheduleFile.toPath());
+        boolean created = false;
+        byte[] backup = null;
+        if (scheduleFile.exists()) {
+            backup = Files.readAllBytes(scheduleFile.toPath());
+        } else {
+            scheduleFile.getParentFile().mkdirs();
+            Files.writeString(scheduleFile.toPath(), "{}");
+            backup = "{}".getBytes();
+            created = true;
+        }
         try {
             Files.writeString(scheduleFile.toPath(), "not valid json");
             EditDoctorDescriptor descriptor = new EditDoctorDescriptorBuilder()
@@ -211,7 +220,11 @@ public class EditDocCommandTest {
             EditDocCommand editDocCommand = new EditDocCommand(INDEX_FIRST_PERSON, descriptor);
             assertThrows(CommandException.class, () -> editDocCommand.execute(model));
         } finally {
-            Files.write(scheduleFile.toPath(), backup);
+            if (created) {
+                scheduleFile.delete();
+            } else {
+                Files.write(scheduleFile.toPath(), backup);
+            }
         }
     }
 

@@ -133,7 +133,7 @@ public class AddDocCommandTest {
     }
 
     @Test
-    public void execute_differentNameSameEmail_success() throws Exception {
+    public void execute_differentNameSameEmail_throwsCommandException() throws Exception {
         Model model = new ModelManager();
 
         Doctor doctor = new DoctorBuilder().withName("Shrek")
@@ -147,16 +147,11 @@ public class AddDocCommandTest {
 
         model.addDoctor(doctor);
         AddDocCommand addDocCommand = new AddDocCommand(differentDoctor);
-        Model expectedModel = new ModelManager();
-        expectedModel.addDoctor(doctor);
-        expectedModel.addDoctor(differentDoctor);
-        assertCommandSuccess(addDocCommand, model,
-                String.format(AddDocCommand.MESSAGE_SUCCESS, Messages.format(differentDoctor)),
-                expectedModel);
+        assertCommandFailure(addDocCommand, model, AddDocCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
     @Test
-    public void execute_differentNameSamePhone_success() throws Exception {
+    public void execute_differentNameSamePhone_throwsCommandException() throws Exception {
         Model model = new ModelManager();
 
         Doctor doctor = new DoctorBuilder().withName("Jerry")
@@ -170,12 +165,7 @@ public class AddDocCommandTest {
 
         model.addDoctor(doctor);
         AddDocCommand addDocCommand = new AddDocCommand(differentDoctor);
-        Model expectedModel = new ModelManager();
-        expectedModel.addDoctor(doctor);
-        expectedModel.addDoctor(differentDoctor);
-        assertCommandSuccess(addDocCommand, model,
-                String.format(AddDocCommand.MESSAGE_SUCCESS, Messages.format(differentDoctor)),
-                expectedModel);
+        assertCommandFailure(addDocCommand, model, AddDocCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
     @Test

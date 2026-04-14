@@ -54,6 +54,7 @@ public class AddPatCommand extends Command {
         logger.info("Executing AddPatCommand with patient: " + Messages.format(toAdd));
 
         if (model.hasPatient(toAdd)) {
+            Patient.setIdTracker(toAdd.getPatientId());
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 

@@ -89,7 +89,7 @@ The table below summarises the rules and constraints for all input fields used a
 <box type="info" seamless>
 
 **Additional assumptions:**
-* **Doctor duplicate detection:** Two doctors are considered duplicates if they share the same name (case-insensitive) **and** either the same phone number or the same email.
+* **Doctor duplicate detection:** Two doctors are considered duplicates if they share the same phone number **or** the same email, regardless of name. Doctors with the same name but different phone numbers and emails are allowed.
 * **Patient duplicate detection:** Two patients are considered duplicates if they share the same name (case-insensitive) **and** the same email.
 * **Schedule window:** Doctor schedules are displayed and bookable for a rolling 7-day window from today.
 * **Schedule slots:** Schedule uses 30-minute slots from 09:00 to 16:30. Appointments can only be booked within these slots.
