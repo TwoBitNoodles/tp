@@ -287,6 +287,74 @@ _{more aspects and alternatives to be added}_
 
 --------------------------------------------------------------------------------------------------------------------
 
+### \[Planned\] App Reset Feature
+
+#### Planned Enhancements
+
+The proposed app reset feature allows users to clear all stored data in the application, providing a clean slate for testing purposes or starting fresh after a period of use. This feature introduces a new command, such as `reset`, that removes all patients, doctors, appointments, and any other stored information, resetting the app to its initial state with no data loaded.
+
+#### Usage Scenario
+
+Step 1. The user decides to reset the app, perhaps for testing new features or clearing accumulated data.
+
+Step 2. The user enters the `reset` command.
+
+Step 3. The system prompts for confirmation to ensure the user intends to clear all data.
+
+Step 4. The user confirms the reset by typing 'yes' or a similar affirmative response.
+
+Step 5. The system clears all data from memory and storage files, then confirms the reset with a message indicating the app has been reset.
+
+   Use case ends.
+
+**Extensions**
+
+* 3a. The user cancels the confirmation.
+  * 3a1. System shows: `Reset cancelled. No data was cleared.`
+
+    Use case ends.
+
+* 4a. The user provides an invalid confirmation response.
+  * 4a1. System shows: `Invalid response. Reset cancelled.`
+
+    Use case resumes at step 3.
+
+#### Design Considerations
+
+**Aspect: Confirmation mechanism:**
+
+* **Alternative 1 (current choice):** Require explicit user confirmation before proceeding with the reset.
+  * Pros: Prevents accidental data loss, gives users a chance to reconsider.
+  * Cons: Adds an extra step to the process, may be inconvenient for automated testing.
+
+* **Alternative 2:** No confirmation required.
+  * Pros: Faster execution, suitable for scripts or automated processes.
+  * Cons: High risk of accidental data loss, especially in production environments.
+
+**Aspect: Scope of data reset:**
+
+* **Alternative 1 (current choice):** Clear all data including patients, doctors, appointments, and user preferences.
+  * Pros: Provides a complete clean slate, ensures no residual data remains.
+  * Cons: May be too aggressive for users who want to keep some data.
+
+* **Alternative 2:** Allow selective reset (e.g., reset only patients or only appointments).
+  * Pros: Gives users more control over what data to clear.
+  * Cons: Increases command complexity, requires additional parameters and validation.
+
+**Aspect: Data persistence after reset:**
+
+* **Alternative 1:** Immediately overwrite storage files with empty data.
+  * Pros: Ensures data is permanently cleared, no recovery possible.
+  * Cons: Irreversible action, potential for regret.
+
+* **Alternative 2:** Clear in-memory data but keep backup of storage files.
+  * Pros: Allows recovery if reset was accidental.
+  * Cons: Doesn't provide a true "clean slate", may confuse users expecting complete reset.
+
+_{more aspects and alternatives to be added}_
+
+--------------------------------------------------------------------------------------------------------------------
+
 ## **Documentation, logging, testing, configuration, dev-ops**
 
 * [Documentation guide](Documentation.md)
