@@ -31,7 +31,7 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
    A GUI similar to the below should appear in a few seconds.<br>
    <div class="image-container">
 
-   ![Ui](images/Ui.png)
+   ![Ui](images/NoSampleData.png)
 
    </div>
 
