@@ -146,9 +146,9 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Implementation**
+## **Planned Enhancements**
 
-This section describes some noteworthy details on how certain features are implemented.
+This section describes some noteworthy details on how certain features are to be implemented. These are in planning.
 
 ### \[Planned\] Command History Retention
 
